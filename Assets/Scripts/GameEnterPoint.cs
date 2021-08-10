@@ -3,6 +3,7 @@ using GameStage;
 using PopupSystem;
 using UI;
 using UnityEngine;
+using UserSystem;
 using Utils.Events;
 using Utils.GameStageSystem;
 using Utils.ObjectPool;
@@ -11,6 +12,8 @@ using Zenject;
 
 public class GameEnterPoint : MonoBehaviour
 {
+    [Inject] private CheatsManager _cheatsManager;
+    [Inject] private UserManager _userManager;
     [Inject] private EventAggregator _eventAggregator;
     [Inject] private StageController _stageController;
     [Inject] private PopupManager<PopupType> _popupManager;

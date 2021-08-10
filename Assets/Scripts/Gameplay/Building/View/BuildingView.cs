@@ -5,8 +5,9 @@ namespace Gameplay.Building.View
 {
     public class BuildingView : MonoBehaviour
     {
-        [SerializeField] private string Id;
-        [SerializeField] private List<GameObject> Stages = default;
+        [HideInInspector] public string BuildingId;
+
+        [SerializeField] public List<GameObject> Stages = default;
 
         public void SetStages(int value)
         {

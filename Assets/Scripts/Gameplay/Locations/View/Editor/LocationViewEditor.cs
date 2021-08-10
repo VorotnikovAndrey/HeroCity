@@ -1,17 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Economies;
-using Gameplay.Locations.View;
 using UnityEditor;
 using UnityEngine;
 
-namespace Gameplay.Building.View.Editor
+namespace Gameplay.Locations.View.Editor
 {
-    [CustomEditor(typeof(BuildingView))]
-    public class BuildingViewEditor : UnityEditor.Editor
+    [CustomEditor(typeof(LocationView))]
+    public class LocationViewEditor : UnityEditor.Editor
     {
-        private BuildingView _target;
-        private LocationView _locationView;
+        private LocationView _target;
         private List<LocationsEconomy> _locationsEconomy;
         private Vector2 _scrollViewPosition = Vector2.zero;
         private string _lastId = string.Empty;
@@ -19,13 +17,12 @@ namespace Gameplay.Building.View.Editor
 
         private void OnEnable()
         {
-            _target = target as BuildingView;
+            _target = target as LocationView;
             if (_target == null)
             {
                 return;
             }
 
-            _locationView = _target.transform.root.GetComponent<LocationView>();
             _locationsEconomy = Resources.LoadAll<LocationsEconomy>("").ToList();
         }
 
@@ -40,7 +37,6 @@ namespace Gameplay.Building.View.Editor
             DrawScrollView();
 
             EditorGUILayout.Space();
-
             base.OnInspectorGUI();
         }
 
@@ -57,18 +53,6 @@ namespace Gameplay.Building.View.Editor
                 alignment = TextAnchor.MiddleCenter
             };
 
-            if (_locationView == null)
-            {
-                EditorGUILayout.LabelField("LocationView is not found!", errorStyle);
-                return true;
-            }
-
-            if (string.IsNullOrEmpty(_locationView.LocationId))
-            {
-                EditorGUILayout.LabelField("LocationId is null or empty!", errorStyle);
-                return true;
-            }
-
             if (_locationsEconomy == null)
             {
                 EditorGUILayout.LabelField("LocationsEconomy is null!", errorStyle);
@@ -82,19 +66,19 @@ namespace Gameplay.Building.View.Editor
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Id:", GUILayout.Width(20));
-            _target.BuildingId = EditorGUILayout.TextArea(_target.BuildingId);
+            _target.LocationId = EditorGUILayout.TextArea(_target.LocationId);
             if (GUILayout.Button("Clear", GUILayout.Width(75)))
             {
                 Apply(string.Empty);
             }
             EditorGUILayout.EndHorizontal();
 
-            if (_lastId == _target.BuildingId && _target.BuildingId != string.Empty)
+            if (_lastId == _target.LocationId && _target.LocationId != string.Empty)
             {
                 return;
             }
 
-            _lastId = _target.BuildingId;
+            _lastId = _target.LocationId;
             FindKeys();
         }
 
@@ -120,19 +104,18 @@ namespace Gameplay.Building.View.Editor
         {
             _keys.Clear();
 
-            if (string.IsNullOrEmpty(_target.BuildingId))
+            if (string.IsNullOrEmpty(_target.LocationId))
             {
-                _keys.AddRange(_locationsEconomy.SelectMany(economy => economy.Data)
-                    .Where(id => id.Id == _locationView.LocationId).SelectMany(x => x.BuildingsIds));
+                _keys.AddRange(_locationsEconomy.SelectMany(economy => economy.Data).Select(x => x.Id));
             }
             else
             {
-                foreach (var buildingId in _locationsEconomy.SelectMany(economy => economy.Data).Where(x => x.Id == _locationView.LocationId).SelectMany(x => x.BuildingsIds))
+                foreach (LocationData data in _locationsEconomy.SelectMany(economy => economy.Data))
                 {
-                    if (buildingId.Substring(0, Mathf.Clamp(_target.BuildingId.Length, 0, buildingId.Length)) == _target.BuildingId &&
-                        _target.BuildingId != buildingId)
+                    if (data.Id.Substring(0, Mathf.Clamp(_target.LocationId.Length, 0, data.Id.Length)) == _target.LocationId &&
+                        _target.LocationId != data.Id)
                     {
-                        _keys.Add(buildingId);
+                        _keys.Add(data.Id);
                     }
                 }
             }
@@ -141,7 +124,7 @@ namespace Gameplay.Building.View.Editor
         private void Apply(string id)
         {
             GUI.FocusControl(null);
-            _target.BuildingId = id;
+            _target.LocationId = id;
             _keys.Clear();
             EditorUtility.SetDirty(_target);
         }
