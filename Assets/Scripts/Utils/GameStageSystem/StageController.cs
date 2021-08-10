@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Defong.GameStageSystem;
 using Events;
-using GameStage;
+using Stages;
 using Utils.Events;
 using Zenject;
 

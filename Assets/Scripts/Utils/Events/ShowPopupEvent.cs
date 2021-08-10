@@ -1,5 +1,4 @@
 ﻿using System;
-using Defong.Events;
 
 namespace Utils.Events
 {
@@ -18,7 +17,5 @@ namespace Utils.Events
         /// If Data is null Show() method will be called, otherwise Show(obj args) will be called/
         /// </summary>
         public object Data;
-
-        public float Time;
     }
 }

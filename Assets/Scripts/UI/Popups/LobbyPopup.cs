@@ -8,15 +8,19 @@ namespace UI.Popups
     {
         public override PopupType Type => PopupType.Lobby;
 
-        public void OnStartLevelButtonPressed()
+        public void LoadLocation(string location)
         {
-            EventAggregator.SendEvent(new StartLevelButtonPressedEvent());
+            EventAggregator.SendEvent(new LoadLocationEvent
+            {
+                Location = location
+            });
+
             Hide();
         }
 
-        public void OnExitLobbyButtonPressed()
+        public void ExitGame()
         {
-            EventAggregator.SendEvent(new ExitLobbyButtonPressedEvent());
+            EventAggregator.SendEvent(new ExitGameEvent());
             Hide();
         }
     }

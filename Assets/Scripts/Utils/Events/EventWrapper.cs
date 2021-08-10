@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Defong.Events
+namespace Utils.Events
 {
     public class EventWrapper<T> where T : BaseEvent
     {

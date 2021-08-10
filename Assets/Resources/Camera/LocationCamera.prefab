@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3922397703630375165}
   - component: {fileID: 2678711926949793271}
   m_Layer: 0
-  m_Name: LevelCamera
+  m_Name: LocationCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -108,7 +108,7 @@ MonoBehaviour:
   _camDistanceFromTarget: 50
   _closeViewZoom: 3
   _offsetYK: 0
-  _closeViewOffset: {x: 0, y: 0, z: 0}
+  _closeViewOffset: {x: -3.5, y: 0, z: -3.5}
   _zoomSensitivity: 5
   _zoomMinSize: 3
   _zoomMaxSize: 15

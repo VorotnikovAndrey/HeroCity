@@ -530,7 +530,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3102695816266516506}
-  - component: {fileID: 6740633406287465229}
   - component: {fileID: 8492378630781103563}
   m_Layer: 5
   m_Name: HudPopup
@@ -559,14 +558,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &6740633406287465229
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5362727799458189189}
-  m_CullTransparentMesh: 1
 --- !u!114 &8492378630781103563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -579,8 +570,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a59ab7898957b0b4492db53c211a73f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _panel: {fileID: 6948221218383074069}
-  _darkBackground: {fileID: 0}
+  _body: {fileID: 6948221218383074069}
 --- !u!1 &5365524092688002218
 GameObject:
   m_ObjectHideFlags: 0
@@ -932,7 +922,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 109.675, y: 0}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6525570071651409452
@@ -1028,7 +1018,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2602023505104712426}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

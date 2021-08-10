@@ -2,7 +2,7 @@ namespace CameraSystem
 {
     public enum CameraType
     {
-        Main = 0,
-        Level = 1,
+        Lobby = 0,
+        Location = 1,
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Defong.PopupSystem;
-using Gameplay.Level;
 using UI;
 using UnityEngine;
 using Utils.Events;
@@ -28,7 +26,6 @@ namespace Utils.PopupSystem
         ~PopupManager()
         {
             _eventAggregator.Remove<ShowPopupEvent<PopupType>>(OnShowPopupEvent);
-            _canvas.OnBackButtonPress -= OnBackButtonPress;
             foreach (var popup in _popups)
             {
                 popup.Value.OnClosePopup -= RemovePopupFromHistory;
@@ -39,26 +36,18 @@ namespace Utils.PopupSystem
         public void SetMainCanvas(MainCanvas canvas)
         {
             _canvas = canvas;
-            _canvas.OnBackButtonPress += OnBackButtonPress;
         }
 
         private void OnShowPopupEvent(ShowPopupEvent<PopupType> data)
         {
-            if (data.Time == 0)
+            if (data.Data == null)
             {
-                if (data.Data == null)
-                    ShowPopup(data.PopupType);
-                else
-                    ShowPopup(data.PopupType, data.Data);  
+                ShowPopup(data.PopupType);
             }
             else
             {
-                if (data.Data == null)
-                    ShowPopup(data.PopupType, data.Time);
-                else
-                    ShowPopup(data.PopupType, data.Time, data.Data);
+                ShowPopup(data.PopupType, data.Data);
             }
-            
         }
 
         public T GetPopupByType<T>(PopupType type)
@@ -103,15 +92,6 @@ namespace Utils.PopupSystem
             }
         }
 
-        public void ShowPopup(PopupType type, float timer)
-        {
-            LoadPopup(type);
-            if (_popups.ContainsKey(type))
-            {
-                _popups[type].ShowWithTimer(timer);
-            }
-        }
-
         private void AddPopupToHistory(PopupType type)
         {
             if (!_popupHistory.Contains(_popups[type]))
@@ -139,27 +119,12 @@ namespace Utils.PopupSystem
             }
         }
 
-        public void ShowPopup(PopupType type, float timer, object args)
-        {
-            LoadPopup(type);
-            if (_popups.ContainsKey(type))
-            {
-                _popups[type].ShowWithTimer(timer, args);
-            }
-        }
-
         public void HidePopupByType(PopupType type)
         {
             if (_popups.ContainsKey(type))
             {
                 _popups[type].Hide();
             }
-        }
-
-        public void CloseLastOpenedPopup()
-        {
-            var lastShown = _popupHistory.LastOrDefault();
-            lastShown?.HandleCloseButton();
         }
 
         public bool IsPopupShowed(PopupType popupType)
@@ -170,18 +135,6 @@ namespace Utils.PopupSystem
         public bool IsAnyPopupShowed()
         {
             return _popups.Any(x => x.Value.IsShowed);
-        }
-
-        private void OnBackButtonPress()
-        {
-            if (_popupHistory.Count > 0)
-            {
-                var lastPopup = _popupHistory[_popupHistory.Count - 1];
-                if (lastPopup.IsBackButtonAvailable)
-                {
-                    lastPopup.HandleCloseButton();
-                }
-            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Defong.GameStageSystem;
-using Defong.Utils;
-using GameStage;
+using Stages;
 using UnityEngine;
 
 namespace Utils.GameStageSystem

@@ -4,7 +4,7 @@ namespace CameraSystem
 {
     public sealed class CameraManager
     {
-        private IView ActiveCamera;
+        public IView ActiveCamera { get; private set; }
 
         public void SetCameraType(CameraType type)
         {

@@ -1,8 +1,8 @@
-﻿using Defong.Events;
+﻿using Utils.Events;
 
 namespace Events
 {
-    public class ExitLevelButtonPressedEvent : BaseEvent
+    public class ExitGameEvent : BaseEvent
     {
 
     }

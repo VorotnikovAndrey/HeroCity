@@ -8,11 +8,17 @@ namespace UserSystem
 {
     public class UserModel : EventBehavior
     {
-        [JsonProperty] private Dictionary<ResourceType, int> Resources;
+        [JsonProperty] public Dictionary<ResourceType, int> Resources { get; private set; }
+        [JsonProperty] public string LocationId { get; private set; }
 
         public UserModel(Dictionary<ResourceType, int> resources)
         {
             Resources = resources;
+        }
+
+        public void SetLocation(string value)
+        {
+            LocationId = value;
         }
 
         public void AddResourceValue(ResourceType type, int value)

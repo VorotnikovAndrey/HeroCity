@@ -1,5 +1,5 @@
-﻿using Defong.Events;
-using Gameplay;
+﻿using Gameplay;
+using Utils.Events;
 
 namespace Events
 {

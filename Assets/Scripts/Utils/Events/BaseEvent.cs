@@ -1,4 +1,4 @@
-﻿namespace Defong.Events
+﻿namespace Utils.Events
 {
     public abstract class BaseEvent
     {

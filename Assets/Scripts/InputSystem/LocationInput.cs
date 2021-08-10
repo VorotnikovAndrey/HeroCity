@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using CameraSystem;
+using Events;
+using Gameplay.Building.View;
 using InputSyatem;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,7 +10,7 @@ using Zenject;
 
 namespace InputSystem
 {
-    public class LevelInput : IInputSystem
+    public class LocationInput : EventBehavior, IInputSystem
     {
         private const float MinDistance = 15f;
         private readonly HashSet<object> _inputBlockers = new HashSet<object>();
@@ -16,16 +18,16 @@ namespace InputSystem
 
         public bool IsInputLocked => _inputBlockers.Count > 0;
 
-        private LevelCamera _gameCamera;
-        private LevelCamera GameCamera
+        private LocationCamera _gameCamera;
+        private LocationCamera GameCamera
         {
             get
             {
-                return _gameCamera ??= ProjectContext.Instance.Container.Resolve<LevelCamera>();
+                return _gameCamera ??= ProjectContext.Instance.Container.Resolve<LocationCamera>();
             }
         }
 
-        public void Update(float deltaTime, float totalTime)
+        public void Update()
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -99,22 +101,21 @@ namespace InputSystem
 
         private bool TrySelectBuilding(RaycastHit hit)
         {
-            //var building = hit.transform.GetComponent<BuildingViewHitbox>();
+            BuildingView building = hit.transform.GetComponent<BuildingView>();
 
-            //if (building)
-            //{
-            //    if (building.View == null)
-            //    {
-            //        Debug.LogError(
-            //            $"No view for building hitbox. Parent: {building.transform.parent.name}, Pos: {building.transform.position}");
-            //        return true;
-            //    }
+            if (building == null)
+            {
+                return false;
+            }
 
-            //    PublishOnView(new EventBuildingViewSelection { View = building.View, TapPosition = hit.point });
-            //    return true;
-            //}
+            Debug.Log($"BuildingView {building.BuildingId.AddColorTag(Color.yellow)} selected".AddColorTag(Color.white));
+            EventAggregator.SendEvent(new BuildingViewEnterEvent
+            {
+                View = building,
+                TapPosition = hit.point
+            });
 
-            return false;
+            return true;
         }
 
         private bool TrySelectBuildingEmployeeSign(RaycastHit hit)

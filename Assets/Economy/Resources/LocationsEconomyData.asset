@@ -25,3 +25,10 @@ MonoBehaviour:
     - jewelry
     - armory
     - warehouse
+  - Id: LocationTest
+    BuildingsIds:
+    - townhall
+    - smithy
+    - jewelry
+    - armory
+    - warehouse

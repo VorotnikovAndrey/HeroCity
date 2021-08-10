@@ -1,4 +1,4 @@
-namespace GameStage
+namespace Stages
 {
     public enum StageType
     {

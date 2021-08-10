@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Defong.Events;
 
 namespace Utils.Events
 {
@@ -13,11 +12,13 @@ namespace Utils.Events
             var wrapper = GetWrapper<T>();
             wrapper.AddListener(action);
         }
+
         public void Remove<T>(Action<T> action) where T : BaseEvent
         {
             var wrapper = GetWrapper<T>();
             wrapper?.RemoveListener(action);
         }
+
         public void SendEvent<T>(T eventData) where T : BaseEvent
         {
             var wrapper = GetWrapper<T>();

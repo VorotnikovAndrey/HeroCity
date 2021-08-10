@@ -8,9 +8,9 @@ using Zenject;
 namespace CameraSystem
 {
     [RequireComponent(typeof(Camera))]
-    public class LevelCamera : AbstractBaseView, ICamera
+    public class LocationCamera : AbstractBaseView, ICamera
     {
-        public CameraType CameraType => CameraType.Level;
+        public CameraType CameraType => CameraType.Location;
 
         [HideInInspector] [SerializeField] private Camera _cam;
 
@@ -84,13 +84,13 @@ namespace CameraSystem
             ProjectContext.Instance.Container.BindInstances(this);
         }
 
-        public void Init(IInputSystem inputSystem)
+        public void Init(IInputSystem inputSystem, CameraSettings settings)
         {
             _inputSystem = inputSystem;
             _bounds = new Bounds(Vector3.zero, Vector3.one * 50);
             _plane = new Plane(Vector3.up, Vector3.zero);
-            _currentTargetPoint = transform.position;
-            _currentTargetZoom = Camera.orthographicSize;
+            Camera.transform.position = _currentTargetPoint = settings.Position;
+            Camera.orthographicSize = _currentTargetZoom = settings.OrthographicSize;
             _currentDampSmoothTime = _defaultDampSmoothTime;
         }
 
@@ -103,13 +103,21 @@ namespace CameraSystem
 
             CurrentCenterPlanePosition = PlanePosition(new Vector2(Screen.width / 2f, Screen.height / 2f));
 
-            if (Application.isMobilePlatform)
+            if (_state == CameraStates.Default)
             {
-                UpdateMobileInput();
+                if (Application.isMobilePlatform)
+                {
+                    UpdateMobileInput();
+                }
+                else
+                {
+                    UpdateStandaloneInput();
+                }
             }
-            else
+
+            if (Input.GetKeyDown(KeyCode.Escape) && _state == CameraStates.BuildingView)
             {
-                UpdateStandaloneInput();
+                SwitchToDefaultState();
             }
         }
 

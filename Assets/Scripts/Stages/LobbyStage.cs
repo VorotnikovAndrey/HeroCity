@@ -8,7 +8,7 @@ using Utils.PopupSystem;
 using Zenject;
 using CameraType = CameraSystem.CameraType;
 
-namespace GameStage.Stages
+namespace Stages
 {
     public class LobbyStage : AbstractStageBase
     {
@@ -33,16 +33,16 @@ namespace GameStage.Stages
         {
             base.Initialize(data);
 
-            _eventAggregator.Add<StartLevelButtonPressedEvent>(LoadLevel);
+            _eventAggregator.Add<LoadLocationEvent>(LoadLevel);
             _popupManager.ShowPopup(PopupType.Lobby);
-            _cameraManager.SetCameraType(CameraType.Main);
+            _cameraManager.SetCameraType(CameraType.Lobby);
         }
 
         public override void DeInitialize()
         {
             base.DeInitialize();
 
-            _eventAggregator.Remove<StartLevelButtonPressedEvent>(LoadLevel);
+            _eventAggregator.Remove<LoadLocationEvent>(LoadLevel);
             _popupManager.HidePopupByType(PopupType.Lobby);
         }
 
@@ -54,12 +54,12 @@ namespace GameStage.Stages
         {
         }
 
-        private void LoadLevel(StartLevelButtonPressedEvent sender)
+        private void LoadLevel(LoadLocationEvent sender)
         {
             _eventAggregator.SendEvent(new ChangeStageEvent
             {
                 Stage = StageType.Gameplay,
-                Data = null
+                Data = sender.Location
             });
         }
     }

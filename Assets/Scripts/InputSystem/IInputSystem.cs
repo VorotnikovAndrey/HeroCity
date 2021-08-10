@@ -4,6 +4,6 @@ namespace InputSystem
     {
         public bool IsInputLocked { get; }
 
-        void Update(float deltaTime, float totalTime);
+        void Update();
     }
 }
