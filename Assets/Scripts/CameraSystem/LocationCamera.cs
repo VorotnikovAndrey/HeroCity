@@ -66,9 +66,6 @@ namespace CameraSystem
         private IInputSystem _inputSystem;
         private bool _isFollowTargetNull;
 
-        private Tweener _moveTweener;
-        private Tweener _zoomTweener;
-
         public Camera Camera => _cam;
         public Vector3 CurrentCenterPlanePosition { get; private set; }
 
@@ -319,8 +316,6 @@ namespace CameraSystem
 
         public void SwitchToDefaultState(bool returnToPrevPos = true)
         {
-            //CurrentCenterPlanePosition = PlanePosition(new Vector2(Screen.width / 2f, Screen.height / 2f));
-
             _currentViewTarget = null;
             _switchStateSeq?.Kill();
 
@@ -335,6 +330,7 @@ namespace CameraSystem
             _switchStateSeq.onKill = () =>
             {
                 _switchStateSeq = null;
+                _prevCursorPos = Input.mousePosition;
                 _state = CameraStates.Default;
             };
         }
