@@ -105,17 +105,17 @@ MonoBehaviour:
   _successiveVelocityThreshold: 15
   _smoothTimeVelocityDependenceModif: 5
   _smoothTimeVelocityDependenceClamp: 0.5
-  _camDistanceFromTarget: 50
+  _camDistanceFromTarget: 10
   _closeViewZoom: 3
   _offsetYK: 0
-  _closeViewOffset: {x: -3.5, y: 0, z: -3.5}
+  _closeViewOffset: {x: 0, y: 0, z: 0}
   _zoomSensitivity: 5
   _zoomMinSize: 3
   _zoomMaxSize: 15
   _zoomElasticity: 0.3
   _zoomElasticityLerpSpeed: 5
   _zoomLerpSpeed: 5
-  _cameraHeight: 25
+  _cameraHeight: 5
   _targetMoveInDuration: 0.4
   _targetMoveInCurve:
     serializedVersion: 2

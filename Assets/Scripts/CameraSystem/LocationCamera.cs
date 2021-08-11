@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using InputSystem;
 using Source;
@@ -44,6 +45,8 @@ namespace CameraSystem
         [SerializeField] private float _targetZoomOutDuration = 0.4f;
         [SerializeField] private AnimationCurve _targetZoomOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
+        private const float FixedY = 5f;
+
         private Plane _plane;
         private Vector3 _prevCursorPos;
         private bool _prevIsFocused;
@@ -62,6 +65,9 @@ namespace CameraSystem
         private Transform _followTarget;
         private IInputSystem _inputSystem;
         private bool _isFollowTargetNull;
+
+        private Tweener _moveTweener;
+        private Tweener _zoomTweener;
 
         public Camera Camera => _cam;
         public Vector3 CurrentCenterPlanePosition { get; private set; }
@@ -141,6 +147,10 @@ namespace CameraSystem
                     //_currentTargetPoint.z = Mathf.Clamp(_currentTargetPoint.z, _bounds.min.z, _bounds.max.z);
 
                     UpdateMovement();
+                    break;
+                case CameraStates.BuildingView:
+                    break;
+                case CameraStates.Focus:
                     break;
             }
 
@@ -295,32 +305,37 @@ namespace CameraSystem
             }
 
             _state = CameraStates.BuildingView;
+
             _switchStateSeq = DOTween.Sequence();
             Vector3 targetPos = GetTargetPosWithOffset(t.position, defaultOffset);
-            _switchStateSeq.Append(transform.DOMove(targetPos, _targetMoveInDuration).SetEase(_targetMoveInCurve));
+            _switchStateSeq.Append(Camera.transform.DOMove(targetPos, _targetMoveInDuration).SetEase(_targetMoveInCurve));
             _switchStateSeq.Join(Camera.DOOrthoSize(orthoSize, _targetZoomInDuration).SetEase(_targetZoomInCurve));
             _switchStateSeq.SetUpdate(UpdateType.Late);
-            _switchStateSeq.onKill = () => _switchStateSeq = null;
+            _switchStateSeq.onKill = () =>
+            {
+                _switchStateSeq = null;
+            };
         }
 
         public void SwitchToDefaultState(bool returnToPrevPos = true)
         {
-            CurrentCenterPlanePosition = PlanePosition(new Vector2(Screen.width / 2f, Screen.height / 2f));
+            //CurrentCenterPlanePosition = PlanePosition(new Vector2(Screen.width / 2f, Screen.height / 2f));
 
             _currentViewTarget = null;
             _switchStateSeq?.Kill();
+
             _switchStateSeq = DOTween.Sequence();
             if (!returnToPrevPos)
             {
-                _defaultStatePosition = CurrentCenterPlanePosition - transform.forward * _camDistanceFromTarget;
+                _defaultStatePosition = CurrentCenterPlanePosition - Camera.transform.forward * _camDistanceFromTarget;
             }
-            _switchStateSeq.Join(transform.DOMove(_defaultStatePosition, _targetMoveOutDuration).SetEase(_targetMoveOutCurve));
+            _switchStateSeq.Join(Camera.transform.DOMove(_defaultStatePosition, _targetMoveOutDuration).SetEase(_targetMoveOutCurve));
             _switchStateSeq.Join(Camera.DOOrthoSize(_defaultStateOrthoSize, _targetZoomOutDuration).SetEase(_targetZoomOutCurve));
             _switchStateSeq.SetUpdate(UpdateType.Late);
             _switchStateSeq.onKill = () =>
             {
-                _state = CameraStates.Default;
                 _switchStateSeq = null;
+                _state = CameraStates.Default;
             };
         }
 
