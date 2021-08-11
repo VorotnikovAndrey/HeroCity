@@ -1,4 +1,3 @@
-using System;
 using DG.Tweening;
 using InputSystem;
 using Source;
@@ -17,7 +16,6 @@ namespace CameraSystem
 
         [SerializeField] private float _defaultDampSmoothTime = 0.2f;
         [SerializeField] private float _dampMaxSpeed = 40f;
-        [SerializeField] private float _movementLerpSpeed = 3f;
         [SerializeField] private float _successiveVelocityMult = 0.2f;
         [SerializeField] private float _successiveVelocityThreshold = 1f;
         [SerializeField] private float _smoothTimeVelocityDependenceModif = 15;
@@ -45,14 +43,11 @@ namespace CameraSystem
         [SerializeField] private float _targetZoomOutDuration = 0.4f;
         [SerializeField] private AnimationCurve _targetZoomOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
-        private const float FixedY = 5f;
-
         private Plane _plane;
         private Vector3 _prevCursorPos;
         private bool _prevIsFocused;
         private Bounds _bounds;
         private bool _inputBlocked;
-        private CameraStates _state;
         private Vector3 _defaultStatePosition;
         private float _defaultStateOrthoSize;
         private Sequence _switchStateSeq;
@@ -66,6 +61,7 @@ namespace CameraSystem
         private IInputSystem _inputSystem;
         private bool _isFollowTargetNull;
 
+        public CameraStates CameraState { get; private set; }
         public Camera Camera => _cam;
         public Vector3 CurrentCenterPlanePosition { get; private set; }
 
@@ -106,7 +102,7 @@ namespace CameraSystem
 
             CurrentCenterPlanePosition = PlanePosition(new Vector2(Screen.width / 2f, Screen.height / 2f));
 
-            if (_state == CameraStates.Default)
+            if (CameraState == CameraStates.Default)
             {
                 if (Application.isMobilePlatform)
                 {
@@ -118,7 +114,7 @@ namespace CameraSystem
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape) && _state == CameraStates.BuildingView)
+            if (Input.GetKeyDown(KeyCode.Escape) && CameraState == CameraStates.BuildingView)
             {
                 SwitchToDefaultState();
             }
@@ -126,7 +122,7 @@ namespace CameraSystem
 
         private void LateUpdate()
         {
-            switch (_state)
+            switch (CameraState)
             {
                 case CameraStates.Default:
                     UpdateMovement();
@@ -284,27 +280,26 @@ namespace CameraSystem
             SwitchToViewTransform(target, _closeViewZoom, defaultOffset);
         }
 
-        public void SwitchToViewTransform(Transform t, float orthoSize, bool defaultOffset)
+        public void SwitchToViewTransform(Transform target, float orthoSize, bool defaultOffset)
         {
-            if (_currentViewTarget == t)
+            if (_currentViewTarget == target)
             {
                 return;
             }
 
-            _currentViewTarget = t;
+            _currentViewTarget = target;
             _switchStateSeq?.Kill();
 
-            if (_state == CameraStates.Default)
+            if (CameraState == CameraStates.Default)
             {
-                _currentTargetPoint = Camera.transform.position;
-                _defaultStatePosition = transform.position;
+                _currentTargetPoint = _defaultStatePosition = Camera.transform.position;
                 _defaultStateOrthoSize = Camera.orthographicSize;
             }
 
-            _state = CameraStates.BuildingView;
+            CameraState = CameraStates.BuildingView;
 
             _switchStateSeq = DOTween.Sequence();
-            Vector3 targetPos = GetTargetPosWithOffset(t.position, defaultOffset);
+            Vector3 targetPos = GetTargetPosWithOffset(target.position, defaultOffset);
             _switchStateSeq.Append(Camera.transform.DOMove(targetPos, _targetMoveInDuration).SetEase(_targetMoveInCurve));
             _switchStateSeq.Join(Camera.DOOrthoSize(orthoSize, _targetZoomInDuration).SetEase(_targetZoomInCurve));
             _switchStateSeq.SetUpdate(UpdateType.Late);
@@ -331,13 +326,13 @@ namespace CameraSystem
             {
                 _switchStateSeq = null;
                 _prevCursorPos = Input.mousePosition;
-                _state = CameraStates.Default;
+                CameraState = CameraStates.Default;
             };
         }
 
         public void SwitchToFollow(Transform followTarget)
         {
-            _state = CameraStates.Following;
+            CameraState = CameraStates.Following;
             _followTarget = followTarget;
         }
 

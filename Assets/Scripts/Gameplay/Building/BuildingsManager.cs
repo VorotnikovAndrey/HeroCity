@@ -43,8 +43,13 @@ namespace Gameplay.Building
 
         private void OnBuildingViewEnterEvent(BuildingViewEnterEvent sender)
         {
+            if (_locationCamera.CameraState != CameraStates.Default)
+            {
+                return;
+            }
+
             _locationCamera.SwitchToViewTransform(sender.View.transform);
-            _popupManager.ShowPopup(PopupType.Building);
+            _popupManager.ShowPopup(PopupType.Building, sender.View);
         }
     }
 }

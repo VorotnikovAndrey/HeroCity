@@ -90,7 +90,7 @@ namespace Gameplay.Locations.View.Editor
             }
 
             EditorGUILayout.BeginVertical();
-            _scrollViewPosition = EditorGUILayout.BeginScrollView(_scrollViewPosition, GUILayout.MaxHeight(_keys.Count > 5 ? 100 : 20 * _keys.Count));
+            _scrollViewPosition = EditorGUILayout.BeginScrollView(_scrollViewPosition, GUILayout.MaxHeight(_keys.Count > 5 ? 100 : 25 * _keys.Count));
             foreach (var element in _keys.Where(element => GUILayout.Button(element, GUILayout.Height(20))))
             {
                 Apply(element);
