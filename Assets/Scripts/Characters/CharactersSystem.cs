@@ -158,10 +158,10 @@ namespace Characters
 
         private async void PlayDebug()
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 20; i++)
             {
                 CreateAndSpawn(CreateModel(CharacterType.Default));
-                await new WaitForSeconds(1f);
+                await new WaitForSeconds(5f);
             }
         }
     }

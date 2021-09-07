@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WanderingAmount: 1
   RespiteTime: 1
+  LockPosition: 0

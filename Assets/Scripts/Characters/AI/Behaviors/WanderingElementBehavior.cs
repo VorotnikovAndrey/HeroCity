@@ -12,6 +12,7 @@ namespace Characters.AI.Behaviors
     {
         public int WanderingAmount = 3;
         public float RespiteTime = 3f;
+        public bool LockPosition = false;
 
         private MapWaypoint _nextMapWaypoint;
         private int _wanderingStepCount = 0;
@@ -56,7 +57,10 @@ namespace Characters.AI.Behaviors
             }
 
             _nextMapWaypoint = _locationView.WaypointsContainer.GetTypePositions(MapWaypointType.Undefined).GetRandom();
-            _nextMapWaypoint.Locked = true;
+            if (LockPosition)
+            {
+                _nextMapWaypoint.Locked = true;
+            }
 
             Model.Movement.GoTo(_nextMapWaypoint.Position, x =>
             {
