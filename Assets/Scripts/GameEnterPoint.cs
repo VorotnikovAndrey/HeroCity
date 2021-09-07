@@ -24,7 +24,7 @@ public class GameEnterPoint : MonoBehaviour
         _popupManager.SetMainCanvas(ProjectContext.Instance.Container.Resolve<MainCanvas>());
 
         ViewGenerator.SetUnitPool(new UnitPool());
-        _stageController.ChangeStage(StageType.Lobby, null);
+        _stageController.ChangeStage(StageType.Preloader, null);
 
         Application.targetFrameRate = 60;
     }

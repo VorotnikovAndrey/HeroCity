@@ -4,8 +4,7 @@ namespace PopupSystem
     {
         None = 0,
         Default = 1,
-        Lobby = 2,
-        Hud = 3,
-        Building = 4,
+        Hud = 2,
+        Building = 3,
     }
 }

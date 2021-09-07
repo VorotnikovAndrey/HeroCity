@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using UnityEngine;
 
 namespace Utils
@@ -24,7 +23,7 @@ namespace Utils
                 {
                     textColor = Color.white
                 },
-                fontSize = 20,
+                fontSize = 25,
                 fontStyle = FontStyle.Bold
             };
         }

@@ -5,6 +5,6 @@ namespace CameraSystem
 {
     public class MainCamera : AbstractBaseView, ICamera
     {
-        public GameCameraType GameCameraType => GameCameraType.Lobby;
+        public GameCameraType GameCameraType => GameCameraType.Preloader;
     }
 }

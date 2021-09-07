@@ -1,6 +1,5 @@
 ﻿using Events;
 using Gameplay.Locations.Models;
-using UnityEngine;
 using UserSystem;
 using Utils.Events;
 using Utils.GameStageSystem;
@@ -8,15 +7,15 @@ using Zenject;
 
 namespace Stages
 {
-    public class LobbyStage : AbstractStageBase
+    public class PreloaderStage : AbstractStageBase
     {
-        public override StageType StageType => StageType.Lobby;
+        public override StageType StageType => StageType.Preloader;
 
         private readonly EventAggregator _eventAggregator;
         private readonly UserManager _userManager;
 
         [Inject]
-        public LobbyStage(EventAggregator eventAggregator, UserManager userManager)
+        public PreloaderStage(EventAggregator eventAggregator, UserManager userManager)
         {
             _eventAggregator = eventAggregator;
             _userManager = userManager;
@@ -51,7 +50,7 @@ namespace Stages
                 Stage = StageType.Gameplay,
                 Data = new LocationModel
                 {
-                    LocationId = model.LocationId
+                    LocationId = model?.LocationId
                 }
             });
         }

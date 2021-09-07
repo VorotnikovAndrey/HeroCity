@@ -92,7 +92,7 @@ namespace Stages
             _timeTicker.OnTick -= _locationInput.Update;
             _locationInput = null;
             _locationCamera.SwitchToDefaultState();
-            _cameraManager.SetCameraType(GameCameraType.Lobby);
+            _cameraManager.SetCameraType(GameCameraType.Preloader);
 
             // UI
             _popupManager.HidePopupByType(PopupType.Hud);

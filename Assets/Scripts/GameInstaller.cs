@@ -25,7 +25,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<StageController>().AsSingle();
 
         // Stages
-        Container.Bind<AbstractStageBase>().To<LobbyStage>().AsSingle();
+        Container.Bind<AbstractStageBase>().To<PreloaderStage>().AsSingle();
         Container.Bind<AbstractStageBase>().To<GameplayStage>().AsSingle();
 
         // Economies

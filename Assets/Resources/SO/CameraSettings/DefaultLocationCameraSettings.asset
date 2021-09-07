@@ -16,4 +16,4 @@ MonoBehaviour:
   Bounds:
     m_Center: {x: 4.323684, y: 5.000015, z: 4.177459}
     m_Extent: {x: 10, y: 0, z: 10}
-  OrthographicSize: 5
+  OrthographicSize: 8

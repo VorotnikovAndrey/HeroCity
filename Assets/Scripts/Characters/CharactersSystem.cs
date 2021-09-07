@@ -57,6 +57,8 @@ namespace Characters
             }
 
             _timeTicker.OnTick += Update;
+
+            PlayDebug();
         }
 
         public virtual void DeInitialize()
@@ -154,13 +156,13 @@ namespace Characters
             ReleaseCharacter(sender.Model);
         }
 
-        //private async void PlayDebug()
-        //{
-        //    for (int i = 0; i < 10; i++)
-        //    {
-        //        CreateAndSpawn(CreateModel(CharacterType.Default));
-        //        await new WaitForSeconds(1f);
-        //    }
-        //}
+        private async void PlayDebug()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                CreateAndSpawn(CreateModel(CharacterType.Default));
+                await new WaitForSeconds(1f);
+            }
+        }
     }
 }

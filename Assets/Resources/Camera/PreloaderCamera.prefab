@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 69903649916812321}
   - component: {fileID: -4518380921061894593}
   m_Layer: 0
-  m_Name: LobbyCamera
+  m_Name: PreloaderCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

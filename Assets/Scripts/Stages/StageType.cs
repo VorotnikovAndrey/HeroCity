@@ -2,7 +2,7 @@ namespace Stages
 {
     public enum StageType
     {
-        Lobby = 0,
+        Preloader = 0,
         Gameplay = 1,
     }
 }
