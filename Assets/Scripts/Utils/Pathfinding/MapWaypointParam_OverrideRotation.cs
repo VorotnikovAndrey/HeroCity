@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using Utils.Pathfinding;
 
 namespace Source
 {

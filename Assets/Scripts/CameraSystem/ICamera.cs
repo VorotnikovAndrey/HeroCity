@@ -2,6 +2,6 @@ namespace CameraSystem
 {
     public interface ICamera
     {
-        CameraType CameraType { get; }
+        GameCameraType GameCameraType { get; }
     }
 }

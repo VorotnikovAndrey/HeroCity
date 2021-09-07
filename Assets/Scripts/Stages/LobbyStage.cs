@@ -1,12 +1,10 @@
-﻿using CameraSystem;
-using Defong.Utils;
-using Events;
-using PopupSystem;
+﻿using Events;
+using Gameplay.Locations.Models;
+using UnityEngine;
+using UserSystem;
 using Utils.Events;
 using Utils.GameStageSystem;
-using Utils.PopupSystem;
 using Zenject;
-using CameraType = CameraSystem.CameraType;
 
 namespace Stages
 {
@@ -14,36 +12,26 @@ namespace Stages
     {
         public override StageType StageType => StageType.Lobby;
 
-        private readonly PopupManager<PopupType> _popupManager;
         private readonly EventAggregator _eventAggregator;
-        private readonly TimeTicker _timeTicker;
-        private readonly CameraManager _cameraManager;
+        private readonly UserManager _userManager;
 
         [Inject]
-        public LobbyStage(PopupManager<PopupType> popupManager, EventAggregator eventAggregator,
-            TimeTicker timeTicker, CameraManager cameraManager)
+        public LobbyStage(EventAggregator eventAggregator, UserManager userManager)
         {
-            _popupManager = popupManager;
             _eventAggregator = eventAggregator;
-            _timeTicker = timeTicker;
-            _cameraManager = cameraManager;
+            _userManager = userManager;
         }
 
         public override void Initialize(object data)
         {
             base.Initialize(data);
 
-            _eventAggregator.Add<LoadLocationEvent>(LoadLevel);
-            _popupManager.ShowPopup(PopupType.Lobby);
-            _cameraManager.SetCameraType(CameraType.Lobby);
+            LoadLocation();
         }
 
         public override void DeInitialize()
         {
             base.DeInitialize();
-
-            _eventAggregator.Remove<LoadLocationEvent>(LoadLevel);
-            _popupManager.HidePopupByType(PopupType.Lobby);
         }
 
         public override void Show()
@@ -54,12 +42,17 @@ namespace Stages
         {
         }
 
-        private void LoadLevel(LoadLocationEvent sender)
+        private void LoadLocation()
         {
+            _userManager.CurrentUser.Locations.TryGetValue(_userManager.CurrentUser.LocationId, out LocationModel model);
+
             _eventAggregator.SendEvent(new ChangeStageEvent
             {
                 Stage = StageType.Gameplay,
-                Data = sender.Location
+                Data = new LocationModel
+                {
+                    LocationId = model.LocationId
+                }
             });
         }
     }

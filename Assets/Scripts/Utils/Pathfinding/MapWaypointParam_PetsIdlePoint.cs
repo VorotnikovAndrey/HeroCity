@@ -3,6 +3,7 @@
 using UnityEditor;
 #endif
 using UnityEngine;
+using Utils.Pathfinding;
 
 namespace Source
 {

@@ -6,6 +6,7 @@ using Content;
 using Economies;
 using Events;
 using Gameplay;
+using Gameplay.Locations.Models;
 using Newtonsoft.Json;
 using UnityEngine;
 using Utils;
@@ -35,6 +36,7 @@ namespace UserSystem
             else
             {
                 CreateUser();
+                Save();
             }
         }
 
@@ -55,8 +57,14 @@ namespace UserSystem
             }
 
             CurrentUser = new UserModel(defaultResources);
+            CurrentUser.SetLocation(ContentProvider.LocationsEconomy.Data.First().Id);
 
-            Save();
+            var locationModel = new LocationModel
+            {
+                LocationId = CurrentUser.LocationId
+            };
+
+            CurrentUser.Locations.Add(locationModel.LocationId, locationModel);
 
             Debug.Log($"User created {SaveUtils.UserModelPath.AddColorTag(Color.yellow)}".AddColorTag(Color.green));
         }

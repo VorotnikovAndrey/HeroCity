@@ -14,7 +14,6 @@ namespace Utils.ObjectPool
 
         private static UnitPool _unitPool = new UnitPool();
 
-
         public static void SetUnitPool(UnitPool unitPool)
         {
             _unitPool = unitPool;
@@ -64,13 +63,12 @@ namespace Utils.ObjectPool
             item.GlobalIndex = view.Index;
         }
 
-
         public static IView GetOrCreateItemView(string prefabPath, bool isActiveDefault = true)
         {
             return GetOrCreateItemView<IView>(prefabPath, isActiveDefault);
         }
 
-        public static T GetOrCreateItemView<T>(string prefabPath, bool isActiveDefault = true) where T : IView
+        public static T GetOrCreateItemView<T>(string prefabPath, bool isActiveDefault = true, ViewCreateParams createParams = null) where T : IView
         {
             var prefabId = Path.GetFileName(prefabPath);
 
@@ -95,7 +93,17 @@ namespace Utils.ObjectPool
                     return default(T);
                 }
 
-                IView viewObj = (IView) Object.Instantiate(pref);
+                IView viewObj = null;
+
+                if (createParams != null)
+                {
+                    viewObj = Object.Instantiate(pref, createParams.Position, Quaternion.identity);
+                }
+                else
+                {
+                    viewObj = Object.Instantiate(pref);
+                }
+
                 view = (T) viewObj;
             }
 

@@ -1953,7 +1953,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4235613100915980}
-  - component: {fileID: 95462785981533500}
+  - component: {fileID: 4183128493574162451}
   m_Layer: 0
   m_Name: Chr_Western_Badguy_01
   m_TagString: Untagged
@@ -2036,7 +2036,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &95462785981533500
+--- !u!95 &4183128493574162451
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -2046,7 +2046,7 @@ Animator:
   m_GameObject: {fileID: 1217978345240920}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: e6f8c6b4cd0c5d24fbefebd224edfdb5, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 317a214dd9bf5dc4694257616982c59f, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1

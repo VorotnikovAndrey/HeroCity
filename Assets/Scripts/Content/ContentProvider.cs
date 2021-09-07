@@ -1,3 +1,5 @@
+using Characters;
+using Characters.AI.Behaviors;
 using Economies;
 using Zenject;
 
@@ -44,6 +46,34 @@ namespace Content
                 }
 
                 return _resourcesEconomy;
+            }
+        }
+
+        private static CharacterGraphicPreset _characterGraphicPreset;
+        public static CharacterGraphicPreset CharacterGraphicPreset
+        {
+            get
+            {
+                if (_characterGraphicPreset == null)
+                {
+                    _characterGraphicPreset = ProjectContext.Instance.Container.Resolve<CharacterGraphicPreset>();
+                }
+
+                return _characterGraphicPreset;
+            }
+        }
+
+        private static BehaviorsData _behaviorsData;
+        public static BehaviorsData BehaviorsData
+        {
+            get
+            {
+                if (_behaviorsData == null)
+                {
+                    _behaviorsData = ProjectContext.Instance.Container.Resolve<BehaviorsData>();
+                }
+
+                return _behaviorsData;
             }
         }
     }

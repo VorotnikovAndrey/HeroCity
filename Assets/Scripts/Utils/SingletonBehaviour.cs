@@ -1,29 +1,29 @@
 ﻿using UnityEngine;
 
-namespace Defong.Utils
+namespace Utils
 {
     public class SingletonBehaviour<T> : MonoBehaviour where T : MonoBehaviour
     {
-        public static T instance;
+        public static T Instance;
 
         public virtual void Awake()
         {
-            if (instance)
+            if (Instance)
             {
-                Debug.LogWarning("Duplicate subclass of type " + typeof(T) + "! eliminating " + name + " while preserving " + instance.name);
+                Debug.LogWarning("Duplicate subclass of type " + typeof(T) + "! eliminating " + name + " while preserving " + Instance.name);
                 Destroy(gameObject);
             }
             else
             {
-                instance = this as T;
+                Instance = this as T;
             }
         }
 
         public virtual void OnDestroy()
         {
-            if (instance == this)
+            if (Instance == this)
             {
-                instance = null;
+                Instance = null;
             }  
         }
     }

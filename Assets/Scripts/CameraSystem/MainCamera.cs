@@ -5,6 +5,6 @@ namespace CameraSystem
 {
     public class MainCamera : AbstractBaseView, ICamera
     {
-        public CameraType CameraType => CameraType.Lobby;
+        public GameCameraType GameCameraType => GameCameraType.Lobby;
     }
 }

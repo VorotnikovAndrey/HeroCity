@@ -43,8 +43,8 @@ Camera:
   m_GameObject: {fileID: 3922397703630375153}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.5294118, g: 0.5294118, b: 0.5294118, a: 1}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.30980393, g: 0.8509804, b: 1, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -100,13 +100,12 @@ MonoBehaviour:
   _cam: {fileID: 3922397703630375167}
   _defaultDampSmoothTime: 0.2
   _dampMaxSpeed: 200
-  _movementLerpSpeed: 3
   _successiveVelocityMult: 0.1
   _successiveVelocityThreshold: 15
   _smoothTimeVelocityDependenceModif: 5
   _smoothTimeVelocityDependenceClamp: 0.5
   _camDistanceFromTarget: 10
-  _closeViewZoom: 3
+  _closeViewZoom: 5
   _offsetYK: 0
   _closeViewOffset: {x: 0, y: 0, z: 0}
   _zoomSensitivity: 5

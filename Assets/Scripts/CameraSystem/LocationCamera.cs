@@ -10,7 +10,7 @@ namespace CameraSystem
     [RequireComponent(typeof(Camera))]
     public class LocationCamera : AbstractBaseView, ICamera
     {
-        public CameraType CameraType => CameraType.Location;
+        public GameCameraType GameCameraType => GameCameraType.Location;
 
         [HideInInspector] [SerializeField] private Camera _cam;
 
@@ -86,7 +86,7 @@ namespace CameraSystem
         public void Init(IInputSystem inputSystem, CameraSettings settings)
         {
             _inputSystem = inputSystem;
-            _bounds = new Bounds(Vector3.zero, Vector3.one * 50);
+            _bounds = settings.Bounds;
             _plane = new Plane(Vector3.up, Vector3.zero);
             Camera.transform.position = _currentTargetPoint = settings.Position;
             Camera.orthographicSize = _currentTargetZoom = settings.OrthographicSize;
@@ -112,11 +112,6 @@ namespace CameraSystem
                 {
                     UpdateStandaloneInput();
                 }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape) && CameraState == CameraStates.BuildingView)
-            {
-                SwitchToDefaultState();
             }
         }
 

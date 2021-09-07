@@ -1,19 +1,21 @@
-﻿using CameraSystem;
+﻿using System;
+using CameraSystem;
+using Characters;
 using Defong.Utils;
 using Events;
 using Gameplay.Building;
+using Gameplay.Locations.Models;
 using Gameplay.Locations.View;
 using InputSystem;
 using PopupSystem;
 using UnityEngine;
 using UserSystem;
-using Utils;
 using Utils.Events;
 using Utils.GameStageSystem;
 using Utils.ObjectPool;
+using Utils.Pathfinding;
 using Utils.PopupSystem;
 using Zenject;
-using CameraType = CameraSystem.CameraType;
 
 namespace Stages
 {
@@ -27,10 +29,12 @@ namespace Stages
         private readonly CameraManager _cameraManager;
         private readonly UserManager _userManager;
 
-        private LocationView _locationView;
         private LocationCamera _locationCamera;
         private LocationInput _locationInput;
         private BuildingsManager _buildingsManager;
+        private CharactersSystem _charactersSystem;
+        private WaypointSystem _waypointSystem;
+        private LocationView _locationView;
 
         [Inject]
         public GameplayStage(PopupManager<PopupType> popupManager, EventAggregator eventAggregator,
@@ -47,49 +51,64 @@ namespace Stages
         {
             base.Initialize(data);
 
-            // Subscribe
-            _eventAggregator.Add<ExitLevelButtonPressedEvent>(OnExitLevelButtonPressedEvent);
+            if (!(data is LocationModel locationModel))
+            {
+                Debug.LogError("LocationModel is null".AddColorTag(Color.red));
+                return;
+            }
 
-            // Location & UI
-            if (!TryLoadLocation(data))
+            // Location
+            if (!TryLoadLocation(locationModel))
             {
                 return;
             }
-            _popupManager.ShowPopup(PopupType.Hud);
 
             // Camera
-            _cameraManager.SetCameraType(CameraType.Location);
+            _cameraManager.SetCameraType(GameCameraType.Location);
             _locationCamera = _cameraManager.ActiveCamera as LocationCamera;
             _locationInput = new LocationInput();
             _locationCamera?.Init(_locationInput, _locationView.CameraSettings);
             _timeTicker.OnTick += _locationInput.Update;
 
-            // Buildings
-            _buildingsManager = ProjectContext.Instance.Container.Resolve<BuildingsManager>();
+            // UI
+            _popupManager.ShowPopup(PopupType.Hud);
+
+            // Gameplay
+            _waypointSystem = new WaypointSystem();
+            _waypointSystem.SetWaypointsContainer(_locationView.WaypointsContainer);
+
+            _buildingsManager = new BuildingsManager(_popupManager, _eventAggregator, _cameraManager);
             _buildingsManager.Initialize();
+
+            _charactersSystem = new CharactersSystem();
+            _charactersSystem.Initialize();
         }
 
         public override void DeInitialize()
         {
             base.DeInitialize();
 
-            // Unsubscribe
-            _eventAggregator.Remove<ExitLevelButtonPressedEvent>(OnExitLevelButtonPressedEvent);
-
-            // Location & UI
-            _locationView?.ReleaseItemView();
-            _locationView = null;
-            _popupManager.HidePopupByType(PopupType.Hud);
-
             // Camera
             _timeTicker.OnTick -= _locationInput.Update;
             _locationInput = null;
             _locationCamera.SwitchToDefaultState();
-            _cameraManager.SetCameraType(CameraType.Lobby);
+            _cameraManager.SetCameraType(GameCameraType.Lobby);
 
-            // Buildings
+            // UI
+            _popupManager.HidePopupByType(PopupType.Hud);
+
+            // Gameplay
             _buildingsManager.DeInitialize();
             _buildingsManager = null;
+            _charactersSystem.DeInitialize();
+            _charactersSystem = null;
+            _waypointSystem = null;
+
+            // Location
+            _locationView.DestroyAndRemoveFromPool();
+            _locationView = null;
+
+            GC.Collect(0, GCCollectionMode.Forced);
         }
 
         public override void Show()
@@ -100,29 +119,22 @@ namespace Stages
         {
         }
 
-        private bool TryLoadLocation(object data)
+        private bool TryLoadLocation(LocationModel locationModel)
         {
-            _locationView = ViewGenerator.GetOrCreateItemView<LocationView>(string.Format(GameConstants.Base.LocationsFormat, data));
-            if (_locationView != null)
+            var view = ViewGenerator.GetOrCreateItemView<LocationView>(string.Format(GameConstants.Base.LocationsFormat, locationModel.LocationId));
+
+            if (view != null)
             {
-                Debug.Log($"Location {data.AddColorTag(Color.yellow)} loaded".AddColorTag(Color.cyan));
+                _locationView = view;
+                Debug.Log($"Location {locationModel.LocationId.AddColorTag(Color.yellow)} loaded".AddColorTag(Color.cyan));
             }
             else
             {
-                Debug.LogError($"Location {data.AddColorTag(Color.yellow)} is not found!".AddColorTag(Color.red));
+                Debug.LogError($"Location {locationModel.LocationId.AddColorTag(Color.yellow)} is not found!".AddColorTag(Color.red));
                 return false;
             }
 
             return true;
-        }
-
-        private void OnExitLevelButtonPressedEvent(ExitLevelButtonPressedEvent sender)
-        {
-            _eventAggregator.SendEvent(new ChangeStageEvent
-            {
-                Stage = StageType.Lobby,
-                Data = null
-            });
         }
     }
 }

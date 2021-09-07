@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
-using Utils.Pathfinding;
+using Utils.Extensions;
 
-namespace Source
+namespace Utils.Pathfinding
 {
     [RequireComponent(typeof(MapWaypoint))]
     public class MapWaypointParam : MonoBehaviour
     {
         protected virtual void Reset()
         {
-            var wp = GetComponent<MapWaypoint>();
+            MapWaypoint wp = GetComponent<MapWaypoint>();
             wp.Params.AddIfUnique(this);
         }
 

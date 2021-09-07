@@ -1,4 +1,6 @@
 using CameraSystem;
+using Characters;
+using Characters.AI.Behaviors;
 using Defong.Utils;
 using Economies;
 using Gameplay.Building;
@@ -31,8 +33,11 @@ public class GameInstaller : MonoInstaller
         Container.Bind<BuildingsEconomy>().FromScriptableObjectResource("BuildingsEconomyData").AsSingle();
         Container.Bind<ResourcesEconomy>().FromScriptableObjectResource("ResourcesEconomyData").AsSingle();
 
-        // Buildings
-        Container.Bind<BuildingsManager>().AsSingle();
+        // AI
+        Container.Bind<BehaviorsData>().FromScriptableObjectResource("SO/Characters/AI/BehaviorsData").AsSingle();
+
+        // Other SO
+        Container.Bind<CharacterGraphicPreset>().FromScriptableObjectResource("SO/Characters/CharacterGraphicPreset").AsSingle();
 
         // Debug
         Container.Bind<CheatsManager>().AsSingle();

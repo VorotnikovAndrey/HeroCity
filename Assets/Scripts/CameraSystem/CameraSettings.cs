@@ -6,6 +6,7 @@ namespace CameraSystem
     public class CameraSettings : ScriptableObject
     {
         public Vector3 Position;
+        public Bounds Bounds;
         public float OrthographicSize;
     }
 }

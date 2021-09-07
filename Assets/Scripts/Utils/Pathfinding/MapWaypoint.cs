@@ -2,31 +2,15 @@
 using System.Linq;
 using Source;
 using UnityEngine;
+using Utils.Extensions;
 
 namespace Utils.Pathfinding
 {
     public enum MapWaypointType
     {
         Undefined = 0,
-        GuestSpawn = 1,
-        MountGuestSpawn = 2,
-        TransportExit = 3,
-        RichGuySpawn = 4,
-        RichGuyTarget = 5,
-        Manager = 6,
-        RoomEntrance = 7,
-        Queue = 8, // todo: add
-        Pets = 9,
-    }
-
-    public enum MapWaypointInteractionType
-    {
-        None = 0,
-        Room = 1,
-        Reception = 2,
-        Parking = 3,
-        Restaurant = 4,
-        Bar = 5,
+        Enter = 1,
+        Exit = 2,
     }
 
     [ExecuteAlways]
@@ -38,11 +22,11 @@ namespace Utils.Pathfinding
 
         [HideInInspector] public Transform Transform;
 
-        public Vector3 Position => transform.position;
+        public Vector3 Position => Transform.position;
+        public bool Locked;
 
         [HideInInspector] public MapWaypoint previous;
         [HideInInspector] public float heuristicDist;
-        [HideInInspector] public List<string> buildingIds;
 
         public T GetParam<T>() where T : MapWaypointParam
         {
@@ -56,31 +40,26 @@ namespace Utils.Pathfinding
             Gizmos.DrawSphere(transform.position, 0.1f);
 
             Gizmos.color = Color.white.SetAlpha(0.2f);
-            foreach (var neighbor in Neighbors)
+            foreach (MapWaypoint neighbor in Neighbors)
             {
                 if (neighbor == null)
+                {
                     continue;
+                }
+
                 Gizmos.DrawLine(
                     transform.position + Vector3.up * 0.05f, 
                     neighbor.transform.position + Vector3.up * 0.05f);
             }
-        }
 
-        private Color GetGizmosColor()
-        {
-            switch (WaypointType)
+            Color GetGizmosColor()
             {
-                case MapWaypointType.GuestSpawn: return Color.blue;
-                case MapWaypointType.MountGuestSpawn: return Color.cyan;
-                case MapWaypointType.TransportExit: return Color.cyan;
-                case MapWaypointType.RichGuySpawn: return Color.yellow;
-                case MapWaypointType.RichGuyTarget: return Color.yellow;
-                case MapWaypointType.Manager: return Color.red;
-                case MapWaypointType.RoomEntrance: return Color.green;
-                case MapWaypointType.Queue: return Color.magenta; 
-                case MapWaypointType.Pets: return Color.black;
+                switch (WaypointType)
+                {
+                    case MapWaypointType.Enter: return Color.yellow;
+                }
+                return Color.white.SetAlpha(0.5f);
             }
-            return Color.white.SetAlpha(0.5f);
         }
 
         private void OnValidate()
@@ -94,7 +73,7 @@ namespace Utils.Pathfinding
         {
             Neighbors = Neighbors.Distinct().ToList();
             Neighbors.RemoveAll(waypoint => waypoint == null);
-            foreach (var neighbor in Neighbors)
+            foreach (MapWaypoint neighbor in Neighbors)
             {
                 if (!neighbor.Neighbors.Contains(this))
                 {
@@ -114,30 +93,19 @@ namespace Utils.Pathfinding
 #if UNITY_EDITOR
         private void OnDestroy()
         {
-            var container = transform.GetComponentInParent<WaypointsContainer>();
+            WaypointsContainer container = transform.GetComponentInParent<WaypointsContainer>();
             if (container != null)
                 container.CacheWaypoints();
         }
 
         public void TypeChanged()
         {
-            gameObject.name = $"Waypoint_{WaypointType}";
+            gameObject.name = $"MapWaypoint_{WaypointType}_{transform.GetSiblingIndex()}";
             
-            var container = transform.GetComponentInParent<WaypointsContainer>();
+            WaypointsContainer container = transform.GetComponentInParent<WaypointsContainer>();
             if (container != null)
                 container.MakeReferences();
         }
-        
-        public void SetAsEntranceTo(string buildingId)
-        {
-            WaypointType = MapWaypointType.RoomEntrance;
-            TypeChanged();
-            
-            var container = transform.GetComponentInParent<WaypointsContainer>();
-            if (container != null)
-                container.SetWaypointAsEntranceTo(this, buildingId);
-        }
 #endif
-
     }
 }

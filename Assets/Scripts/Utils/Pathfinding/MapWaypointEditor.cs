@@ -4,7 +4,7 @@ using UnityEngine;
 using Utils.Pathfinding;
 
 [CustomEditor(typeof(MapWaypoint))]
-public class MapWaypointEditor : UnityEditor.Editor
+public class MapWaypointEditor : Editor
 {
     private SerializedProperty _neighborsProp;
     private SerializedProperty _paramsProp;
@@ -24,7 +24,6 @@ public class MapWaypointEditor : UnityEditor.Editor
         EditorGUILayout.HelpBox(GetHelpMessage(), MessageType.Info);
             
         DrawTypeContent(waypoint);
-        DrawEntranceContent(waypoint);
             
         GUILayout.Space(5);
             
@@ -64,23 +63,6 @@ public class MapWaypointEditor : UnityEditor.Editor
             waypoint.Validate();
         }
             
-        EditorGUILayout.EndHorizontal();
-    }
-
-    private void DrawEntranceContent(MapWaypoint waypoint)
-    {
-        if (waypoint.buildingIds == null || waypoint.buildingIds.Count == 0) return;
-            
-        EditorGUILayout.BeginHorizontal();
-            
-        EditorGUILayout.LabelField("Set entrance to:");
-        _entranceIndex = EditorGUILayout.Popup(_entranceIndex, waypoint.buildingIds.ToArray());
-            
-        if (GUILayout.Button("Set Entrance"))
-        {
-            waypoint.SetAsEntranceTo(waypoint.buildingIds[_entranceIndex]);
-        }
-
         EditorGUILayout.EndHorizontal();
     }
 }
