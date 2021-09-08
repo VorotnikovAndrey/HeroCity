@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Events;
 using Gameplay;
@@ -12,10 +13,16 @@ namespace UserSystem
         [JsonProperty] public Dictionary<ResourceType, int> Resources { get; private set; }
         [JsonProperty] public Dictionary<string, LocationModel> Locations { get; private set; } = new Dictionary<string, LocationModel>();
         [JsonProperty] public string LocationId { get; private set; }
+        [JsonProperty] public TimeSpan Time { get; private set; }
 
         public UserModel(Dictionary<ResourceType, int> resources)
         {
             Resources = resources;
+        }
+
+        public void SetTime(TimeSpan value)
+        {
+            Time = value;
         }
 
         public void SetLocation(string locationId)

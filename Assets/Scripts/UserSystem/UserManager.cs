@@ -57,6 +57,7 @@ namespace UserSystem
             }
 
             CurrentUser = new UserModel(defaultResources);
+            CurrentUser.SetTime(new TimeSpan(0, 12, 0, 0));
             CurrentUser.SetLocation(ContentProvider.LocationsEconomy.Data.First().Id);
 
             var locationModel = new LocationModel

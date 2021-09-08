@@ -2,7 +2,7 @@
 using UnityEngine;
 using Zenject;
 
-namespace Defong.Utils
+namespace Utils
 {
     public class TimeTicker : ITickable
     {

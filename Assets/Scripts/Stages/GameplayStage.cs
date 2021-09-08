@@ -6,10 +6,12 @@ using Events;
 using Gameplay.Building;
 using Gameplay.Locations.Models;
 using Gameplay.Locations.View;
+using Gameplay.Time;
 using InputSystem;
 using PopupSystem;
 using UnityEngine;
 using UserSystem;
+using Utils;
 using Utils.Events;
 using Utils.GameStageSystem;
 using Utils.ObjectPool;
@@ -35,6 +37,7 @@ namespace Stages
         private CharactersSystem _charactersSystem;
         private WaypointSystem _waypointSystem;
         private LocationView _locationView;
+        private DayTime _dayTime;
 
         [Inject]
         public GameplayStage(PopupManager<PopupType> popupManager, EventAggregator eventAggregator,
@@ -82,6 +85,9 @@ namespace Stages
 
             _charactersSystem = new CharactersSystem();
             _charactersSystem.Initialize();
+
+            _dayTime = new DayTime();
+            _dayTime.Initialize();
         }
 
         public override void DeInitialize()
@@ -103,6 +109,7 @@ namespace Stages
             _charactersSystem.DeInitialize();
             _charactersSystem = null;
             _waypointSystem = null;
+            _dayTime = null;
 
             // Location
             _locationView.DestroyAndRemoveFromPool();
