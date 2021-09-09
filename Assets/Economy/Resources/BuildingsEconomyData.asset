@@ -18,27 +18,7 @@ MonoBehaviour:
     - TextAsset: {fileID: 4900000, guid: ca07da9a1ad67924db571b6c6c0918c4, type: 3}
       SheetId: 1374865347
   Data:
-  - Id: Test1
-    Stages: 1
+  - Id: townhall
+    Stages: 0
     Type: 0
-    State: 0
-  - Id: Test2
-    Stages: 2
-    Type: 1
-    State: 1
-  - Id: Test3
-    Stages: 3
-    Type: 0
-    State: 0
-  - Id: Test4
-    Stages: 4
-    Type: 1
-    State: 1
-  - Id: Test5
-    Stages: 5
-    Type: 0
-    State: 0
-  - Id: Test6
-    Stages: 1
-    Type: 1
     State: 1
