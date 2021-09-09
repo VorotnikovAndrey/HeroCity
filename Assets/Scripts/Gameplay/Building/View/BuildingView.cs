@@ -7,13 +7,24 @@ namespace Gameplay.Building.View
     {
         [HideInInspector] public string BuildingId;
 
-        [SerializeField] public List<GameObject> Stages = default;
+        [SerializeField] public List<BuildingStateContainer> States = new List<BuildingStateContainer>();
 
-        public void SetStages(int value)
+        public void SetState(BuildingState buildingState, int stage)
         {
-            foreach (GameObject element in Stages)
+            foreach (var state in States)
             {
-                element.SetActive(element.transform.GetSiblingIndex() == value);
+                bool valid = state.State == buildingState;
+                state.Object.SetActive(valid);
+
+                if (!valid)
+                {
+                    continue;
+                }
+
+                foreach (var element in state.Stages)
+                {
+                    element.SetActive(element.transform.GetSiblingIndex() == stage);
+                }
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Economies;
@@ -17,6 +18,9 @@ namespace Gameplay.Building.View.Editor
         private string _lastId = string.Empty;
         private readonly List<string> _keys = new List<string>();
 
+        private BuildingState _buildingState;
+        private int _stage;
+
         private void OnEnable()
         {
             _target = target as BuildingView;
@@ -27,24 +31,150 @@ namespace Gameplay.Building.View.Editor
 
             _locationView = _target.transform.root.GetComponent<LocationView>();
             _locationsEconomy = Resources.LoadAll<LocationsEconomy>("").ToList();
+
+            BuildingStateContainer defaultState = _target.States.FirstOrDefault(x => x.Object.activeSelf);
+            int defaultStage = 0;
+
+            if (defaultState?.Stages != null)
+            {
+                var element = defaultState.Stages.FirstOrDefault(x => x.activeSelf);
+                defaultStage = element != null ? element.transform.GetSiblingIndex() : 0;
+            }
+
+            _buildingState = defaultState?.State ?? BuildingState.Inactive;
+            _stage = defaultStage;
         }
 
         public override void OnInspectorGUI()
         {
-            if (Check())
+            ShowValidate();
+            ShowStateAndStageMenu();
+
+            if (!LocationViewIsNotNull())
             {
-                return;
+                EditorGUILayout.Space();
+                DrawId();
+                DrawScrollView();
+                EditorGUILayout.Space();
             }
-
-            DrawId();
-            DrawScrollView();
-
-            EditorGUILayout.Space();
 
             base.OnInspectorGUI();
         }
 
-        private bool Check()
+        private void ShowValidate()
+        {
+            if (GUILayout.Button("Validate"))
+            {
+                _target.States.Clear();
+
+                foreach (string element in Enum.GetNames(typeof(BuildingState)))
+                {
+                    BuildingState state = (BuildingState) Enum.Parse(typeof(BuildingState), element);
+
+                    BuildingStateContainer result = new BuildingStateContainer
+                    {
+                        State = state,
+                        Stages = new List<GameObject>()
+                    };
+
+                    Transform[] childs = _target.GetComponentsInChildren<Transform>(true);
+                    Transform findObject = childs.FirstOrDefault(x => x.name == element);
+
+                    if (findObject == null)
+                    {
+                        findObject = new GameObject(element).transform;
+                        findObject.SetParent(childs.FirstOrDefault(x => x.name == "States"));
+                        findObject.transform.localPosition = Vector3.zero;
+                        findObject.transform.localEulerAngles = Vector3.zero;
+                    }
+
+                    if (findObject != null)
+                    {
+                        result.Object = findObject.gameObject;
+                    }
+
+                    for (int i = 0; i < result.Object.transform.childCount; i++)
+                    {
+                        result.Stages.Add(result.Object.transform.GetChild(i).gameObject);
+                    }
+
+                    _target.States.Add(result);
+                }
+
+                EditorUtility.SetDirty(_target);
+            }
+        }
+
+        private void ShowStateAndStageMenu()
+        {
+            EditorGUILayout.Space();
+
+            if (_target == null || _target.States == null || _target.States.Count == 0)
+            {
+                return;
+            }
+
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.BeginHorizontal();
+
+            var tempBuildingState = (BuildingState)EditorGUILayout.EnumPopup(_buildingState, GUILayout.Width(100));
+            foreach (BuildingStateContainer state in _target.States)
+            {
+                if (state.Object == null || state.Stages == null || state.Stages.Count == 0)
+                {
+                    continue;
+                }
+
+                state.Object?.SetActive(state.State == tempBuildingState);
+            }
+
+            if (_buildingState != tempBuildingState)
+            {
+                EditorUtility.SetDirty(_target);
+            }
+
+            _buildingState = tempBuildingState;
+
+            BuildingStateContainer currentState = _target.States.FirstOrDefault(x => x.State == _buildingState);
+            if (currentState == null)
+            {
+                return;
+            }
+
+            if (GUILayout.Button("Prev"))
+            {
+                _stage = Mathf.Clamp(_stage - 1, 0, currentState.Stages.Count - 1);
+                SetState(currentState, _stage);
+            }
+
+            if (GUILayout.Button("Next"))
+            {
+                _stage = Mathf.Clamp(_stage + 1, 0, currentState.Stages.Count - 1);
+                SetState(currentState, _stage);
+            }
+
+            if (GUILayout.Button("Reset"))
+            {
+                _stage = 0;
+                SetState(currentState, _stage);
+                _buildingState = BuildingState.Inactive;
+            }
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+
+            void SetState(BuildingStateContainer container, int state)
+            {
+                foreach (GameObject element in container.Stages)
+                {
+                    element.SetActive(element.transform.GetSiblingIndex() == state);
+                }
+
+                EditorUtility.SetDirty(_target);
+            }
+        }
+
+        private bool LocationViewIsNotNull()
         {
             GUIStyle errorStyle = new GUIStyle
             {
@@ -107,7 +237,7 @@ namespace Gameplay.Building.View.Editor
 
             EditorGUILayout.BeginVertical();
             _scrollViewPosition = EditorGUILayout.BeginScrollView(_scrollViewPosition, GUILayout.MaxHeight(_keys.Count > 5 ? 100 : 20 * _keys.Count));
-            foreach (var element in _keys.Where(element => GUILayout.Button(element, GUILayout.Height(20))))
+            foreach (string element in _keys.Where(element => GUILayout.Button(element, GUILayout.Height(20))))
             {
                 Apply(element);
                 break;
@@ -127,7 +257,7 @@ namespace Gameplay.Building.View.Editor
             }
             else
             {
-                foreach (var buildingId in _locationsEconomy.SelectMany(economy => economy.Data).Where(x => x.Id == _locationView.LocationId).SelectMany(x => x.BuildingsIds))
+                foreach (string buildingId in _locationsEconomy.SelectMany(economy => economy.Data).Where(x => x.Id == _locationView.LocationId).SelectMany(x => x.BuildingsIds))
                 {
                     if (buildingId.Substring(0, Mathf.Clamp(_target.BuildingId.Length, 0, buildingId.Length)) == _target.BuildingId &&
                         _target.BuildingId != buildingId)
