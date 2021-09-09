@@ -6,9 +6,11 @@ using Content;
 using Economies;
 using Events;
 using Gameplay;
+using Gameplay.Building;
 using Gameplay.Building.Models;
 using Gameplay.Locations.Models;
 using Newtonsoft.Json;
+using Source;
 using UnityEngine;
 using Utils;
 using Zenject;
@@ -91,9 +93,9 @@ namespace UserSystem
                 CurrentUser.Buildings.Add(building.Id, new BuildingModel
                 {
                     Id = building.Id,
-                    Stage = building.Stages,
-                    State = building.State,
-                    Type = building.Type
+                    Type = building.Type,
+                    Stage = new EventVariable<int>(building.Stages),
+                    State = new EventVariable<BuildingState>(building.State)
                 });
             }
 
@@ -122,7 +124,7 @@ namespace UserSystem
                 return;
             }
 
-            Save();
+            Save(true);
         }
     }
 }

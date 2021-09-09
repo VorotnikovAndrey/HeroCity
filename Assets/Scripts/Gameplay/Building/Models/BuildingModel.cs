@@ -1,5 +1,6 @@
 using System;
 using Newtonsoft.Json;
+using Source;
 
 namespace Gameplay.Building.Models
 {
@@ -7,8 +8,8 @@ namespace Gameplay.Building.Models
     public class BuildingModel
     {
         [JsonProperty] public string Id;
-        [JsonProperty] public int Stage;
         [JsonProperty] public BuildingType Type;
-        [JsonProperty] public BuildingState State;
+        [JsonProperty] public EventVariable<int> Stage = new EventVariable<int>();
+        [JsonProperty] public EventVariable<BuildingState> State = new EventVariable<BuildingState>();
     }
 }

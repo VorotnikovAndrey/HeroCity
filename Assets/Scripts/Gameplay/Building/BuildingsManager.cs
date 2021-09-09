@@ -85,7 +85,7 @@ namespace Gameplay.Building
         private void OnBuildBuilding(BuildBuildingEvent sender)
         {
             var model = GetBuildingModel(sender.View.BuildingId);
-            model.State = BuildingState.Upgrade;
+            model.State.Value = BuildingState.Upgrade;
 
             _userManager.Save();
         }

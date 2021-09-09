@@ -11,28 +11,32 @@ namespace Gameplay.Building.View
         [SerializeField] public List<BuildingStateContainer> States = new List<BuildingStateContainer>();
 
         public CameraOffsetParams CameraOffset { get; private set; }
+        public BuildingStateContainer ActiveContainer { get; private set; }
 
-        public void Set(BuildingState buildingState, int stage)
+        public void SetState(BuildingState buildingState)
         {
-            foreach (var state in States)
+            foreach (BuildingStateContainer state in States)
             {
                 bool valid = state.State == buildingState;
                 state.Object.SetActive(valid);
 
-                if (!valid)
+                if (valid)
                 {
-                    continue;
+                    ActiveContainer = state;
                 }
+            }
+        }
 
-                foreach (var element in state.Stages)
+        public void SetStage(int stage)
+        {
+            foreach (var element in ActiveContainer.Stages)
+            {
+                bool value = element.transform.GetSiblingIndex() == stage;
+                element.SetActive(value);
+
+                if (value)
                 {
-                    bool value = element.transform.GetSiblingIndex() == stage;
-                    element.SetActive(value);
-
-                    if (value)
-                    {
-                        CameraOffset = element.GetComponent<CameraOffsetParams>();
-                    }
+                    CameraOffset = element.GetComponent<CameraOffsetParams>();
                 }
             }
         }

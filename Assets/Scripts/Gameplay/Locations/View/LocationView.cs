@@ -32,13 +32,21 @@ namespace Gameplay.Locations.View
             foreach (var building in Buildings)
             {
                 var model = _buildingsManager.GetBuildingModel(building.BuildingId);
-                building.Set(model.State, model.Stage);
+
+                model.State.AddListener(building.SetState);
+                model.Stage.AddListener(building.SetStage);
             }
         }
 
         public void DeInitialize()
         {
+            foreach (var building in Buildings)
+            {
+                var model = _buildingsManager.GetBuildingModel(building.BuildingId);
 
+                model.State.RemoveListener(building.SetState);
+                model.Stage.RemoveListener(building.SetStage);
+            }
         }
 
         private void OnDestroy()

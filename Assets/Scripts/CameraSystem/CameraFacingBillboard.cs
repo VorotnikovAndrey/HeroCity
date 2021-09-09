@@ -10,9 +10,15 @@ namespace CameraSystem
         private void Start()
         {
             _camera = ProjectContext.Instance.Container.Resolve<CameraManager>().ActiveCameraComponent;
+            UpdateFacing();
         }
 
         private void Update()
+        {
+            UpdateFacing();
+        }
+
+        private void UpdateFacing()
         {
             if (_camera == null)
             {
