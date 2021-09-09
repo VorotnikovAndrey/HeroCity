@@ -33,16 +33,21 @@ namespace Gameplay.Building.View.Editor
             _locationView = _target.transform.root.GetComponent<LocationView>();
             _locationsEconomy = Resources.LoadAll<LocationsEconomy>("").ToList();
 
-            BuildingStateContainer defaultState = _target.States.FirstOrDefault(x => x.Object != null && x.Object.activeSelf);
+            BuildingState defaultState = BuildingState.Inactive;
             int defaultStage = 0;
 
-            if (defaultState?.Stages != null)
+            foreach (var state in _target.States)
             {
-                var element = defaultState.Stages.FirstOrDefault(x => x.activeSelf);
-                defaultStage = element != null ? element.transform.GetSiblingIndex() : 0;
+                if (state.Object != null && state.Object.activeSelf)
+                {
+                    defaultState = (BuildingState) Enum.Parse(typeof(BuildingState), state.Object.name);
+                    var element = state.Stages.FirstOrDefault(x => x.activeSelf);
+                    defaultStage = element != null ? element.transform.GetSiblingIndex() : 0;
+                    break;
+                }
             }
 
-            _buildingState = defaultState?.State ?? BuildingState.Inactive;
+            _buildingState = defaultState;
             _stage = defaultStage;
         }
 
@@ -138,6 +143,7 @@ namespace Gameplay.Building.View.Editor
 
         private void ShowStateAndStageMenu()
         {
+            
             EditorGUILayout.Space();
 
             if (_target == null || _target.States == null || _target.States.Count == 0)
@@ -151,12 +157,12 @@ namespace Gameplay.Building.View.Editor
             var tempBuildingState = (BuildingState)EditorGUILayout.EnumPopup(_buildingState, GUILayout.Width(100));
             foreach (BuildingStateContainer state in _target.States)
             {
-                if (state.Object == null || state.Stages == null || state.Stages.Count == 0)
+                if (state.Object == null)
                 {
                     continue;
                 }
 
-                state.Object?.SetActive(state.State == tempBuildingState);
+                state.Object.SetActive(state.State == tempBuildingState);
             }
 
             if (_buildingState != tempBuildingState)
@@ -166,43 +172,43 @@ namespace Gameplay.Building.View.Editor
 
             _buildingState = tempBuildingState;
 
-            BuildingStateContainer currentState = _target.States.FirstOrDefault(x => x.State == _buildingState);
-            if (currentState == null)
+            BuildingStateContainer container = _target.States.FirstOrDefault(x => x.State == _buildingState);
+            if (container == null)
             {
                 return;
             }
 
             if (GUILayout.Button("Prev"))
             {
-                _stage = Mathf.Clamp(_stage - 1, 0, currentState.Stages.Count - 1);
-                SetState(currentState, _stage);
+                _stage = Mathf.Clamp(_stage - 1, 0, container.Stages.Count - 1);
+                SetState(container, _stage);
             }
 
             if (GUILayout.Button("Next"))
             {
-                _stage = Mathf.Clamp(_stage + 1, 0, currentState.Stages.Count - 1);
-                SetState(currentState, _stage);
+                _stage = Mathf.Clamp(_stage + 1, 0, container.Stages.Count - 1);
+                SetState(container, _stage);
             }
 
             if (GUILayout.Button("Reset"))
             {
                 _stage = 0;
-                SetState(currentState, _stage);
+                SetState(container, _stage);
                 _buildingState = BuildingState.Inactive;
             }
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
+        }
 
-            void SetState(BuildingStateContainer container, int state)
+        private void SetState(BuildingStateContainer container, int state)
+        {
+            foreach (GameObject element in container.Stages)
             {
-                foreach (GameObject element in container.Stages)
-                {
-                    element.SetActive(element.transform.GetSiblingIndex() == state);
-                }
-
-                EditorUtility.SetDirty(_target);
+                element.SetActive(element.transform.GetSiblingIndex() == state);
             }
+
+            EditorUtility.SetDirty(_target);
         }
 
         private bool LocationViewIsNotNull()

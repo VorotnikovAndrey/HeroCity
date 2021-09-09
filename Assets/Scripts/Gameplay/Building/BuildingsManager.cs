@@ -5,8 +5,10 @@ using Economies;
 using Events;
 using Gameplay.Building.Models;
 using PopupSystem;
+using Unity.VisualScripting;
 using UnityEngine;
 using UserSystem;
+using Utils;
 using Utils.Events;
 using Utils.PopupSystem;
 using Zenject;
@@ -17,6 +19,7 @@ namespace Gameplay.Building
     {
         private readonly PopupManager<PopupType> _popupManager;
         private readonly EventAggregator _eventAggregator;
+        private readonly TimeTicker _timeTicker;
         private readonly CameraManager _cameraManager;
         private readonly LocationCamera _locationCamera;
         private readonly UserManager _userManager;
@@ -26,6 +29,7 @@ namespace Gameplay.Building
         {
             _popupManager = ProjectContext.Instance.Container.Resolve<PopupManager<PopupType>>();
             _eventAggregator = ProjectContext.Instance.Container.Resolve<EventAggregator>();
+            _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
             _cameraManager = ProjectContext.Instance.Container.Resolve<CameraManager>();
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
             _locationCamera = _cameraManager.ActiveCameraView as LocationCamera;
@@ -40,6 +44,8 @@ namespace Gameplay.Building
             _eventAggregator.Add<BuildingViewUnSelectedEvent>(OnBuildingViewUnSelected);
             _eventAggregator.Add<BuildBuildingEvent>(OnBuildBuilding);
             _eventAggregator.Add<UpgradeBuildingEvent>(OnUpgradeBuilding);
+
+            _timeTicker.OnSecondTick += OnSecondTick;
         }
 
         public void DeInitialize()
@@ -50,6 +56,8 @@ namespace Gameplay.Building
             _eventAggregator.Remove<UpgradeBuildingEvent>(OnUpgradeBuilding);
 
             ProjectContext.Instance.Container.Unbind<BuildingsManager>();
+
+            _timeTicker.OnSecondTick -= OnSecondTick;
         }
 
         public BuildingModel GetBuildingModel(string id)
@@ -84,6 +92,11 @@ namespace Gameplay.Building
 
         private void OnUpgradeBuilding(UpgradeBuildingEvent sender)
         {
+        }
+
+        private void OnSecondTick()
+        {
+
         }
     }
 }

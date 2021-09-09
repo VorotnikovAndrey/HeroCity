@@ -559,6 +559,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3539396292219520762}
     m_Modifications:
+    - target: {fileID: 2380303443873233814, guid: 4b5b232215b57b74d93c410feb7bf6c8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3242467070523752936, guid: 4b5b232215b57b74d93c410feb7bf6c8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5193434911240752815, guid: 4b5b232215b57b74d93c410feb7bf6c8, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -606,6 +614,10 @@ PrefabInstance:
     - target: {fileID: 6215494755926473760, guid: 4b5b232215b57b74d93c410feb7bf6c8, type: 3}
       propertyPath: m_Name
       value: 'Townhall '
+      objectReference: {fileID: 0}
+    - target: {fileID: 7253213396732352654, guid: 4b5b232215b57b74d93c410feb7bf6c8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4b5b232215b57b74d93c410feb7bf6c8, type: 3}

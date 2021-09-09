@@ -11,18 +11,25 @@ using Gameplay.Locations.Models;
 using Newtonsoft.Json;
 using UnityEngine;
 using Utils;
+using Zenject;
 
 namespace UserSystem
 {
     public class UserManager : EventBehavior
     {
+        private const int AutoSaveInterval = 5;
+        private int _autoSaveSecondCount;
+
         public UserModel CurrentUser { get; private set; }
 
         public UserManager()
         {
             Load();
 
-            EventAggregator.Add<ResourceModifiedEvent>(x => Save());
+            EventAggregator.Add<ResourceModifiedEvent>(x => Save(true));
+
+            TimeTicker timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
+            timeTicker.OnSecondTick += AutoSave;
         }
 
         public void Load()
@@ -41,10 +48,17 @@ namespace UserSystem
             }
         }
 
-        public void Save()
+        public void Save(bool force = false)
         {
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             File.WriteAllText(SaveUtils.UserModelPath, JsonConvert.SerializeObject(CurrentUser, settings));
+            _autoSaveSecondCount = 0;
+
+            if (force)
+            {
+                return;
+            }
+
             Debug.Log($"User saved {SaveUtils.UserModelPath.AddColorTag(Color.yellow)}".AddColorTag(Color.green));
         }
 
@@ -97,6 +111,18 @@ namespace UserSystem
 
             Debug.LogError($"Default value for {type.AddColorTag(Color.yellow)} is not found!".AddColorTag(Color.red));
             return 0;
+        }
+
+        private void AutoSave()
+        {
+            _autoSaveSecondCount++;
+
+            if (_autoSaveSecondCount != AutoSaveInterval)
+            {
+                return;
+            }
+
+            Save();
         }
     }
 }
