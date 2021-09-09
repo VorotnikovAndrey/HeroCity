@@ -1,7 +1,2 @@
 Id,Stage,BuildingType,BuildingState
-Test1,1,Manufacturing,Open
-Test2,2,Service,Close
-Test3,3,Manufacturing,Open
-Test4,4,Service,Close
-Test5,5,Manufacturing,Open
-Test6,1,Service,Close
+townhall,0,Default,Available

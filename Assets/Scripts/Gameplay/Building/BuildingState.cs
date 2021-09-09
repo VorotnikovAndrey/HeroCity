@@ -2,9 +2,9 @@ namespace Gameplay.Building
 {
     public enum BuildingState
     {
-        Open = 0,
-        Close = 1,
-        Available = 2,
-        NotAvailable = 3,
+        NotAvailable = 0,
+        Available = 1,
+        Inactive = 2,
+        Active = 3,
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Events
 {
-    public class BuildingViewExitEvent : BaseEvent
+    public class BuildingViewUnSelectedEvent : BaseEvent
     {
         public bool ReturnToPrevPos = true;
     }

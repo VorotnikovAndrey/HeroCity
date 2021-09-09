@@ -2,7 +2,8 @@ namespace Gameplay.Building
 {
     public enum BuildingType
     {
-        Manufacturing = 0,
-        Service = 1,
+        Default = 0,
+        Manufacturing = 1,
+        Service = 2,
     }
 }

@@ -80,7 +80,7 @@ namespace Stages
             _waypointSystem = new WaypointSystem();
             _waypointSystem.SetWaypointsContainer(_locationView.WaypointsContainer);
 
-            _buildingsManager = new BuildingsManager(_popupManager, _eventAggregator, _cameraManager);
+            _buildingsManager = new BuildingsManager();
             _buildingsManager.Initialize();
 
             _charactersSystem = new CharactersSystem();
@@ -108,8 +108,9 @@ namespace Stages
             _buildingsManager = null;
             _charactersSystem.DeInitialize();
             _charactersSystem = null;
-            _waypointSystem = null;
+            _dayTime.DeInitialize();
             _dayTime = null;
+            _waypointSystem = null;
 
             // Location
             _locationView.DestroyAndRemoveFromPool();

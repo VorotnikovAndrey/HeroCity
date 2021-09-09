@@ -109,7 +109,7 @@ namespace InputSystem
             }
 
             Debug.Log($"BuildingView {building.BuildingId.AddColorTag(Color.yellow)} selected".AddColorTag(Color.white));
-            EventAggregator.SendEvent(new BuildingViewEnterEvent
+            EventAggregator.SendEvent(new BuildingViewSelectedEvent
             {
                 View = building,
                 TapPosition = hit.point

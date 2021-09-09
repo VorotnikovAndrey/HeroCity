@@ -14,34 +14,32 @@ namespace Gameplay.Building
         private readonly CameraManager _cameraManager;
         private readonly LocationCamera _locationCamera;
 
-        [Inject]
-        public BuildingsManager(PopupManager<PopupType> popupManager, EventAggregator eventAggregator, CameraManager cameraManager)
+        public BuildingsManager()
         {
-            _popupManager = popupManager;
-            _eventAggregator = eventAggregator;
-            _cameraManager = cameraManager;
-
+            _popupManager = ProjectContext.Instance.Container.Resolve<PopupManager<PopupType>>();
+            _eventAggregator = ProjectContext.Instance.Container.Resolve<EventAggregator>();
+            _cameraManager = ProjectContext.Instance.Container.Resolve<CameraManager>();
             _locationCamera = _cameraManager.ActiveCamera as LocationCamera;
         }
 
         public void Initialize()
         {
-            _eventAggregator.Add<BuildingViewEnterEvent>(OnBuildingViewEnterEvent);
-            _eventAggregator.Add<BuildingViewExitEvent>(OnBuildingViewExitEvent);
+            _eventAggregator.Add<BuildingViewSelectedEvent>(OnBuildingViewSelected);
+            _eventAggregator.Add<BuildingViewUnSelectedEvent>(OnBuildingViewUnSelected);
         }
 
         public void DeInitialize()
         {
-            _eventAggregator.Remove<BuildingViewEnterEvent>(OnBuildingViewEnterEvent);
-            _eventAggregator.Remove<BuildingViewExitEvent>(OnBuildingViewExitEvent);
+            _eventAggregator.Remove<BuildingViewSelectedEvent>(OnBuildingViewSelected);
+            _eventAggregator.Remove<BuildingViewUnSelectedEvent>(OnBuildingViewUnSelected);
         }
 
-        private void OnBuildingViewExitEvent(BuildingViewExitEvent sender)
+        private void OnBuildingViewUnSelected(BuildingViewUnSelectedEvent sender)
         {
             _locationCamera.SwitchToDefaultState(sender.ReturnToPrevPos);
         }
 
-        private void OnBuildingViewEnterEvent(BuildingViewEnterEvent sender)
+        private void OnBuildingViewSelected(BuildingViewSelectedEvent sender)
         {
             if (_locationCamera.CameraState != CameraStates.Default)
             {

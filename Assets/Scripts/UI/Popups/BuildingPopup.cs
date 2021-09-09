@@ -27,7 +27,7 @@ namespace UI.Popups
 
         protected override void OnHide()
         {
-            EventAggregator.SendEvent(new BuildingViewExitEvent());
+            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent());
         }
     }
 }

@@ -4,7 +4,7 @@ using Utils.Events;
 
 namespace Events
 {
-    public class BuildingViewEnterEvent : BaseEvent
+    public class BuildingViewSelectedEvent : BaseEvent
     {
         public BuildingView View;
         public Vector3 TapPosition;
