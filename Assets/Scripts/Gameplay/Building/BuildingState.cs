@@ -2,8 +2,9 @@ namespace Gameplay.Building
 {
     public enum BuildingState
     {
-        Inactive = 0,
-        Active = 1,
-        Upgrade = 2
+        NotAvailable = 0,
+        Inactive = 1,
+        Active = 2,
+        Upgrade = 3
     }
 }

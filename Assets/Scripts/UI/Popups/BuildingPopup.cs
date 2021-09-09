@@ -1,9 +1,12 @@
 using Events;
+using Gameplay.Building;
+using Gameplay.Building.Models;
 using Gameplay.Building.View;
 using PopupSystem;
 using TMPro;
 using UnityEngine;
 using Utils.PopupSystem;
+using Zenject;
 
 namespace UI.Popups
 {
@@ -12,22 +15,79 @@ namespace UI.Popups
         public override PopupType Type => PopupType.Building;
 
         [SerializeField] private TextMeshProUGUI _idText = default;
+        [Space] 
+        [SerializeField] private GameObject _buildButton;
+        [SerializeField] private GameObject _upgradeButton;
 
-        private BuildingView View;
+        private BuildingsManager _buildingsManager;
+        private BuildingView _view;
+        private BuildingModel _model;
 
         protected override void OnShow(object args = null)
         {
             if (args != null)
             {
-                View = args as BuildingView;
+                _view = args as BuildingView;
             }
 
-            _idText.text = View?.BuildingId;
+            if (_view == null)
+            {
+                Debug.LogError("BuildingView is null".AddColorTag(Color.red));
+                return;
+            }
+
+            _buildingsManager = ProjectContext.Instance.Container.Resolve<BuildingsManager>();
+            _model = _buildingsManager.GetBuildingModel(_view.BuildingId);
+
+            if (_model == null)
+            {
+                Debug.LogError("BuildingModel is null".AddColorTag(Color.red));
+                return;
+            }
+
+            _idText.text = _model.Id;
+            _buildButton.SetActive(_model.State == BuildingState.Inactive);
+            _upgradeButton.SetActive(_model.State == BuildingState.Active);
         }
 
-        protected override void OnHide()
+        public void OnExitPressed()
         {
-            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent());
+            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent
+            {
+                ReturnToPrevPos = true
+            });
+
+            Hide();
+        }
+
+        public void OnBuildPressed()
+        {
+            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent
+            {
+                ReturnToPrevPos = false
+            });
+
+            EventAggregator.SendEvent(new BuildBuildingEvent
+            {
+                View = _view
+            });
+
+            Hide();
+        }
+
+        public void OnUpgradePressed()
+        {
+            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent
+            {
+                ReturnToPrevPos = false
+            });
+
+            EventAggregator.SendEvent(new UpgradeBuildingEvent
+            {
+                View = _view
+            });
+
+            Hide();
         }
     }
 }

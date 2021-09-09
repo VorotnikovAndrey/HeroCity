@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CameraSystem;
 using Economies;
 using Gameplay.Locations.View;
 using UnityEditor;
@@ -32,7 +33,7 @@ namespace Gameplay.Building.View.Editor
             _locationView = _target.transform.root.GetComponent<LocationView>();
             _locationsEconomy = Resources.LoadAll<LocationsEconomy>("").ToList();
 
-            BuildingStateContainer defaultState = _target.States.FirstOrDefault(x => x.Object.activeSelf);
+            BuildingStateContainer defaultState = _target.States.FirstOrDefault(x => x.Object != null && x.Object.activeSelf);
             int defaultStage = 0;
 
             if (defaultState?.Stages != null)
@@ -63,9 +64,28 @@ namespace Gameplay.Building.View.Editor
 
         private void ShowValidate()
         {
-            if (GUILayout.Button("Validate"))
+            if (GUILayout.Button("Autofill States and stages"))
             {
                 _target.States.Clear();
+
+                var child = _target.transform.GetComponentsInChildren<Transform>(true);
+                var graphics = child.FirstOrDefault(x => x.name == "Graphics");
+                if (graphics == null)
+                {
+                    graphics = new GameObject("Graphics").transform;
+                    graphics.SetParent(_target.transform);
+                    graphics.localPosition = Vector3.zero;
+                    graphics.localEulerAngles = Vector3.zero;
+                }
+
+                var states = graphics.GetComponentsInChildren<Transform>().FirstOrDefault(x => x.name == "States");
+                if (states == null)
+                {
+                    states = new GameObject("States").transform;
+                    states.SetParent(graphics);
+                    states.localPosition = Vector3.zero;
+                    states.localEulerAngles = Vector3.zero;
+                }
 
                 foreach (string element in Enum.GetNames(typeof(BuildingState)))
                 {
@@ -83,7 +103,7 @@ namespace Gameplay.Building.View.Editor
                     if (findObject == null)
                     {
                         findObject = new GameObject(element).transform;
-                        findObject.SetParent(childs.FirstOrDefault(x => x.name == "States"));
+                        findObject.SetParent(states);
                         findObject.transform.localPosition = Vector3.zero;
                         findObject.transform.localEulerAngles = Vector3.zero;
                     }
@@ -99,6 +119,17 @@ namespace Gameplay.Building.View.Editor
                     }
 
                     _target.States.Add(result);
+                }
+
+                foreach (var state in _target.States)
+                {
+                    foreach (var stage in state.Stages)
+                    {
+                        if (stage.GetComponent<CameraOffsetParams>() == null)
+                        {
+                            stage.AddComponent<CameraOffsetParams>();
+                        }
+                    }
                 }
 
                 EditorUtility.SetDirty(_target);

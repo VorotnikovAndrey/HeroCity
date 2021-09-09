@@ -13,14 +13,13 @@ namespace UI
 
         #region RefreshDPI
 
-        private static int dpi = 350;
+        private static readonly int dpi = 350;
 
         private static float Width
         {
             get
             {
-                if (_width == null)
-                    _width = Screen.width;
+                _width ??= Screen.width;
 
                 return _width.Value;
             }
@@ -34,8 +33,7 @@ namespace UI
         {
             get
             {
-                if (_height == null)
-                    _height = Screen.height;
+                _height ??= Screen.height;
 
                 return _height.Value;
             }

@@ -6,6 +6,7 @@ using Content;
 using Economies;
 using Events;
 using Gameplay;
+using Gameplay.Building.Models;
 using Gameplay.Locations.Models;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -56,9 +57,13 @@ namespace UserSystem
                 defaultResources[type] = GetValueFromResourceEconomy(type);
             }
 
-            CurrentUser = new UserModel(defaultResources);
-            CurrentUser.SetTime(new TimeSpan(0, 12, 0, 0));
-            CurrentUser.SetLocation(ContentProvider.LocationsEconomy.Data.First().Id);
+            CurrentUser = new UserModel(defaultResources)
+            {
+                Time = new TimeSpan(0, 12, 0, 0),
+                LocationId = ContentProvider.LocationsEconomy.Data.First().Id,
+                Locations = new Dictionary<string, LocationModel>(),
+                Buildings = new Dictionary<string, BuildingModel>()
+            };
 
             var locationModel = new LocationModel
             {
@@ -66,6 +71,17 @@ namespace UserSystem
             };
 
             CurrentUser.Locations.Add(locationModel.LocationId, locationModel);
+
+            foreach (var building in ContentProvider.BuildingsEconomy.Data)
+            {
+                CurrentUser.Buildings.Add(building.Id, new BuildingModel
+                {
+                    Id = building.Id,
+                    Stage = building.Stages,
+                    State = building.State,
+                    Type = building.Type
+                });
+            }
 
             Debug.Log($"User created {SaveUtils.UserModelPath.AddColorTag(Color.yellow)}".AddColorTag(Color.green));
         }

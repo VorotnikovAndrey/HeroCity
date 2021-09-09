@@ -23,7 +23,6 @@ namespace CameraSystem
         [SerializeField] private float _camDistanceFromTarget = 50;
         [SerializeField] private float _closeViewZoom = 3f;
         [SerializeField] private float _offsetYK;
-        [SerializeField] private Vector3 _closeViewOffset;
         [Space]
         [SerializeField] private float _zoomSensitivity = 1f;
         [SerializeField] private float _zoomMinSize = 3f;
@@ -270,12 +269,17 @@ namespace CameraSystem
             _currentTargetPoint = pos;
         }
 
-        public void SwitchToViewTransform(Transform target, bool defaultOffset = true)
+        public void SwitchToViewTransform(Transform target)
         {
-            SwitchToViewTransform(target, _closeViewZoom, defaultOffset);
+            SwitchToViewTransform(target, _closeViewZoom, Vector3.zero);
         }
 
-        public void SwitchToViewTransform(Transform target, float orthoSize, bool defaultOffset)
+        public void SwitchToViewTransform(Transform target, Vector3 offset)
+        {
+            SwitchToViewTransform(target, _closeViewZoom, offset);
+        }
+
+        private void SwitchToViewTransform(Transform target, float orthoSize, Vector3 offset)
         {
             if (_currentViewTarget == target)
             {
@@ -294,7 +298,7 @@ namespace CameraSystem
             CameraState = CameraStates.BuildingView;
 
             _switchStateSeq = DOTween.Sequence();
-            Vector3 targetPos = GetTargetPosWithOffset(target.position, defaultOffset);
+            Vector3 targetPos = GetTargetPosWithOffset(target.position, offset);
             _switchStateSeq.Append(Camera.transform.DOMove(targetPos, _targetMoveInDuration).SetEase(_targetMoveInCurve));
             _switchStateSeq.Join(Camera.DOOrthoSize(orthoSize, _targetZoomInDuration).SetEase(_targetZoomInCurve));
             _switchStateSeq.SetUpdate(UpdateType.Late);
@@ -312,7 +316,8 @@ namespace CameraSystem
             _switchStateSeq = DOTween.Sequence();
             if (!returnToPrevPos)
             {
-                _defaultStatePosition = CurrentCenterPlanePosition - Camera.transform.forward * _camDistanceFromTarget;
+                _currentTargetPoint = _defaultStatePosition = CurrentCenterPlanePosition - Camera.transform.forward * _camDistanceFromTarget;
+                _currentTargetZoom = _defaultStateOrthoSize = Camera.orthographicSize;
             }
             _switchStateSeq.Join(Camera.transform.DOMove(_defaultStatePosition, _targetMoveOutDuration).SetEase(_targetMoveOutCurve));
             _switchStateSeq.Join(Camera.DOOrthoSize(_defaultStateOrthoSize, _targetZoomOutDuration).SetEase(_targetZoomOutCurve));
@@ -358,18 +363,13 @@ namespace CameraSystem
             return _plane.Raycast(rayNow, out var enterNow) ? rayNow.GetPoint(enterNow) : Vector3.zero;
         }
 
-        public void MoveToPosition(Vector3 position, bool instantly = false, bool ignoreOffset = false)
+        public void MoveToPosition(Vector3 position, Vector3 offset, bool instantly = false, bool ignoreOffset = false)
         {
-            Vector3 target = ignoreOffset ? position : GetTargetPosWithOffset(position, false);
-            _currentTargetPoint = target;
+            _prevCursorPos = Input.mousePosition;
+            CameraState = CameraStates.Default;
 
-            DOVirtual.Float(0, 1, instantly ? 0 : 1, (value) =>
-            {
-                Vector3 cameraPosition = Camera.transform.position;
-                cameraPosition = Vector3.Lerp(cameraPosition, target, value);
-                Camera.transform.position = cameraPosition;
-                _currentTargetPoint = cameraPosition;
-            });
+            Vector3 target = ignoreOffset ? position : GetTargetPosWithOffset(position, offset);
+            _currentTargetPoint = target;
         }
 
         public void ZoomTo(float value)
@@ -377,9 +377,8 @@ namespace CameraSystem
             _currentTargetZoom = Mathf.Clamp(value, _zoomMinSize, _zoomMaxSize);
         }
 
-        private Vector3 GetTargetPosWithOffset(Vector3 position, bool defaultOffset)
+        private Vector3 GetTargetPosWithOffset(Vector3 position, Vector3 offset)
         {
-            Vector3 offset = defaultOffset ? _closeViewOffset : Vector3.zero;
             offset += offset * (position.y * _offsetYK);
             Vector3 targetPos = position + offset - transform.rotation * Vector3.forward * _camDistanceFromTarget;
             targetPos.y = _cameraHeight;

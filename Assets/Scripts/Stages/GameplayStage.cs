@@ -68,7 +68,7 @@ namespace Stages
 
             // Camera
             _cameraManager.SetCameraType(GameCameraType.Location);
-            _locationCamera = _cameraManager.ActiveCamera as LocationCamera;
+            _locationCamera = _cameraManager.ActiveCameraView as LocationCamera;
             _locationInput = new LocationInput();
             _locationCamera?.Init(_locationInput, _locationView.CameraSettings);
             _timeTicker.OnTick += _locationInput.Update;
@@ -79,15 +79,13 @@ namespace Stages
             // Gameplay
             _waypointSystem = new WaypointSystem();
             _waypointSystem.SetWaypointsContainer(_locationView.WaypointsContainer);
-
             _buildingsManager = new BuildingsManager();
             _buildingsManager.Initialize();
-
             _charactersSystem = new CharactersSystem();
             _charactersSystem.Initialize();
-
             _dayTime = new DayTime();
             _dayTime.Initialize();
+            _locationView.Initialize();
         }
 
         public override void DeInitialize()
@@ -104,6 +102,7 @@ namespace Stages
             _popupManager.HidePopupByType(PopupType.Hud);
 
             // Gameplay
+            _locationView.DeInitialize();
             _buildingsManager.DeInitialize();
             _buildingsManager = null;
             _charactersSystem.DeInitialize();

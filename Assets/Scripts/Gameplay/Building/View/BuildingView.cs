@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CameraSystem;
 using UnityEngine;
 
 namespace Gameplay.Building.View
@@ -9,7 +10,9 @@ namespace Gameplay.Building.View
 
         [SerializeField] public List<BuildingStateContainer> States = new List<BuildingStateContainer>();
 
-        public void SetState(BuildingState buildingState, int stage)
+        public CameraOffsetParams CameraOffset { get; private set; }
+
+        public void Set(BuildingState buildingState, int stage)
         {
             foreach (var state in States)
             {
@@ -23,7 +26,13 @@ namespace Gameplay.Building.View
 
                 foreach (var element in state.Stages)
                 {
-                    element.SetActive(element.transform.GetSiblingIndex() == stage);
+                    bool value = element.transform.GetSiblingIndex() == stage;
+                    element.SetActive(value);
+
+                    if (value)
+                    {
+                        CameraOffset = element.GetComponent<CameraOffsetParams>();
+                    }
                 }
             }
         }

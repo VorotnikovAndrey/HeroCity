@@ -1,4 +1,7 @@
-﻿using CameraSystem;
+﻿using System.Collections.Generic;
+using CameraSystem;
+using Gameplay.Building;
+using Gameplay.Building.View;
 using UnityEngine;
 using Utils.ObjectPool;
 using Utils.Pathfinding;
@@ -12,10 +15,30 @@ namespace Gameplay.Locations.View
 
         public CameraSettings CameraSettings;
         public WaypointsContainer WaypointsContainer;
+        [Space]
+        public List<BuildingView> Buildings;
+
+        private BuildingsManager _buildingsManager;
 
         private void Awake()
         {
             ProjectContext.Instance.Container.BindInstances(this);
+        }
+
+        public void Initialize()
+        {
+            _buildingsManager = ProjectContext.Instance.Container.Resolve<BuildingsManager>();
+
+            foreach (var building in Buildings)
+            {
+                var model = _buildingsManager.GetBuildingModel(building.BuildingId);
+                building.Set(model.State, model.Stage);
+            }
+        }
+
+        public void DeInitialize()
+        {
+
         }
 
         private void OnDestroy()

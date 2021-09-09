@@ -1,2 +1,2 @@
-Id,Stage,BuildingType,BuildingState
-townhall,0,Default,Available
+Id,State,Stage,Type
+townhall,Inactive,0,Default

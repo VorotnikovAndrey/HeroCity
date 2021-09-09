@@ -105,12 +105,11 @@ MonoBehaviour:
   _smoothTimeVelocityDependenceModif: 5
   _smoothTimeVelocityDependenceClamp: 0.5
   _camDistanceFromTarget: 10
-  _closeViewZoom: 5
+  _closeViewZoom: 12
   _offsetYK: 0
-  _closeViewOffset: {x: 0, y: 0, z: 0}
-  _zoomSensitivity: 5
-  _zoomMinSize: 3
-  _zoomMaxSize: 15
+  _zoomSensitivity: 10
+  _zoomMinSize: 7
+  _zoomMaxSize: 20
   _zoomElasticity: 0.3
   _zoomElasticityLerpSpeed: 5
   _zoomLerpSpeed: 5

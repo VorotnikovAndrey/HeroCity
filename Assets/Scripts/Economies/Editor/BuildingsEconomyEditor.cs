@@ -68,8 +68,8 @@ namespace Economies.Editor
                     {
                         Id = line.Id,
                         Stages = line.Stage,
-                        State = (BuildingState)Enum.Parse(typeof(BuildingState), line.BuildingState),
-                        Type = (BuildingType)Enum.Parse(typeof(BuildingType), line.BuildingType)
+                        State = (BuildingState)Enum.Parse(typeof(BuildingState), line.State),
+                        Type = (BuildingType)Enum.Parse(typeof(BuildingType), line.Type)
                     });
                 }
 

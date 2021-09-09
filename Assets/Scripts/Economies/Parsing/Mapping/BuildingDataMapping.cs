@@ -6,7 +6,7 @@ namespace Economies.Parsing.Mapping
     {
         [Name("Id"), Default("")] public string Id { get; set; }
         [Name("Stage"), Default(0)] public int Stage { get; set; }
-        [Name("BuildingType"), Default("")] public string BuildingType { get; set; }
-        [Name("BuildingState"), Default("")] public string BuildingState { get; set; }
+        [Name("Type"), Default("")] public string Type { get; set; }
+        [Name("State"), Default("")] public string State { get; set; }
     }
 }

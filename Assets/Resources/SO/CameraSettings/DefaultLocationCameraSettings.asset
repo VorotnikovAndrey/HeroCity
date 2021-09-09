@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3083dc43c6f3bc44bb3c0f162a3646b, type: 3}
   m_Name: DefaultLocationCameraSettings
   m_EditorClassIdentifier: 
-  Position: {x: 4.323684, y: 5.000015, z: 4.177459}
+  Position: {x: -2.05249, y: 4.999999, z: 6.772064}
   Bounds:
-    m_Center: {x: 4.323684, y: 5.000015, z: 4.177459}
+    m_Center: {x: -2.05249, y: 4.999999, z: 6.772064}
     m_Extent: {x: 10, y: 0, z: 10}
-  OrthographicSize: 8
+  OrthographicSize: 14

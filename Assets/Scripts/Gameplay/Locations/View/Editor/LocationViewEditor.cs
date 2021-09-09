@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Economies;
+using Gameplay.Building.View;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Gameplay.Locations.View.Editor
 {
@@ -28,6 +30,8 @@ namespace Gameplay.Locations.View.Editor
 
         public override void OnInspectorGUI()
         {
+            Validate();
+
             if (Check())
             {
                 return;
@@ -38,6 +42,18 @@ namespace Gameplay.Locations.View.Editor
 
             EditorGUILayout.Space();
             base.OnInspectorGUI();
+        }
+
+        private void Validate()
+        {
+            if (GUILayout.Button("Validate", GUILayout.Height(30)))
+            {
+                _target.Buildings = _target.transform.GetComponentsInChildren<BuildingView>().ToList();
+
+                EditorUtility.SetDirty(_target);
+            }
+
+            EditorGUILayout.Space();
         }
 
         private bool Check()

@@ -41,6 +41,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Cards
-    uniqueID: 1276769823
+  - name: BuildingUI
+    uniqueID: 1653621365
     locked: 0

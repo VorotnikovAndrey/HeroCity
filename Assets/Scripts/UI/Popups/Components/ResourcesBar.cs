@@ -44,7 +44,7 @@ namespace UI.Popups.Components
 
             foreach (ResourcesPair pair in ResourcesList)
             {
-                pair.Container.SetValue(ProjectContext.Instance.Container.Resolve<UserManager>().CurrentUser.GetResourceValue(pair.Type), true);
+                pair.Container.SetValue(ProjectContext.Instance.Container.Resolve<UserManager>().CurrentUser.Resources[pair.Type], true);
             }
         }
 
