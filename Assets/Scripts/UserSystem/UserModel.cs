@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Events;
 using Gameplay;
-using Gameplay.Building.Models;
 using Gameplay.Locations.Models;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -13,14 +12,15 @@ namespace UserSystem
     {
         [JsonProperty] public Dictionary<ResourceType, int> Resources;
         [JsonProperty] public Dictionary<string, LocationModel> Locations;
-        [JsonProperty] public Dictionary<string, BuildingModel> Buildings;
-        [JsonProperty] public string LocationId;
+        [JsonProperty] public string CurrentLocationId;
         [JsonProperty] public TimeSpan Time;
 
         public UserModel(Dictionary<ResourceType, int> resources)
         {
             Resources = resources;
         }
+
+        public LocationModel CurrentLocation => Locations[CurrentLocationId];
 
         public void AddResourceValue(ResourceType type, int value)
         {

@@ -59,11 +59,6 @@ namespace InputSystem
 
         private void ProcessHit(RaycastHit hit)
         {
-            if (TrySelectBuildingEmployeeSign(hit))
-            {
-                return;
-            }
-
             if (TrySelectBuilding(hit))
             {
                 return;
@@ -108,7 +103,6 @@ namespace InputSystem
                 return false;
             }
 
-            Debug.Log($"BuildingView {building.BuildingId.AddColorTag(Color.yellow)} selected".AddColorTag(Color.white));
             EventAggregator.SendEvent(new BuildingViewSelectedEvent
             {
                 View = building,
@@ -116,25 +110,6 @@ namespace InputSystem
             });
 
             return true;
-        }
-
-        private bool TrySelectBuildingEmployeeSign(RaycastHit hit)
-        {
-            //var sign = hit.transform.GetComponent<BuildingEmployeeSignHitbox>();
-
-            //if (sign != null)
-            //{
-            //    if (sign.BuildingView == null)
-            //    {
-            //        Debug.LogError($"No view for BuildingEmployeeSignHitbox. Parent: {sign.transform.parent.name}, Pos: {sign.transform.position}");
-            //        return false;
-            //    }
-
-            //    PublishOnView(new EventBuildingViewEmployeeSelection { View = sign.BuildingView });
-            //    return true;
-            //}
-
-            return false;
         }
     }
 }

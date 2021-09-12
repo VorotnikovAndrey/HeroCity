@@ -29,23 +29,28 @@ namespace Gameplay.Locations.View
         {
             _buildingsManager = ProjectContext.Instance.Container.Resolve<BuildingsManager>();
 
-            foreach (var building in Buildings)
+            foreach (var view in Buildings)
             {
-                var model = _buildingsManager.GetBuildingModel(building.BuildingId);
+                var model = _buildingsManager.GetBuildingModel(view.BuildingId);
 
-                model.State.AddListener(building.SetState);
-                model.Stage.AddListener(building.SetStage);
+                model.State.AddListener(view.SetState);
+                model.Stage.AddListener(view.SetStage);
+
+                if (model.State.Value == BuildingState.Upgrade)
+                {
+                    view.UpgradeBar.Initialize(model.UpgradeStartUnixTime, model.UpgradeEndUnixTime);
+                }
             }
         }
 
         public void DeInitialize()
         {
-            foreach (var building in Buildings)
+            foreach (var view in Buildings)
             {
-                var model = _buildingsManager.GetBuildingModel(building.BuildingId);
+                var model = _buildingsManager.GetBuildingModel(view.BuildingId);
 
-                model.State.RemoveListener(building.SetState);
-                model.Stage.RemoveListener(building.SetStage);
+                model.State.RemoveListener(view.SetState);
+                model.Stage.RemoveListener(view.SetStage);
             }
         }
 

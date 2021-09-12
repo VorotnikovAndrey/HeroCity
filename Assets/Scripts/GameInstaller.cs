@@ -39,8 +39,5 @@ public class GameInstaller : MonoInstaller
 
         // Other SO
         Container.Bind<CharacterGraphicPreset>().FromScriptableObjectResource("SO/Characters/CharacterGraphicPreset").AsSingle();
-
-        // Debug
-        Container.Bind<CheatsManager>().AsSingle();
     }
 }

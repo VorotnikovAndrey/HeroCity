@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Economies.Parsing.Mapping;
+using Gameplay;
 using Gameplay.Building;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -62,14 +66,50 @@ namespace Economies.Editor
                 csv.Configuration.HasHeaderRecord = true;
                 csv.Configuration.Delimiter = ",";
 
+                string lastId = string.Empty;
+                int lastStage = -1;
+
                 foreach (BuildingDataMapping line in csv.EnumerateRecords(new BuildingDataMapping()))
                 {
-                    _target.Data.Add(new BuildingData
+                    if (!string.IsNullOrEmpty(line.Id))
                     {
-                        Id = line.Id,
-                        Stages = line.Stage,
-                        State = (BuildingState)Enum.Parse(typeof(BuildingState), line.State),
-                        Type = (BuildingType)Enum.Parse(typeof(BuildingType), line.Type)
+                        lastId = line.Id;
+                    }
+
+                    if (!string.IsNullOrEmpty(line.Stage))
+                    {
+                        lastStage = Convert.ToInt32(line.Stage);
+                    }
+
+                    var element = _target.Data.FirstOrDefault(x => x.Id == lastId);
+                    if (element == null)
+                    {
+                        element = new BuildingData
+                        {
+                            Id = line.Id,
+                            State = (BuildingState)Enum.Parse(typeof(BuildingState), line.State),
+                            Type = (BuildingType)Enum.Parse(typeof(BuildingType), line.Type)
+                        };
+
+                        _target.Data.Add(element);
+                    }
+
+                    var upgrade = element.Upgrades.FirstOrDefault(x => x.Stage == lastStage);
+                    if (upgrade == null)
+                    {
+                        upgrade = new BuildingUpgradeData
+                        {
+                            Stage = lastStage,
+                            Duration = Convert.ToInt32(line.UpgradeDuration)
+                        };
+
+                        element.Upgrades.Add(upgrade);
+                    }
+
+                    upgrade.Price.Add(new ResourcesData
+                    {
+                        Type = (ResourceType)Enum.Parse(typeof(ResourceType), line.UpgradeResourceType),
+                        Value = Convert.ToInt32(line.UpgradeResourceValue)
                     });
                 }
 

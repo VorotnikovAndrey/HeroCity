@@ -16,6 +16,26 @@ public static class DateTimeUtils
 
     private static CultureInfo _enUS = new CultureInfo("en-US");
 
+    public static string GetTimerText(DateTime time)
+    {
+        if (time.Hour > 0)
+        {
+            return time.ToString("HH:mm:ss");
+        }
+        else if (time.Minute > 0)
+        {
+            return time.ToString("mm:ss");
+        }
+        else if (time.Second >= 10)
+        {
+            return time.ToString("ss");
+        }
+        else
+        {
+            return time.ToString("ss").Replace("0", "");
+        }
+    }
+
     public static int GetCurrentTime()
     {
         return (int)(DateTime.UtcNow - UnixStartDate).TotalSeconds;

@@ -1,2 +1,4 @@
-Id,State,Stage,Type
-townhall,Inactive,0,Default
+Id,State,Type,Stage,UpgradeResourceType,UpgradeResourceValue,UpgradeDuration
+townhall,Inactive,Default,0,Coins,1000,20
+,,,1,Coins,5000,40
+,,,,Gems,100,

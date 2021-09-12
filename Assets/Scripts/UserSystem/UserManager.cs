@@ -76,25 +76,25 @@ namespace UserSystem
             CurrentUser = new UserModel(defaultResources)
             {
                 Time = new TimeSpan(0, 12, 0, 0),
-                LocationId = ContentProvider.LocationsEconomy.Data.First().Id,
-                Locations = new Dictionary<string, LocationModel>(),
-                Buildings = new Dictionary<string, BuildingModel>()
+                CurrentLocationId = ContentProvider.LocationsEconomy.Data.First().Id,
+                Locations = new Dictionary<string, LocationModel>()
             };
 
             var locationModel = new LocationModel
             {
-                LocationId = CurrentUser.LocationId
+                LocationId = CurrentUser.CurrentLocationId,
+                Buildings = new Dictionary<string, BuildingModel>()
             };
 
             CurrentUser.Locations.Add(locationModel.LocationId, locationModel);
 
             foreach (var building in ContentProvider.BuildingsEconomy.Data)
             {
-                CurrentUser.Buildings.Add(building.Id, new BuildingModel
+                CurrentUser.CurrentLocation.Buildings.Add(building.Id, new BuildingModel
                 {
                     Id = building.Id,
                     Type = building.Type,
-                    Stage = new EventVariable<int>(building.Stages),
+                    Stage = new EventVariable<int>(),
                     State = new EventVariable<BuildingState>(building.State)
                 });
             }

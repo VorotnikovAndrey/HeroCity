@@ -1,6 +1,10 @@
+using System;
 using System.Collections.Generic;
 using CameraSystem;
+using Content;
+using UI.Popups.Components;
 using UnityEngine;
+using Zenject;
 
 namespace Gameplay.Building.View
 {
@@ -8,7 +12,9 @@ namespace Gameplay.Building.View
     {
         [HideInInspector] public string BuildingId;
 
-        [SerializeField] public List<BuildingStateContainer> States = new List<BuildingStateContainer>();
+        public List<BuildingStateContainer> States = new List<BuildingStateContainer>();
+        public UpgradeBar UpgradeBar;
+        public BoxCollider Collider;
 
         public CameraOffsetParams CameraOffset { get; private set; }
         public BuildingStateContainer ActiveContainer { get; private set; }
@@ -24,6 +30,18 @@ namespace Gameplay.Building.View
                 {
                     ActiveContainer = state;
                 }
+            }
+
+            switch (buildingState)
+            {
+                case BuildingState.Inactive:
+                case BuildingState.Active:
+                    Collider.enabled = true;
+                    break;
+                case BuildingState.NotAvailable:
+                case BuildingState.Upgrade:
+                    Collider.enabled = false;
+                    break;
             }
         }
 

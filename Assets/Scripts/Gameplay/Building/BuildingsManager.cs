@@ -1,11 +1,14 @@
 using System.Collections.Generic;
+using System.Linq;
 using CameraSystem;
 using Content;
 using Economies;
 using Events;
 using Gameplay.Building.Models;
+using Gameplay.Building.View;
+using Gameplay.Locations.Models;
+using Gameplay.Locations.View;
 using PopupSystem;
-using Unity.VisualScripting;
 using UnityEngine;
 using UserSystem;
 using Utils;
@@ -25,6 +28,9 @@ namespace Gameplay.Building
         private readonly UserManager _userManager;
         private readonly BuildingsEconomy _buildingsEconomy;
 
+        private LocationModel _locationModel;
+        private LocationView _locationView;
+
         public BuildingsManager()
         {
             _popupManager = ProjectContext.Instance.Container.Resolve<PopupManager<PopupType>>();
@@ -40,12 +46,17 @@ namespace Gameplay.Building
         {
             ProjectContext.Instance.Container.BindInstance(this);
 
+            _locationModel = _userManager.CurrentUser.CurrentLocation;
+            _locationView = ProjectContext.Instance.Container.Resolve<LocationView>();
+
             _eventAggregator.Add<BuildingViewSelectedEvent>(OnBuildingViewSelected);
             _eventAggregator.Add<BuildingViewUnSelectedEvent>(OnBuildingViewUnSelected);
             _eventAggregator.Add<BuildBuildingEvent>(OnBuildBuilding);
             _eventAggregator.Add<UpgradeBuildingEvent>(OnUpgradeBuilding);
 
-            _timeTicker.OnSecondTick += OnSecondTick;
+            UpdateUpgrades();
+
+            _timeTicker.OnSecondTick += OnSecondUpdate;
         }
 
         public void DeInitialize()
@@ -57,12 +68,17 @@ namespace Gameplay.Building
 
             ProjectContext.Instance.Container.Unbind<BuildingsManager>();
 
-            _timeTicker.OnSecondTick -= OnSecondTick;
+            _timeTicker.OnSecondTick -= OnSecondUpdate;
+        }
+
+        private void OnSecondUpdate()
+        {
+            UpdateUpgrades();
         }
 
         public BuildingModel GetBuildingModel(string id)
         {
-            _userManager.CurrentUser.Buildings.TryGetValue(id, out BuildingModel model);
+            _locationModel.Buildings.TryGetValue(id, out BuildingModel model);
             return model;
         }
 
@@ -84,19 +100,86 @@ namespace Gameplay.Building
 
         private void OnBuildBuilding(BuildBuildingEvent sender)
         {
-            var model = GetBuildingModel(sender.View.BuildingId);
-            model.State.Value = BuildingState.Upgrade;
-
-            _userManager.Save();
+            TryUpgradeBuilding(sender.View.BuildingId);
         }
 
         private void OnUpgradeBuilding(UpgradeBuildingEvent sender)
         {
+            TryUpgradeBuilding(sender.View.BuildingId);
         }
 
-        private void OnSecondTick()
+        private void TryUpgradeBuilding(string buildingId)
         {
+            var model = GetBuildingModel(buildingId);
+            var view = _locationView.Buildings.FirstOrDefault(x => x.BuildingId == buildingId);
+            var economy = _buildingsEconomy.Data.FirstOrDefault(x => x.Id == buildingId);
 
+            if (model == null || view == null)
+            {
+                Debug.LogError($"Model or view {buildingId.AddColorTag(Color.yellow)} is null".AddColorTag(Color.red));
+                return;
+            }
+
+            if (economy == null)
+            {
+                Debug.LogError($"Economy {buildingId.AddColorTag(Color.yellow)} is not found".AddColorTag(Color.red));
+                return;
+            }
+
+            if (model.Stage.Value >= economy.Upgrades.Count)
+            {
+                Debug.LogError($"{buildingId.AddColorTag(Color.yellow)} stage is max".AddColorTag(Color.red));
+                return;
+            }
+
+            var upgradeInfo = economy.Upgrades[model.Stage];
+
+            foreach (var price in upgradeInfo.Price)
+            {
+                if (_userManager.CurrentUser.Resources[price.Type] >= price.Value)
+                {
+                    continue;
+                }
+
+                Debug.Log($"{price.Type.AddColorTag(Color.yellow)} not enough".AddColorTag(Color.red));
+                return;
+            }
+
+            foreach (var price in upgradeInfo.Price)
+            {
+                _userManager.CurrentUser.AddResourceValue(price.Type, -price.Value);
+            }
+
+            var currentTime = DateTimeUtils.GetCurrentTime();
+            model.UpgradeStartUnixTime = currentTime;
+            model.UpgradeEndUnixTime = currentTime + upgradeInfo.Duration;
+            model.State.Value = BuildingState.Upgrade;
+            view.UpgradeBar.Initialize(model.UpgradeStartUnixTime, model.UpgradeEndUnixTime);
+
+            _userManager.Save();
+        }
+
+        private void UpdateUpgrades()
+        {
+            var currentTime = DateTimeUtils.GetCurrentTime();
+
+            foreach (var model in _locationModel.Buildings.Values)
+            {
+                if (model.State.Value != BuildingState.Upgrade)
+                {
+                    continue;
+                }
+
+                if (currentTime < model.UpgradeEndUnixTime)
+                {
+                    continue;
+                }
+
+                model.State.Value = BuildingState.Active;
+                model.Stage.Value++;
+
+                _userManager.Save();
+            }
         }
     }
 }

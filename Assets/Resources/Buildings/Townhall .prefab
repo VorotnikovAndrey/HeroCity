@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5164096679651262302
 Transform:
   m_ObjectHideFlags: 0
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b93d058970e1d0f4c9e5c9fbfaf7cc8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Offset: {x: 0, y: 0, z: 0}
+  Offset: {x: -1, y: 0, z: 0}
 --- !u!1 &2380303443873233814
 GameObject:
   m_ObjectHideFlags: 0
@@ -60,7 +60,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &9207731497189336421
 Transform:
   m_ObjectHideFlags: 0
@@ -93,7 +93,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7903809389370505869
 Transform:
   m_ObjectHideFlags: 0
@@ -186,6 +186,8 @@ MonoBehaviour:
     Object: {fileID: 7253213396732352654}
     Stages:
     - {fileID: 6805901729564564152}
+  UpgradeBar: {fileID: 9062740689263979396}
+  Collider: {fileID: 6400103174367249996}
 --- !u!1 &6295002239834450555
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,7 +251,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3677110480326659383}
-  - {fileID: 835767836585708780}
   m_Father: {fileID: 7246181400423094992}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -310,7 +311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b93d058970e1d0f4c9e5c9fbfaf7cc8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Offset: {x: 0, y: 0, z: 0}
+  Offset: {x: -1, y: 0, z: 0}
 --- !u!1 &7253213396732352654
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,6 +340,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5630309675218909087}
+  - {fileID: 835767836585708780}
   m_Father: {fileID: 863704517778426244}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -403,7 +405,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4473113522156594662
 Transform:
   m_ObjectHideFlags: 0
@@ -431,7 +433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b93d058970e1d0f4c9e5c9fbfaf7cc8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Offset: {x: 0.5, y: 0, z: 2}
+  Offset: {x: -1, y: 0, z: 0}
 --- !u!1 &8105082467139409500
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,8 +714,16 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 5630309675218909087}
+    m_TransformParent: {fileID: 7246181400423094992}
     m_Modifications:
+    - target: {fileID: 1865111634472320636, guid: 6548d195628afcc479670cca356edfa9, type: 3}
+      propertyPath: _animationEase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1865111634472320636, guid: 6548d195628afcc479670cca356edfa9, type: 3}
+      propertyPath: _animationDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5287209358802707491, guid: 6548d195628afcc479670cca356edfa9, type: 3}
       propertyPath: m_Name
       value: UpgradeTimerBar
@@ -756,11 +766,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8051972066586794260, guid: 6548d195628afcc479670cca356edfa9, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.009999998
+      value: 0.009999997
       objectReference: {fileID: 0}
     - target: {fileID: 8051972066586794260, guid: 6548d195628afcc479670cca356edfa9, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.009999998
+      value: 0.009999997
       objectReference: {fileID: 0}
     - target: {fileID: 8051972066586794260, guid: 6548d195628afcc479670cca356edfa9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -812,6 +822,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6548d195628afcc479670cca356edfa9, type: 3}
+--- !u!114 &9062740689263979396 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1865111634472320636, guid: 6548d195628afcc479670cca356edfa9, type: 3}
+  m_PrefabInstance: {fileID: 7216850751566730744}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e7598e21c55dd24eb9e7114b95b6989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &835767836585708780 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8051972066586794260, guid: 6548d195628afcc479670cca356edfa9, type: 3}

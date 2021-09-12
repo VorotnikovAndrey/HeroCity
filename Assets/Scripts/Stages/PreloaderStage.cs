@@ -43,7 +43,7 @@ namespace Stages
 
         private void LoadLocation()
         {
-            _userManager.CurrentUser.Locations.TryGetValue(_userManager.CurrentUser.LocationId, out LocationModel model);
+            _userManager.CurrentUser.Locations.TryGetValue(_userManager.CurrentUser.CurrentLocationId, out LocationModel model);
 
             _eventAggregator.SendEvent(new ChangeStageEvent
             {
