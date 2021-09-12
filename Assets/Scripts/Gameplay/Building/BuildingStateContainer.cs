@@ -9,6 +9,6 @@ namespace Gameplay.Building
     {
         public BuildingState State;
         public GameObject Object;
-        public List<GameObject> Stages;
+        public List<BuildingStageElement> Stages;
     }
 }

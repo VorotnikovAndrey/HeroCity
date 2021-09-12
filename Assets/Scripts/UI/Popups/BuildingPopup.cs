@@ -55,11 +55,11 @@ namespace UI.Popups
 
             var data = ContentProvider.BuildingsEconomy.Data.FirstOrDefault(x => x.Id == _view.BuildingId);
             
-            _buildButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                $"Build {GameConstants.Resources.Coins} {data.Upgrades.FirstOrDefault(x => x.Stage == _model.Stage).Price.First().Value}";
+            //_buildButton.GetComponentInChildren<TextMeshProUGUI>().text =
+            //    $"Build {GameConstants.Resources.Coins} {data.Upgrades.FirstOrDefault(x => x.Stage == _model.Stage).Price.First().Value}";
 
-            _upgradeButton.GetComponentInChildren<TextMeshProUGUI>().text =
-                $"Upgrade {GameConstants.Resources.Coins} {data.Upgrades.FirstOrDefault(x => x.Stage == _model.Stage).Price.First().Value}";
+            //_upgradeButton.GetComponentInChildren<TextMeshProUGUI>().text =
+            //    $"Upgrade {GameConstants.Resources.Coins} {data.Upgrades.FirstOrDefault(x => x.Stage == _model.Stage).Price.First().Value}";
         }
 
         public void OnExitPressed()

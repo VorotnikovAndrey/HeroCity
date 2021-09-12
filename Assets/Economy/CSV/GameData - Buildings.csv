@@ -1,4 +1,11 @@
 Id,State,Type,Stage,UpgradeResourceType,UpgradeResourceValue,UpgradeDuration
-townhall,Inactive,Default,0,Coins,1000,20
-,,,1,Coins,5000,40
-,,,,Gems,100,
+townhall,Inactive,Default,0,Coins,1000,10
+,,,1,Coins,5000,10
+jewelry,Inactive,Default,0,Coins,500,10
+,,,1,Coins,2000,10
+smithy,Inactive,Default,0,Coins,500,10
+,,,1,Coins,2000,10
+armory,Inactive,Default,0,Coins,500,10
+,,,1,Coins,2000,10
+warehouse,Inactive,Default,0,Coins,500,10
+,,,1,Coins,2000,10

@@ -4,6 +4,7 @@ using Characters;
 using Defong.Utils;
 using Events;
 using Gameplay.Building;
+using Gameplay.Characters;
 using Gameplay.Locations.Models;
 using Gameplay.Locations.View;
 using Gameplay.Time;

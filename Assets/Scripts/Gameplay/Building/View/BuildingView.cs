@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
-using CameraSystem;
-using Content;
 using UI.Popups.Components;
 using UnityEngine;
-using Zenject;
+using Utils;
 
 namespace Gameplay.Building.View
 {
@@ -16,11 +13,13 @@ namespace Gameplay.Building.View
         public UpgradeBar UpgradeBar;
         public BoxCollider Collider;
 
-        public CameraOffsetParams CameraOffset { get; private set; }
         public BuildingStateContainer ActiveContainer { get; private set; }
+        public BuildingStageElement ActiveStageElement { get; private set; }
 
         public void SetState(BuildingState buildingState)
         {
+            Debug.Log($"{BuildingId.AddColorTag(Color.yellow)} set state {buildingState.AddColorTag(Color.yellow)}".AddColorTag(Color.red));
+
             foreach (BuildingStateContainer state in States)
             {
                 bool valid = state.State == buildingState;
@@ -47,14 +46,16 @@ namespace Gameplay.Building.View
 
         public void SetStage(int stage)
         {
+            Debug.Log($"{BuildingId.AddColorTag(Color.yellow)} set stage {stage.AddColorTag(Color.yellow)}".AddColorTag(Color.red));
+
             foreach (var element in ActiveContainer.Stages)
             {
-                bool value = element.transform.GetSiblingIndex() == stage;
-                element.SetActive(value);
+                bool value = element.Stage == stage;
+                element.Object.SetActive(value);
 
                 if (value)
                 {
-                    CameraOffset = element.GetComponent<CameraOffsetParams>();
+                    ActiveStageElement = element;
                 }
             }
         }

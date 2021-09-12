@@ -94,7 +94,8 @@ namespace Gameplay.Building
                 return;
             }
 
-            _locationCamera.SwitchToViewTransform(sender.View.transform, sender.View.CameraOffset != null ? sender.View.CameraOffset.Offset : Vector3.zero);
+            _locationCamera.SwitchToViewTransform(sender.View.transform, sender.View.ActiveStageElement.CameraOffset != null ?
+                sender.View.ActiveStageElement.CameraOffset.Offset : Vector3.zero);
             _popupManager.ShowPopup(PopupType.Building, sender.View);
         }
 
@@ -154,6 +155,7 @@ namespace Gameplay.Building
             model.UpgradeStartUnixTime = currentTime;
             model.UpgradeEndUnixTime = currentTime + upgradeInfo.Duration;
             model.State.Value = BuildingState.Upgrade;
+            model.Stage.ForceEvent();
             view.UpgradeBar.Initialize(model.UpgradeStartUnixTime, model.UpgradeEndUnixTime);
 
             _userManager.Save();
@@ -177,6 +179,8 @@ namespace Gameplay.Building
 
                 model.State.Value = BuildingState.Active;
                 model.Stage.Value++;
+
+                Debug.Log($"{model.Id.AddColorTag(Color.yellow)} upgraded to stage {model.Stage.Value.AddColorTag(Color.yellow)}".AddColorTag(Color.red));
 
                 _userManager.Save();
             }

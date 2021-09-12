@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Economies;
 using Gameplay.Building.View;
+using ModestTree;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Utils;
 
 namespace Gameplay.Locations.View.Editor
 {
@@ -49,6 +51,12 @@ namespace Gameplay.Locations.View.Editor
             if (GUILayout.Button("Validate", GUILayout.Height(30)))
             {
                 _target.Buildings = _target.transform.GetComponentsInChildren<BuildingView>().ToList();
+
+                var duplicateBuildingId = _target.Buildings.Select(x => x.BuildingId).GetDuplicates();
+                foreach (var element in duplicateBuildingId)
+                {
+                    Debug.LogError($"Has duplicate BuildingId {element.AddColorTag(Color.yellow)}".AddColorTag(Color.red));
+                }
 
                 EditorUtility.SetDirty(_target);
             }

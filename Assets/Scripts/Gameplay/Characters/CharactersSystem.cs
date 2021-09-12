@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Asyncoroutine;
+using Characters;
 using Characters.Components;
 using Characters.Models;
 using Content;
-using Defong.Utils;
 using Events;
 using Gameplay.Locations.View;
-using Gameplay.Movement;
 using Source;
 using UnityEngine;
 using UserSystem;
@@ -17,7 +16,7 @@ using Utils.ObjectPool;
 using Utils.Pathfinding;
 using Zenject;
 
-namespace Characters
+namespace Gameplay.Characters
 {
     public class CharactersSystem
     {
@@ -132,7 +131,7 @@ namespace Characters
 
             model.View = view;
             view.SetGraphic(preset);
-            model.Movement = new Movement(view.Transform, startPosition, model.Stats.MovementSpeed);
+            model.Movement = new Movement.Movement(view.Transform, startPosition, model.Stats.MovementSpeed);
             model.Movement.IsMoving.AddListener(x => view.Animator.SetBool(Move, x));
             model.ApplyAiSequention(model);
 

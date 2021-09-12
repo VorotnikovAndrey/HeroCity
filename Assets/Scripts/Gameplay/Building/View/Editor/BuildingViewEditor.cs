@@ -4,8 +4,11 @@ using System.Linq;
 using CameraSystem;
 using Economies;
 using Gameplay.Locations.View;
+using UI.Popups.Components;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using Utils;
 
 namespace Gameplay.Building.View.Editor
 {
@@ -15,12 +18,14 @@ namespace Gameplay.Building.View.Editor
         private BuildingView _target;
         private LocationView _locationView;
         private List<LocationsEconomy> _locationsEconomy;
+        private BuildingsEconomy _buildingsEconomy;
         private Vector2 _scrollViewPosition = Vector2.zero;
         private string _lastId = string.Empty;
         private readonly List<string> _keys = new List<string>();
 
         private BuildingState _buildingState;
         private int _stage;
+        private GUIStyle _errorStyle;
 
         private void OnEnable()
         {
@@ -30,7 +35,19 @@ namespace Gameplay.Building.View.Editor
                 return;
             }
 
+            _errorStyle = new GUIStyle
+            {
+                normal = new GUIStyleState
+                {
+                    textColor = Color.red
+                },
+                fontStyle = FontStyle.Bold,
+                fontSize = 12,
+                alignment = TextAnchor.MiddleCenter
+            };
+
             _locationView = _target.transform.root.GetComponent<LocationView>();
+            _buildingsEconomy = Resources.LoadAll<BuildingsEconomy>("").ToList().FirstOrDefault();
             _locationsEconomy = Resources.LoadAll<LocationsEconomy>("").ToList();
 
             BuildingState defaultState = BuildingState.Inactive;
@@ -41,14 +58,19 @@ namespace Gameplay.Building.View.Editor
                 if (state.Object != null && state.Object.activeSelf)
                 {
                     defaultState = (BuildingState) Enum.Parse(typeof(BuildingState), state.Object.name);
-                    var element = state.Stages.FirstOrDefault(x => x.activeSelf);
-                    defaultStage = element != null ? element.transform.GetSiblingIndex() : 0;
+                    var element = state.Stages.FirstOrDefault(x => x.Object != null && x.Object.activeSelf);
+                    defaultStage = element != null ? element.Stage : 0;
                     break;
                 }
             }
 
             _buildingState = defaultState;
             _stage = defaultStage;
+
+            if (_target.States.Any(x => x.Object == null))
+            {
+                _target.States = new List<BuildingStateContainer>();
+            }
         }
 
         public override void OnInspectorGUI()
@@ -63,14 +85,49 @@ namespace Gameplay.Building.View.Editor
                 DrawScrollView();
                 EditorGUILayout.Space();
             }
+            else
+            {
+                DrawCustomId();
+            }
 
             base.OnInspectorGUI();
         }
 
+        private void DrawCustomId()
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField("Enter custom building id", GUILayout.Width(140));
+            _target.BuildingId = EditorGUILayout.TextArea(_target.BuildingId);
+
+            EditorGUILayout.EndHorizontal();
+        }
+
         private void ShowValidate()
         {
+            if (_target.UpgradeBar == null)
+            {
+                var upgradeBar = _target.gameObject.GetComponentInChildren<UpgradeBar>(true);
+
+                if (upgradeBar == null)
+                {
+                    EditorGUILayout.LabelField("UpgradeBar is not found".AddColorTag(Color.red), _errorStyle);
+                }
+                else
+                {
+                    _target.UpgradeBar = upgradeBar;
+                }
+            }
+
             if (GUILayout.Button("Autofill States and stages"))
             {
+                var data = _buildingsEconomy.Data.FirstOrDefault(x => x.Id == _target.BuildingId);
+                if (data == null)
+                {
+                    EditorGUILayout.LabelField($"{_target.BuildingId.AddColorTag(Color.yellow)} is not found in BuildingEconomy".AddColorTag(Color.red), _errorStyle);
+                    return;
+                }
+
                 _target.States.Clear();
 
                 var child = _target.transform.GetComponentsInChildren<Transform>(true);
@@ -92,49 +149,62 @@ namespace Gameplay.Building.View.Editor
                     states.localEulerAngles = Vector3.zero;
                 }
 
-                foreach (string element in Enum.GetNames(typeof(BuildingState)))
+                foreach (string enumType in Enum.GetNames(typeof(BuildingState)))
                 {
-                    BuildingState state = (BuildingState) Enum.Parse(typeof(BuildingState), element);
+                    BuildingState state = (BuildingState) Enum.Parse(typeof(BuildingState), enumType);
 
                     BuildingStateContainer result = new BuildingStateContainer
                     {
                         State = state,
-                        Stages = new List<GameObject>()
+                        Stages = new List<BuildingStageElement>()
                     };
 
-                    Transform[] childs = _target.GetComponentsInChildren<Transform>(true);
-                    Transform findObject = childs.FirstOrDefault(x => x.name == element);
-
-                    if (findObject == null)
+                    Transform stateHolder = _target.GetComponentsInChildren<Transform>(true).FirstOrDefault(x => x.name == enumType);
+                    if (stateHolder == null)
                     {
-                        findObject = new GameObject(element).transform;
-                        findObject.SetParent(states);
-                        findObject.transform.localPosition = Vector3.zero;
-                        findObject.transform.localEulerAngles = Vector3.zero;
+                        stateHolder = new GameObject(enumType).transform;
+                        stateHolder.SetParent(states);
+                        stateHolder.transform.localPosition = Vector3.zero;
+                        stateHolder.transform.localEulerAngles = Vector3.zero;
                     }
 
-                    if (findObject != null)
-                    {
-                        result.Object = findObject.gameObject;
-                    }
+                    result.Object = stateHolder.gameObject;
 
-                    for (int i = 0; i < result.Object.transform.childCount; i++)
+                    int stageCount = data.Upgrades.Count;
+
+                    var stageElements = result.Object.transform.GetComponentsInChildren<BuildingStageElement>(true);
+
+                    for (int i = 0; i < stageCount; i++)
                     {
-                        result.Stages.Add(result.Object.transform.GetChild(i).gameObject);
+                        var index = i;
+
+                        if (state == BuildingState.Active)
+                        {
+                            index++;
+                        }
+                        else if ((state == BuildingState.NotAvailable || state == BuildingState.Inactive) && index != 0)
+                        {
+                            continue;
+                        }
+
+                        BuildingStageElement stage = stageElements.FirstOrDefault(x => x.Stage == index);
+                        if (stage == null)
+                        {
+                            var newStage = new GameObject().transform;
+                            newStage.SetParent(result.Object.transform);
+                            newStage.transform.localPosition = Vector3.zero;
+                            newStage.transform.localEulerAngles = Vector3.zero;
+                            stage = newStage.transform.AddComponent<BuildingStageElement>();
+                            stage.Object = newStage.gameObject;
+                            stage.Stage = index;
+                        }
+
+                        result.Stages.Add(stage);
+                        stage.gameObject.name = $"Stage_{index}";
+                        stage.Object.transform.SetAsLastSibling();
                     }
 
                     _target.States.Add(result);
-                }
-
-                foreach (var state in _target.States)
-                {
-                    foreach (var stage in state.Stages)
-                    {
-                        if (stage.GetComponent<CameraOffsetParams>() == null)
-                        {
-                            stage.AddComponent<CameraOffsetParams>();
-                        }
-                    }
                 }
 
                 EditorUtility.SetDirty(_target);
@@ -143,7 +213,6 @@ namespace Gameplay.Building.View.Editor
 
         private void ShowStateAndStageMenu()
         {
-            
             EditorGUILayout.Space();
 
             if (_target == null || _target.States == null || _target.States.Count == 0)
@@ -173,26 +242,45 @@ namespace Gameplay.Building.View.Editor
             _buildingState = tempBuildingState;
 
             BuildingStateContainer container = _target.States.FirstOrDefault(x => x.State == _buildingState);
-            if (container == null)
+            if (container?.Stages == null)
             {
                 return;
             }
 
+            var temp = container.Stages.FirstOrDefault(x => x.Object != null && x.Object.activeSelf);
+            _stage = temp != null ? temp.Stage : 0;
+
+            int minStage = -1;
+            int maxStage = -1;
+
+            foreach (var element in container.Stages)
+            {
+                if (element.Stage < minStage || minStage == -1)
+                {
+                    minStage = element.Stage;
+                }
+
+                if (element.Stage > maxStage || maxStage == -1)
+                {
+                    maxStage = element.Stage;
+                }
+            }
+
             if (GUILayout.Button("Prev"))
             {
-                _stage = Mathf.Clamp(_stage - 1, 0, container.Stages.Count - 1);
+                _stage = Mathf.Clamp(_stage - 1, minStage, maxStage);
                 SetState(container, _stage);
             }
 
             if (GUILayout.Button("Next"))
             {
-                _stage = Mathf.Clamp(_stage + 1, 0, container.Stages.Count - 1);
+                _stage = Mathf.Clamp(_stage + 1, minStage, maxStage);
                 SetState(container, _stage);
             }
 
             if (GUILayout.Button("Reset"))
             {
-                _stage = 0;
+                _stage = minStage;
                 SetState(container, _stage);
                 _buildingState = BuildingState.Inactive;
             }
@@ -203,9 +291,9 @@ namespace Gameplay.Building.View.Editor
 
         private void SetState(BuildingStateContainer container, int state)
         {
-            foreach (GameObject element in container.Stages)
+            foreach (var element in container.Stages)
             {
-                element.SetActive(element.transform.GetSiblingIndex() == state);
+                element.Object.SetActive(element.Stage == state);
             }
 
             EditorUtility.SetDirty(_target);
@@ -213,32 +301,21 @@ namespace Gameplay.Building.View.Editor
 
         private bool LocationViewIsNotNull()
         {
-            GUIStyle errorStyle = new GUIStyle
-            {
-                normal = new GUIStyleState
-                {
-                    textColor = Color.red
-                },
-                fontStyle = FontStyle.Bold,
-                fontSize = 15,
-                alignment = TextAnchor.MiddleCenter
-            };
-
             if (_locationView == null)
             {
-                EditorGUILayout.LabelField("LocationView is not found!", errorStyle);
+                EditorGUILayout.LabelField("LocationView is not found!", _errorStyle);
                 return true;
             }
 
             if (string.IsNullOrEmpty(_locationView.LocationId))
             {
-                EditorGUILayout.LabelField("LocationId is null or empty!", errorStyle);
+                EditorGUILayout.LabelField("LocationId is null or empty!", _errorStyle);
                 return true;
             }
 
             if (_locationsEconomy == null)
             {
-                EditorGUILayout.LabelField("LocationsEconomy is null!", errorStyle);
+                EditorGUILayout.LabelField("LocationsEconomy is null!", _errorStyle);
                 return true;
             }
 

@@ -23,14 +23,68 @@ MonoBehaviour:
     State: 1
     Upgrades:
     - Stage: 0
-      Duration: 20
+      Duration: 10
       Price:
       - Type: 0
         Value: 1000
     - Stage: 1
-      Duration: 40
+      Duration: 10
       Price:
       - Type: 0
         Value: 5000
-      - Type: 1
-        Value: 100
+  - Id: jewelry
+    Type: 0
+    State: 1
+    Upgrades:
+    - Stage: 0
+      Duration: 10
+      Price:
+      - Type: 0
+        Value: 500
+    - Stage: 1
+      Duration: 10
+      Price:
+      - Type: 0
+        Value: 2000
+  - Id: smithy
+    Type: 0
+    State: 1
+    Upgrades:
+    - Stage: 0
+      Duration: 10
+      Price:
+      - Type: 0
+        Value: 500
+    - Stage: 1
+      Duration: 10
+      Price:
+      - Type: 0
+        Value: 2000
+  - Id: armory
+    Type: 0
+    State: 1
+    Upgrades:
+    - Stage: 0
+      Duration: 10
+      Price:
+      - Type: 0
+        Value: 500
+    - Stage: 1
+      Duration: 10
+      Price:
+      - Type: 0
+        Value: 2000
+  - Id: warehouse
+    Type: 0
+    State: 1
+    Upgrades:
+    - Stage: 0
+      Duration: 10
+      Price:
+      - Type: 0
+        Value: 500
+    - Stage: 1
+      Duration: 10
+      Price:
+      - Type: 0
+        Value: 2000
