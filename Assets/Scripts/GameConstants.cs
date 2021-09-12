@@ -12,4 +12,10 @@ public static class GameConstants
     {
         public const string DefaultCharacterPath = "Characters/DefaultCharacter";
     }
+
+    public static class Resources
+    {
+        public const string Coins = "<sprite=0>";
+        public const string Gems = "<sprite=1>";
+    }
 }

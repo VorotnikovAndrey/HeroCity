@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -8,7 +7,6 @@ using CsvHelper.Configuration;
 using Economies.Parsing.Mapping;
 using Gameplay;
 using Gameplay.Building;
-using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 

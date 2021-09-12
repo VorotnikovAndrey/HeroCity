@@ -1,3 +1,5 @@
+using System.Linq;
+using Content;
 using Events;
 using Gameplay.Building;
 using Gameplay.Building.Models;
@@ -5,6 +7,7 @@ using Gameplay.Building.View;
 using PopupSystem;
 using TMPro;
 using UnityEngine;
+using Utils;
 using Utils.PopupSystem;
 using Zenject;
 
@@ -46,8 +49,17 @@ namespace UI.Popups
             }
 
             _idText.text = _model.Id;
+
             _buildButton.SetActive(_model.State == BuildingState.Inactive);
             _upgradeButton.SetActive(_model.State == BuildingState.Active);
+
+            var data = ContentProvider.BuildingsEconomy.Data.FirstOrDefault(x => x.Id == _view.BuildingId);
+            
+            _buildButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                $"Build {GameConstants.Resources.Coins} {data.Upgrades.FirstOrDefault(x => x.Stage == _model.Stage).Price.First().Value}";
+
+            _upgradeButton.GetComponentInChildren<TextMeshProUGUI>().text =
+                $"Upgrade {GameConstants.Resources.Coins} {data.Upgrades.FirstOrDefault(x => x.Stage == _model.Stage).Price.First().Value}";
         }
 
         public void OnExitPressed()

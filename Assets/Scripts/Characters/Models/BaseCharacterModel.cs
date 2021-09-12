@@ -4,6 +4,7 @@ using Characters.AI.Behaviors;
 using Gameplay.Locations.View;
 using Gameplay.Movement;
 using UnityEngine;
+using Utils;
 
 namespace Characters.Models
 {
