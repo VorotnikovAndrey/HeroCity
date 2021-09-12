@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CameraSystem;
@@ -184,6 +185,36 @@ namespace Gameplay.Building
 
                 _userManager.Save();
             }
+        }
+
+        public string GetUpgradePriceText(string buildingId, int stage)
+        {
+            string result = string.Empty;
+
+            var economy = _buildingsEconomy.Data.FirstOrDefault(x => x.Id == buildingId);
+            var upgrade = economy?.Upgrades.FirstOrDefault(x => x.Stage == stage);
+
+            if (upgrade == null)
+            {
+                Debug.LogError("Price is not found".AddColorTag(Color.red));
+                return result;
+            }
+
+            List<string> array = new List<string>();
+            foreach (var resourceData in upgrade.Price)
+            {
+                switch (resourceData.Type)
+                {
+                    case ResourceType.Coins:
+                        array.Add($"{GameConstants.Resources.Coins} {resourceData.Value}");
+                        break;
+                    case ResourceType.Gems:
+                        array.Add($"{GameConstants.Resources.Gems} {resourceData.Value}");
+                        break;
+                }
+            }
+
+            return array.Aggregate(result, (current, value) => current + value + " ");
         }
     }
 }

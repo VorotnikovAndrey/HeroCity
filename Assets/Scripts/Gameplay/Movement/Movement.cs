@@ -148,23 +148,15 @@ namespace Gameplay.Movement
                 else
                 {
                     _currentEndWaypoint = _currentPath.Peek();
-                    MapWaypoint mapWaypoint = _currentEndWaypoint as MapWaypoint;
-
-                    if (mapWaypoint != null)
-                    {
-                        if (mapWaypoint.Position != Vector3.zero)
+                    _rotateTweener?.Kill();
+                    _rotateTweener = _viewTransform.DOLookAt(_currentEndWaypoint.Position, 0.5f, AxisConstraint.Y).OnComplete(
+                        () =>
                         {
-                            _rotateTweener?.Kill();
-                            _rotateTweener = _viewTransform.DOLookAt(mapWaypoint.Position, 0.5f, AxisConstraint.Y).OnComplete(
-                                () =>
-                                {
-                                    _rotateTweener = null;
-                                });
-                        }
-                    }
+                            _rotateTweener = null;
+                        });
 
                     _moveTimeCurrent = 0;
-                    _moveTimeTotal = Vector3.Distance(_currentStartWaypoint.Position, _currentPath.Peek().Position) / MovementSpeed;
+                    _moveTimeTotal = Vector3.Distance(_currentStartWaypoint.Position, _currentEndWaypoint.Position) / MovementSpeed;
                 }
             }
         }

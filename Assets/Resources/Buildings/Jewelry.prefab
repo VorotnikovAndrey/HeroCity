@@ -714,6 +714,14 @@ PrefabInstance:
       propertyPath: _useAnimation
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1865111634472320636, guid: 6548d195628afcc479670cca356edfa9, type: 3}
+      propertyPath: _animationEase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1865111634472320636, guid: 6548d195628afcc479670cca356edfa9, type: 3}
+      propertyPath: _animationDuration
+      value: 0.832
+      objectReference: {fileID: 0}
     - target: {fileID: 5287209358802707491, guid: 6548d195628afcc479670cca356edfa9, type: 3}
       propertyPath: m_Name
       value: UpgradeTimerBar

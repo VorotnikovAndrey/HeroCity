@@ -17,10 +17,10 @@ namespace UI.Popups
     {
         public override PopupType Type => PopupType.Building;
 
-        [SerializeField] private TextMeshProUGUI _idText = default;
-        [Space] 
         [SerializeField] private GameObject _buildButton;
         [SerializeField] private GameObject _upgradeButton;
+        [SerializeField] private TextMeshProUGUI _buildText;
+        [SerializeField] private TextMeshProUGUI _upgradeText;
 
         private BuildingsManager _buildingsManager;
         private BuildingView _view;
@@ -48,18 +48,11 @@ namespace UI.Popups
                 return;
             }
 
-            _idText.text = _model.Id;
+            var priceText = _buildingsManager.GetUpgradePriceText(_model.Id, _model.Stage);
+            _buildText.text = _upgradeText.text = priceText;
 
             _buildButton.SetActive(_model.State == BuildingState.Inactive);
             _upgradeButton.SetActive(_model.State == BuildingState.Active);
-
-            var data = ContentProvider.BuildingsEconomy.Data.FirstOrDefault(x => x.Id == _view.BuildingId);
-            
-            //_buildButton.GetComponentInChildren<TextMeshProUGUI>().text =
-            //    $"Build {GameConstants.Resources.Coins} {data.Upgrades.FirstOrDefault(x => x.Stage == _model.Stage).Price.First().Value}";
-
-            //_upgradeButton.GetComponentInChildren<TextMeshProUGUI>().text =
-            //    $"Upgrade {GameConstants.Resources.Coins} {data.Upgrades.FirstOrDefault(x => x.Stage == _model.Stage).Price.First().Value}";
         }
 
         public void OnExitPressed()

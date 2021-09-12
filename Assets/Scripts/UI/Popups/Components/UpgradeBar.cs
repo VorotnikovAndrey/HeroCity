@@ -1,6 +1,5 @@
 using DG.Tweening;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,14 +10,12 @@ namespace UI.Popups.Components
         [SerializeField] private GameObject Holder;
         [SerializeField] private TextMeshProUGUI _timerText;
         [SerializeField] private Image _fillImage;
-        [SerializeField] private bool _useAnimation;
-        [SerializeField] private Ease _animationEase = Ease.Unset;
-        [SerializeField] [Range(0, 1)] private float _animationDuration = 1f;
 
         private long _startUnixTime;
         private long _endUnixTime;
         private Tweener _tweener;
         private float _progress;
+        private Ease _animationEase = Ease.Linear;
 
         public float Progress
         {
@@ -32,7 +29,8 @@ namespace UI.Popups.Components
 
         private void OnEnable()
         {
-            GameManager.Instance.TimeTicker.OnSecondTick += UpdateInfo;
+            Progress = 0;
+            GameManager.Instance.TimeTicker.OnSecondTick += UpdateText;
         }
 
         private void OnDisable()
@@ -41,7 +39,7 @@ namespace UI.Popups.Components
 
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.TimeTicker.OnSecondTick -= UpdateInfo;
+                GameManager.Instance.TimeTicker.OnSecondTick -= UpdateText;
             }
         }
 
@@ -52,37 +50,30 @@ namespace UI.Popups.Components
 
             Holder.SetActive(true);
 
-            UpdateInfo();
+            UpdateText();
+            UpdateAnimation();
         }
 
-        private void UpdateInfo()
+        private void UpdateText()
         {
-            if (DateTimeUtils.GetCurrentTime() >= _endUnixTime)
+            if (DateTimeUtils.GetCurrentTime() > _endUnixTime)
             {
                 Holder.SetActive(false);
                 return;
             }
 
-            var currentUnixTime = DateTimeUtils.GetCurrentTime();
+            _timerText.text = DateTimeUtils.GetTimerText(DateTimeUtils.UnixTimeToDateTime(_endUnixTime - DateTimeUtils.GetCurrentTime()));
+        }
 
-            _timerText.text = DateTimeUtils.GetTimerText(DateTimeUtils.UnixTimeToDateTime(_endUnixTime - currentUnixTime));
+        private void UpdateAnimation()
+        {
+            var timeLeft = _endUnixTime - DateTimeUtils.GetCurrentTime();
 
-            var totalTime = _endUnixTime - _startUnixTime;
-            var timeLeft = _endUnixTime - currentUnixTime;
-            var progress = 1 - (float)timeLeft / totalTime;
-
-            if (_useAnimation)
+            _tweener?.Kill();
+            _tweener = DOTween.To(() => Progress, x => Progress = x, 1f, timeLeft).SetEase(_animationEase).OnKill(() =>
             {
-                _tweener?.Kill();
-                _tweener = DOTween.To(() => Progress, x => Progress = x, progress, _animationDuration).SetEase(_animationEase).OnKill(() =>
-                {
-                    _tweener = null;
-                });
-            }
-            else
-            {
-                _fillImage.fillAmount = progress;
-            }
+                _tweener = null;
+            });
         }
     }
 }

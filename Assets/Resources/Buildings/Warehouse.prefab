@@ -908,6 +908,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 23638982300252853}
     m_Modifications:
+    - target: {fileID: 1865111634472320636, guid: 6548d195628afcc479670cca356edfa9, type: 3}
+      propertyPath: _animationEase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1865111634472320636, guid: 6548d195628afcc479670cca356edfa9, type: 3}
+      propertyPath: _animationDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5287209358802707491, guid: 6548d195628afcc479670cca356edfa9, type: 3}
       propertyPath: m_Name
       value: UpgradeTimerBar
