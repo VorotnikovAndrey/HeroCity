@@ -1,4 +1,4 @@
-namespace Gameplay
+namespace ResourceSystem
 {
     public enum ResourceType
     {

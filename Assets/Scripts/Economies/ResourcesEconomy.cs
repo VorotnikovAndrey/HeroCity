@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gameplay;
+using ResourceSystem;
 using UnityEngine;
 
 namespace Economies

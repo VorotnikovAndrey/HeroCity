@@ -1,10 +1,9 @@
 using CameraSystem;
 using Characters;
 using Characters.AI.Behaviors;
-using Defong.Utils;
 using Economies;
-using Gameplay.Building;
 using PopupSystem;
+using ResourceSystem;
 using Stages;
 using UserSystem;
 using Utils;
@@ -20,6 +19,7 @@ public class GameInstaller : MonoInstaller
         // Main
         Container.Bind<EventAggregator>().AsSingle();
         Container.Bind<UserManager>().AsSingle();
+        Container.Bind<GameResourceManager>().AsSingle();
         Container.Bind<PopupManager<PopupType>>().AsSingle();
         Container.BindInterfacesAndSelfTo<TimeTicker>().AsSingle();
         Container.Bind<CameraManager>().AsSingle();

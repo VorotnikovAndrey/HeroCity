@@ -17,5 +17,12 @@ public static class GameConstants
     {
         public const string Coins = "<sprite=0>";
         public const string Gems = "<sprite=1>";
+        public const string Wood = "<sprite=2>";
+        public const string Stone = "<sprite=3>";
+    }
+
+    public static class ColorFormat
+    {
+        public const string Red = "<color=#C20505>{0}</color>";
     }
 }

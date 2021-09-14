@@ -1,7 +1,12 @@
 using System;
+using System.Linq;
+using Content;
+using Economies;
 using Events;
 using Gameplay.Building;
+using Gameplay.Building.Models;
 using PopupSystem;
+using UI.Popups.Components;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
@@ -14,9 +19,12 @@ namespace UI.Popups
     {
         public override PopupType Type => PopupType.Building;
 
+        [SerializeField] private BuildingUpgradePage _upgradePage;
         [SerializeField] private LocalEvents _events;
 
         private BuildingsManager _buildingsManager;
+        private BuildingModel _buildingModel;
+        private BuildingData _buildingData;
         private string _buildingId;
 
         protected override void OnAwake()
@@ -31,15 +39,31 @@ namespace UI.Popups
                 _buildingId = args.ToString();
             }
 
-            var model = _buildingsManager.GetBuildingModel(_buildingId);
-            if (model == null)
+            _buildingData = ContentProvider.BuildingsEconomy.Data.FirstOrDefault(x => x.Id == _buildingId);
+            _buildingModel = _buildingsManager.GetBuildingModel(_buildingId);
+            if (_buildingModel == null)
             {
                 Debug.LogError("Model is null".AddColorTag(Color.red));
                 return;
             }
 
-            _events.EmitTitleText?.Invoke($"{model.Id} {model.Stage.Value}");
-            _events.EmitPriceText?.Invoke(_buildingsManager.GetUpgradePriceText(_buildingId, model.Stage.Value));
+            _events.EmitTitleText?.Invoke($"{_buildingModel.Id}");
+
+
+            OpenUpgradePage();
+        }
+
+        private void OpenUpgradePage()
+        {
+            if (_buildingModel.Stage < _buildingData.Upgrades.Count)
+            {
+                _upgradePage.gameObject.SetActive(true);
+                _upgradePage.Initialize(_buildingModel);
+            }
+            else
+            {
+                _upgradePage.gameObject.SetActive(false);
+            }
         }
 
         public void OnUpgradePressed()
@@ -71,8 +95,6 @@ namespace UI.Popups
         public class LocalEvents
         {
             public UnityEvent<string> EmitTitleText;
-            public UnityEvent<string> EmitPriceText;
-
         }
     }
 }

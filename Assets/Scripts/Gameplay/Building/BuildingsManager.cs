@@ -10,6 +10,7 @@ using Gameplay.Building.View;
 using Gameplay.Locations.Models;
 using Gameplay.Locations.View;
 using PopupSystem;
+using ResourceSystem;
 using UnityEngine;
 using UserSystem;
 using Utils;
@@ -26,8 +27,9 @@ namespace Gameplay.Building
         private readonly TimeTicker _timeTicker;
         private readonly CameraManager _cameraManager;
         private readonly LocationCamera _locationCamera;
-        private readonly UserManager _userManager;
+        private readonly GameResourceManager _gameResourceManager;
         private readonly BuildingsEconomy _buildingsEconomy;
+        private readonly UserManager _userManager;
 
         private LocationModel _locationModel;
         private LocationView _locationView;
@@ -38,6 +40,7 @@ namespace Gameplay.Building
             _eventAggregator = ProjectContext.Instance.Container.Resolve<EventAggregator>();
             _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
             _cameraManager = ProjectContext.Instance.Container.Resolve<CameraManager>();
+            _gameResourceManager = ProjectContext.Instance.Container.Resolve<GameResourceManager>();
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
             _locationCamera = _cameraManager.ActiveCameraView as LocationCamera;
             _buildingsEconomy = ContentProvider.BuildingsEconomy;
@@ -132,7 +135,7 @@ namespace Gameplay.Building
 
             foreach (var price in upgradeInfo.Price)
             {
-                if (_userManager.CurrentUser.Resources[price.Type] >= price.Value)
+                if (_gameResourceManager.HasResource(price.Type, price.Value))
                 {
                     continue;
                 }
@@ -143,7 +146,7 @@ namespace Gameplay.Building
 
             foreach (var price in upgradeInfo.Price)
             {
-                _userManager.CurrentUser.AddResourceValue(price.Type, -price.Value);
+                _gameResourceManager.AddResourceValue(price.Type, -price.Value);
             }
 
             var currentTime = DateTimeUtils.GetCurrentTime();
@@ -178,36 +181,6 @@ namespace Gameplay.Building
 
                 _userManager.Save();
             }
-        }
-
-        public string GetUpgradePriceText(string buildingId, int stage)
-        {
-            string result = string.Empty;
-
-            var economy = _buildingsEconomy.Data.FirstOrDefault(x => x.Id == buildingId);
-            var upgrade = economy?.Upgrades.FirstOrDefault(x => x.Stage == stage);
-
-            if (upgrade == null)
-            {
-                Debug.LogError("Price is not found".AddColorTag(Color.red));
-                return result;
-            }
-
-            List<string> array = new List<string>();
-            foreach (var resourceData in upgrade.Price)
-            {
-                switch (resourceData.Type)
-                {
-                    case ResourceType.Coins:
-                        array.Add($"{GameConstants.Resources.Coins} {resourceData.Value}");
-                        break;
-                    case ResourceType.Gems:
-                        array.Add($"{GameConstants.Resources.Gems} {resourceData.Value}");
-                        break;
-                }
-            }
-
-            return array.Aggregate(result, (current, value) => current + value + "  ");
         }
     }
 }

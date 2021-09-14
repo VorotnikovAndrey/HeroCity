@@ -5,6 +5,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Economies.Parsing.Mapping;
 using Gameplay;
+using ResourceSystem;
 using UnityEditor;
 using UnityEngine;
 

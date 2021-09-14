@@ -90,3 +90,5 @@ MonoBehaviour:
         Value: 2000
       - Type: 1
         Value: 100
+      - Type: 2
+        Value: 20

@@ -7,3 +7,4 @@ Polyglot	100
 WILL_BECOME_AVAILABLE		Will become available							Станут доступны																				
 RESOURCES_REQUIRED		Resources required							Необходимые ресурсы																				
 BUILD		Build							Построить																				
+UPGRADE		Upgrade							Улучшить																				

@@ -10,6 +10,7 @@ using Gameplay.Building;
 using Gameplay.Building.Models;
 using Gameplay.Locations.Models;
 using Newtonsoft.Json;
+using ResourceSystem;
 using Source;
 using UnityEngine;
 using Utils;
