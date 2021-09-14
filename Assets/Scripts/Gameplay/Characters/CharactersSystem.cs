@@ -100,8 +100,8 @@ namespace Gameplay.Characters
             BaseCharacterModel model = new BaseCharacterModel
             {
                 CharacterType = type,
-                GraphicPresetId = ContentProvider.CharacterGraphicPreset.Data.GetRandom().Id,
-                AI = ContentProvider.BehaviorsData.Containers.GetRandom().Elements.Select(x => x.GetClone()).ToList(),
+                GraphicPresetId = ContentProvider.Graphic.CharacterGraphicPreset.Data.GetRandom().Id,
+                AI = ContentProvider.AI.BehaviorsData.Containers.GetRandom().Elements.Select(x => x.GetClone()).ToList(),
                 Stats = new Stats
                 {
                     HeathPoint = 100,
@@ -114,7 +114,7 @@ namespace Gameplay.Characters
 
         public void CreateAndSpawn(BaseCharacterModel model)
         {
-            CharacterGraphicPresetPair preset = ContentProvider.CharacterGraphicPreset.Data.FirstOrDefault(x => x.Id == model.GraphicPresetId);
+            CharacterGraphicPresetPair preset = ContentProvider.Graphic.CharacterGraphicPreset.Data.FirstOrDefault(x => x.Id == model.GraphicPresetId);
 
             if (preset == null)
             {

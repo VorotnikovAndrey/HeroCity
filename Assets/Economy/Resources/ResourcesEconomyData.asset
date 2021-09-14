@@ -19,9 +19,9 @@ MonoBehaviour:
       SheetId: 366509390
   Data:
   - Type: 0
-    Value: 10000000
+    Value: 1000
   - Type: 1
-    Value: 10000000
+    Value: 0
   - Type: 2
     Value: 0
   - Type: 3

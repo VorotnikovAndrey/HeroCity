@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Gameplay;
+using System.Linq;
 using Gameplay.Building;
 using UnityEngine;
 
@@ -10,6 +10,11 @@ namespace Economies
     public class BuildingsEconomy : EconomyFile
     {
         public List<BuildingData> Data = new List<BuildingData>();
+
+        public BuildingData Get(string id)
+        {
+            return Data.FirstOrDefault(x => x.Id == id);
+        }
     }
 
     [Serializable]
@@ -27,5 +32,7 @@ namespace Economies
         public int Stage;
         public int Duration;
         public List<ResourcesData> Price = new List<ResourcesData>();
+        public List<string> ImprovementDependencies = new List<string>();
+        public List<string> ImprovementOpen = new List<string>();
     }
 }

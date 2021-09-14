@@ -23,68 +23,99 @@ MonoBehaviour:
     State: 1
     Upgrades:
     - Stage: 0
-      Duration: 10
+      Duration: 3
       Price:
       - Type: 0
         Value: 1000
+      ImprovementDependencies: []
+      ImprovementOpen:
+      - townhall_upgrade_0
     - Stage: 1
-      Duration: 20
+      Duration: 3
       Price:
       - Type: 0
         Value: 5000
+      ImprovementDependencies: []
+      ImprovementOpen:
+      - townhall_upgrade_1
   - Id: jewelry
     Type: 0
     State: 1
     Upgrades:
     - Stage: 0
-      Duration: 10
+      Duration: 3
       Price:
       - Type: 0
         Value: 500
+      ImprovementDependencies:
+      - townhall_upgrade_0
+      ImprovementOpen:
+      - jewelry_upgrade_0
     - Stage: 1
-      Duration: 20
+      Duration: 3
       Price:
       - Type: 0
         Value: 2000
+      ImprovementDependencies: []
+      ImprovementOpen:
+      - jewelry_upgrade_1
   - Id: smithy
     Type: 0
     State: 1
     Upgrades:
     - Stage: 0
-      Duration: 10
+      Duration: 3
       Price:
       - Type: 0
         Value: 500
+      ImprovementDependencies:
+      - townhall_upgrade_0
+      ImprovementOpen:
+      - smithy_upgrade_0
     - Stage: 1
-      Duration: 20
+      Duration: 3
       Price:
       - Type: 0
         Value: 2000
+      ImprovementDependencies: []
+      ImprovementOpen:
+      - smithy_upgrade_1
   - Id: armory
     Type: 0
     State: 1
     Upgrades:
     - Stage: 0
-      Duration: 10
+      Duration: 3
       Price:
       - Type: 0
         Value: 500
+      ImprovementDependencies:
+      - townhall_upgrade_0
+      ImprovementOpen:
+      - armory_upgrade_0
     - Stage: 1
-      Duration: 20
+      Duration: 3
       Price:
       - Type: 0
         Value: 2000
+      ImprovementDependencies: []
+      ImprovementOpen:
+      - armory_upgrade_1
   - Id: warehouse
     Type: 0
     State: 1
     Upgrades:
     - Stage: 0
-      Duration: 10
+      Duration: 3
       Price:
       - Type: 0
         Value: 500
+      ImprovementDependencies:
+      - townhall_upgrade_0
+      ImprovementOpen:
+      - warehouse_upgrade_0
     - Stage: 1
-      Duration: 20
+      Duration: 3
       Price:
       - Type: 0
         Value: 2000
@@ -92,3 +123,6 @@ MonoBehaviour:
         Value: 100
       - Type: 2
         Value: 20
+      ImprovementDependencies: []
+      ImprovementOpen:
+      - warehouse_upgrade_1

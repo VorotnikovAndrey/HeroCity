@@ -1,7 +1,6 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using Content;
-using Economies;
 using Events;
 using Gameplay.Building;
 using Gameplay.Building.Models;
@@ -19,12 +18,11 @@ namespace UI.Popups
     {
         public override PopupType Type => PopupType.Building;
 
-        [SerializeField] private BuildingUpgradePage _upgradePage;
+        [SerializeField] private List<BuildingPopupPageElement> _pages;
         [SerializeField] private LocalEvents _events;
 
         private BuildingsManager _buildingsManager;
         private BuildingModel _buildingModel;
-        private BuildingData _buildingData;
         private string _buildingId;
 
         protected override void OnAwake()
@@ -34,12 +32,8 @@ namespace UI.Popups
 
         protected override void OnShow(object args = null)
         {
-            if (args != null)
-            {
-                _buildingId = args.ToString();
-            }
+            _buildingId = args?.ToString();
 
-            _buildingData = ContentProvider.BuildingsEconomy.Data.FirstOrDefault(x => x.Id == _buildingId);
             _buildingModel = _buildingsManager.GetBuildingModel(_buildingId);
             if (_buildingModel == null)
             {
@@ -49,20 +43,19 @@ namespace UI.Popups
 
             _events.EmitTitleText?.Invoke($"{_buildingModel.Id}");
 
+            foreach (var page in _pages)
+            {
+                page.Initialize(_buildingModel);
+            }
 
-            OpenUpgradePage();
+            SwitchPage(_buildingModel.State.Value == BuildingState.Inactive ? 1 : 0);
         }
 
-        private void OpenUpgradePage()
+        protected override void OnHide()
         {
-            if (_buildingModel.Stage < _buildingData.Upgrades.Count)
+            foreach (var page in _pages)
             {
-                _upgradePage.gameObject.SetActive(true);
-                _upgradePage.Initialize(_buildingModel);
-            }
-            else
-            {
-                _upgradePage.gameObject.SetActive(false);
+                page.DeInitialize();
             }
         }
 
@@ -89,6 +82,27 @@ namespace UI.Popups
             });
 
             Hide();
+        }
+
+        private void SwitchPage(int index)
+        {
+            foreach (BuildingPopupPageElement page in _pages)
+            {
+                if (Check(index))
+                {
+                    page.Object.SetActive(page.Index == index);
+                }
+            }
+        }
+
+        private bool Check(int index)
+        {
+            switch (index)
+            {
+                case 1: return _buildingModel.Stage < ContentProvider.Economies.BuildingsEconomy.Get(_buildingId).Upgrades.Count;
+            }
+
+            return true;
         }
 
         [Serializable]

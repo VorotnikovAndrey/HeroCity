@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Gameplay;
+using System.Linq;
 using ResourceSystem;
 using UnityEngine;
 
@@ -10,6 +10,11 @@ namespace Economies
     public class ResourcesEconomy : EconomyFile
     {
         public List<ResourcesData> Data = new List<ResourcesData>();
+
+        public ResourcesData Get(ResourceType type)
+        {
+            return Data.FirstOrDefault(x => x.Type == type);
+        }
     }
 
     [Serializable]

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UI.Popups.Components;
 using UnityEngine;
-using Utils;
 
 namespace Gameplay.Building.View
 {
@@ -18,8 +17,6 @@ namespace Gameplay.Building.View
 
         public void SetState(BuildingState buildingState)
         {
-            Debug.Log($"{BuildingId.AddColorTag(Color.yellow)} set state {buildingState.AddColorTag(Color.yellow)}".AddColorTag(Color.red));
-
             foreach (BuildingStateContainer state in States)
             {
                 bool valid = state.State == buildingState;
@@ -46,8 +43,6 @@ namespace Gameplay.Building.View
 
         public void SetStage(int stage)
         {
-            Debug.Log($"{BuildingId.AddColorTag(Color.yellow)} set stage {stage.AddColorTag(Color.yellow)}".AddColorTag(Color.red));
-
             foreach (var element in ActiveContainer.Stages)
             {
                 bool value = element.Stage == stage;

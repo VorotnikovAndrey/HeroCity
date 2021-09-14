@@ -5,7 +5,6 @@ using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Economies.Parsing.Mapping;
-using Gameplay;
 using Gameplay.Building;
 using ResourceSystem;
 using UnityEditor;
@@ -101,6 +100,29 @@ namespace Economies.Editor
                             Stage = lastStage,
                             Duration = Convert.ToInt32(line.UpgradeDuration)
                         };
+
+                        if (!string.IsNullOrEmpty(line.ImprovementDependencies))
+                        {
+                            upgrade.ImprovementDependencies = line.ImprovementDependencies.Split(',').ToList();
+                        }
+
+                        if (!string.IsNullOrEmpty(line.ImprovementDependencies))
+                        {
+                            upgrade.ImprovementDependencies = line.ImprovementDependencies.Replace(" ", "")
+                                .Replace("\n", "")
+                                .Split(',')
+                                .Where(x => x != string.Empty)
+                                .ToList();
+                        }
+
+                        if (!string.IsNullOrEmpty(line.ImprovementOpen))
+                        {
+                            upgrade.ImprovementOpen = line.ImprovementOpen.Replace(" ", "")
+                                .Replace("\n", "")
+                                .Split(',')
+                                .Where(x => x != string.Empty)
+                                .ToList();
+                        }
 
                         element.Upgrades.Add(upgrade);
                     }

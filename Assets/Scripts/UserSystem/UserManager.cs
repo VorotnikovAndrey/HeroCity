@@ -77,8 +77,9 @@ namespace UserSystem
             CurrentUser = new UserModel(defaultResources)
             {
                 Time = new TimeSpan(0, 12, 0, 0),
-                CurrentLocationId = ContentProvider.LocationsEconomy.Data.First().Id,
-                Locations = new Dictionary<string, LocationModel>()
+                CurrentLocationId = ContentProvider.Economies.LocationsEconomy.Data.First().Id,
+                Locations = new Dictionary<string, LocationModel>(),
+                Improvement = new List<string>()
             };
 
             var locationModel = new LocationModel
@@ -89,7 +90,7 @@ namespace UserSystem
 
             CurrentUser.Locations.Add(locationModel.LocationId, locationModel);
 
-            foreach (var building in ContentProvider.BuildingsEconomy.Data)
+            foreach (var building in ContentProvider.Economies.BuildingsEconomy.Data)
             {
                 CurrentUser.CurrentLocation.Buildings.Add(building.Id, new BuildingModel
                 {
@@ -105,7 +106,7 @@ namespace UserSystem
 
         private int GetValueFromResourceEconomy(ResourceType type)
         {
-            ResourcesEconomy economy = ContentProvider.ResourcesEconomy;
+            ResourcesEconomy economy = ContentProvider.Economies.ResourcesEconomy;
             ResourcesData data = economy.Data.FirstOrDefault(x => x.Type == type);
             if (data != null)
             {

@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e90935ecf41511c4f9fd748117a45f72, type: 3}
+  m_Name: ImprovementEconomyData
+  m_EditorClassIdentifier: 
+  WebAssets:
+    DocumentId: 12C8T-qqpV79vA1YiDH4IOhAMubBkZr0A7kldxhY2cC8
+    FileAssets:
+    - TextAsset: {fileID: 4900000, guid: cd451e0ccaf10384dad8437afd01832b, type: 3}
+      SheetId: 1662527764
+  Data:
+  - Id: townhall_upgrade_0
+    SpriteBankId: debug_icon_common
+    Description: Test description...
+  - Id: townhall_upgrade_1
+    SpriteBankId: debug_icon_rare
+    Description: Test description...
+  - Id: jewelry_upgrade_0
+    SpriteBankId: debug_icon_common
+    Description: Test description...
+  - Id: jewelry_upgrade_1
+    SpriteBankId: debug_icon_rare
+    Description: Test description...
+  - Id: smithy_upgrade_0
+    SpriteBankId: debug_icon_epic
+    Description: Test description...
+  - Id: smithy_upgrade_1
+    SpriteBankId: debug_icon_legendary
+    Description: Test description...
+  - Id: armory_upgrade_0
+    SpriteBankId: debug_icon_epic
+    Description: Test description...
+  - Id: armory_upgrade_1
+    SpriteBankId: debug_icon_legendary
+    Description: Test description...
+  - Id: warehouse_upgrade_0
+    SpriteBankId: debug_icon_common
+    Description: Test description...
+  - Id: warehouse_upgrade_1
+    SpriteBankId: debug_icon_legendary
+    Description: Test description...

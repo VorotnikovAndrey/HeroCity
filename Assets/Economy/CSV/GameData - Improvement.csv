@@ -1,0 +1,11 @@
+Id,Description,SpriteBankId
+townhall_upgrade_0,Test description...,debug_icon_common
+townhall_upgrade_1,Test description...,debug_icon_rare
+jewelry_upgrade_0,Test description...,debug_icon_common
+jewelry_upgrade_1,Test description...,debug_icon_rare
+smithy_upgrade_0,Test description...,debug_icon_epic
+smithy_upgrade_1,Test description...,debug_icon_legendary
+armory_upgrade_0,Test description...,debug_icon_epic
+armory_upgrade_1,Test description...,debug_icon_legendary
+warehouse_upgrade_0,Test description...,debug_icon_common
+warehouse_upgrade_1,Test description...,debug_icon_legendary

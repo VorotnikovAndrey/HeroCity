@@ -11,5 +11,7 @@ namespace Economies.Parsing.Mapping
         [Name("UpgradeResourceType"), Default("")] public string UpgradeResourceType { get; set; }
         [Name("UpgradeResourceValue"), Default("")] public string UpgradeResourceValue { get; set; }
         [Name("UpgradeDuration"), Default("")] public string UpgradeDuration { get; set; }
+        [Name("ImprovementDependencies"), Default("")] public string ImprovementDependencies { get; set; }
+        [Name("ImprovementOpen"), Default("")] public string ImprovementOpen { get; set; }
     }
 }

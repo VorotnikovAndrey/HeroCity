@@ -62,7 +62,7 @@ namespace Economies.Editor
                 csv.Configuration.HasHeaderRecord = true;
                 csv.Configuration.Delimiter = ",";
 
-                foreach (ResourcesMapping line in csv.EnumerateRecords(new ResourcesMapping()))
+                foreach (ResourcesDataMapping line in csv.EnumerateRecords(new ResourcesDataMapping()))
                 {
                     _target.Data.Add(new ResourcesData
                     {

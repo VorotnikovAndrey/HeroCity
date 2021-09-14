@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using CameraSystem;
 using Content;
 using Economies;
 using Events;
 using Gameplay.Building.Models;
-using Gameplay.Building.View;
 using Gameplay.Locations.Models;
 using Gameplay.Locations.View;
 using PopupSystem;
@@ -25,7 +22,6 @@ namespace Gameplay.Building
         private readonly PopupManager<PopupType> _popupManager;
         private readonly EventAggregator _eventAggregator;
         private readonly TimeTicker _timeTicker;
-        private readonly CameraManager _cameraManager;
         private readonly LocationCamera _locationCamera;
         private readonly GameResourceManager _gameResourceManager;
         private readonly BuildingsEconomy _buildingsEconomy;
@@ -39,11 +35,10 @@ namespace Gameplay.Building
             _popupManager = ProjectContext.Instance.Container.Resolve<PopupManager<PopupType>>();
             _eventAggregator = ProjectContext.Instance.Container.Resolve<EventAggregator>();
             _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
-            _cameraManager = ProjectContext.Instance.Container.Resolve<CameraManager>();
             _gameResourceManager = ProjectContext.Instance.Container.Resolve<GameResourceManager>();
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
-            _locationCamera = _cameraManager.ActiveCameraView as LocationCamera;
-            _buildingsEconomy = ContentProvider.BuildingsEconomy;
+            _locationCamera = ProjectContext.Instance.Container.Resolve<CameraManager>().ActiveCameraView as LocationCamera;
+            _buildingsEconomy = ContentProvider.Economies.BuildingsEconomy;
         }
 
         public void Initialize()
@@ -174,13 +169,32 @@ namespace Gameplay.Building
                     continue;
                 }
 
-                model.State.Value = BuildingState.Active;
-                model.Stage.Value++;
-
-                Debug.Log($"{model.Id.AddColorTag(Color.yellow)} upgraded to stage {model.Stage.Value.AddColorTag(Color.yellow)}".AddColorTag(Color.red));
-
-                _userManager.Save();
+                UpgradeCompleted(model);
             }
+        }
+
+        private void UpgradeCompleted(BuildingModel model)
+        {
+            var improvements = _buildingsEconomy.Get(model.Id).Upgrades[model.Stage].ImprovementOpen;
+
+            foreach (var improvement in improvements)
+            {
+                if (_userManager.CurrentUser.Improvement.Contains(improvement))
+                {
+                    continue;
+                }
+
+                _userManager.CurrentUser.Improvement.Add(improvement);
+
+                Debug.Log($"Improvement {improvement.AddColorTag(Color.yellow)} unlocked".AddColorTag(Color.cyan));
+            }
+
+            model.State.Value = BuildingState.Active;
+            model.Stage.Value++;
+
+            _userManager.Save();
+
+            Debug.Log($"{model.Id.AddColorTag(Color.yellow)} upgraded to stage {model.Stage.Value.AddColorTag(Color.yellow)}".AddColorTag(Color.cyan));
         }
     }
 }

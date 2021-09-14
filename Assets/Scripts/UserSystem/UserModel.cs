@@ -17,6 +17,7 @@ namespace UserSystem
         [JsonProperty] public Dictionary<string, LocationModel> Locations;
         [JsonProperty] public string CurrentLocationId;
         [JsonProperty] public TimeSpan Time;
+        [JsonProperty] public List<string> Improvement;
 
         public UserModel(Dictionary<ResourceType, int> resources)
         {

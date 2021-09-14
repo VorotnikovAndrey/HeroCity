@@ -29,15 +29,13 @@ public class GameInstaller : MonoInstaller
         Container.Bind<AbstractStageBase>().To<PreloaderStage>().AsSingle();
         Container.Bind<AbstractStageBase>().To<GameplayStage>().AsSingle();
 
-        // Economies
+        // SO
         Container.Bind<LocationsEconomy>().FromScriptableObjectResource("LocationsEconomyData").AsSingle();
         Container.Bind<BuildingsEconomy>().FromScriptableObjectResource("BuildingsEconomyData").AsSingle();
         Container.Bind<ResourcesEconomy>().FromScriptableObjectResource("ResourcesEconomyData").AsSingle();
-
-        // AI
+        Container.Bind<ImprovementEconomy>().FromScriptableObjectResource("ImprovementEconomyData").AsSingle();
         Container.Bind<BehaviorsData>().FromScriptableObjectResource("SO/Characters/AI/BehaviorsData").AsSingle();
-
-        // Other SO
         Container.Bind<CharacterGraphicPreset>().FromScriptableObjectResource("SO/Characters/CharacterGraphicPreset").AsSingle();
+        Container.Bind<SpriteBank>().FromScriptableObjectResource("SO/SpriteBank/SpriteBankData").AsSingle();
     }
 }
