@@ -1,12 +1,9 @@
-using System.Linq;
-using Content;
+using System;
 using Events;
 using Gameplay.Building;
-using Gameplay.Building.Models;
-using Gameplay.Building.View;
 using PopupSystem;
-using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using Utils;
 using Utils.PopupSystem;
 using Zenject;
@@ -17,67 +14,32 @@ namespace UI.Popups
     {
         public override PopupType Type => PopupType.Building;
 
-        [SerializeField] private GameObject _buildButton;
-        [SerializeField] private GameObject _upgradeButton;
-        [SerializeField] private TextMeshProUGUI _buildText;
-        [SerializeField] private TextMeshProUGUI _upgradeText;
+        [SerializeField] private LocalEvents _events;
 
         private BuildingsManager _buildingsManager;
-        private BuildingView _view;
-        private BuildingModel _model;
+        private string _buildingId;
+
+        protected override void OnAwake()
+        {
+            _buildingsManager = ProjectContext.Instance.Container.Resolve<BuildingsManager>();
+        }
 
         protected override void OnShow(object args = null)
         {
             if (args != null)
             {
-                _view = args as BuildingView;
+                _buildingId = args.ToString();
             }
 
-            if (_view == null)
+            var model = _buildingsManager.GetBuildingModel(_buildingId);
+            if (model == null)
             {
-                Debug.LogError("BuildingView is null".AddColorTag(Color.red));
+                Debug.LogError("Model is null".AddColorTag(Color.red));
                 return;
             }
 
-            _buildingsManager = ProjectContext.Instance.Container.Resolve<BuildingsManager>();
-            _model = _buildingsManager.GetBuildingModel(_view.BuildingId);
-
-            if (_model == null)
-            {
-                Debug.LogError("BuildingModel is null".AddColorTag(Color.red));
-                return;
-            }
-
-            var priceText = _buildingsManager.GetUpgradePriceText(_model.Id, _model.Stage);
-            _buildText.text = _upgradeText.text = priceText;
-
-            _buildButton.SetActive(_model.State == BuildingState.Inactive);
-            _upgradeButton.SetActive(_model.State == BuildingState.Active);
-        }
-
-        public void OnExitPressed()
-        {
-            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent
-            {
-                ReturnToPrevPos = true
-            });
-
-            Hide();
-        }
-
-        public void OnBuildPressed()
-        {
-            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent
-            {
-                ReturnToPrevPos = false
-            });
-
-            EventAggregator.SendEvent(new BuildBuildingEvent
-            {
-                View = _view
-            });
-
-            Hide();
+            _events.EmitTitleText?.Invoke($"{model.Id} {model.Stage.Value}");
+            _events.EmitPriceText?.Invoke(_buildingsManager.GetUpgradePriceText(_buildingId, model.Stage.Value));
         }
 
         public void OnUpgradePressed()
@@ -89,10 +51,28 @@ namespace UI.Popups
 
             EventAggregator.SendEvent(new UpgradeBuildingEvent
             {
-                View = _view
+                BuildingId = _buildingId
             });
 
             Hide();
+        }
+
+        public void OnHidePressed()
+        {
+            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent
+            {
+                ReturnToPrevPos = true
+            });
+
+            Hide();
+        }
+
+        [Serializable]
+        public class LocalEvents
+        {
+            public UnityEvent<string> EmitTitleText;
+            public UnityEvent<string> EmitPriceText;
+
         }
     }
 }

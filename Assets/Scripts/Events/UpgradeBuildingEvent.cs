@@ -1,10 +1,9 @@
-﻿using Gameplay.Building.View;
-using Utils.Events;
+﻿using Utils.Events;
 
 namespace Events
 {
     public class UpgradeBuildingEvent : BaseEvent
     {
-        public BuildingView View;
+        public string BuildingId;
     }
 }

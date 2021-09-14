@@ -11,7 +11,6 @@ namespace UI.Popups.Components
         [SerializeField] private TextMeshProUGUI _timerText;
         [SerializeField] private Image _fillImage;
 
-        private long _startUnixTime;
         private long _endUnixTime;
         private Tweener _tweener;
         private float _progress;
@@ -43,9 +42,8 @@ namespace UI.Popups.Components
             }
         }
 
-        public void Initialize(long startUnixTime, long endUnixTime)
+        public void Initialize(long endUnixTime)
         {
-            _startUnixTime = startUnixTime;
             _endUnixTime = endUnixTime;
 
             Holder.SetActive(true);

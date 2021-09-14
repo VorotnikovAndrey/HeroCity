@@ -104,7 +104,7 @@ MonoBehaviour:
   _successiveVelocityThreshold: 15
   _smoothTimeVelocityDependenceModif: 5
   _smoothTimeVelocityDependenceClamp: 0.5
-  _camDistanceFromTarget: 8
+  _camDistanceFromTarget: 16
   _closeViewZoom: 12
   _offsetYK: 0
   _zoomSensitivity: 10

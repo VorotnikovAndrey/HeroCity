@@ -52,7 +52,6 @@ namespace Gameplay.Building
 
             _eventAggregator.Add<BuildingViewSelectedEvent>(OnBuildingViewSelected);
             _eventAggregator.Add<BuildingViewUnSelectedEvent>(OnBuildingViewUnSelected);
-            _eventAggregator.Add<BuildBuildingEvent>(OnBuildBuilding);
             _eventAggregator.Add<UpgradeBuildingEvent>(OnUpgradeBuilding);
 
             UpdateUpgrades();
@@ -64,7 +63,6 @@ namespace Gameplay.Building
         {
             _eventAggregator.Remove<BuildingViewSelectedEvent>(OnBuildingViewSelected);
             _eventAggregator.Remove<BuildingViewUnSelectedEvent>(OnBuildingViewUnSelected);
-            _eventAggregator.Remove<BuildBuildingEvent>(OnBuildBuilding);
             _eventAggregator.Remove<UpgradeBuildingEvent>(OnUpgradeBuilding);
 
             ProjectContext.Instance.Container.Unbind<BuildingsManager>();
@@ -97,17 +95,13 @@ namespace Gameplay.Building
 
             _locationCamera.SwitchToViewTransform(sender.View.transform, sender.View.ActiveStageElement.CameraOffset != null ?
                 sender.View.ActiveStageElement.CameraOffset.Offset : Vector3.zero);
-            _popupManager.ShowPopup(PopupType.Building, sender.View);
-        }
 
-        private void OnBuildBuilding(BuildBuildingEvent sender)
-        {
-            TryUpgradeBuilding(sender.View.BuildingId);
+            _popupManager.ShowPopup(PopupType.Building, sender.View.BuildingId);
         }
 
         private void OnUpgradeBuilding(UpgradeBuildingEvent sender)
         {
-            TryUpgradeBuilding(sender.View.BuildingId);
+            TryUpgradeBuilding(sender.BuildingId);
         }
 
         private void TryUpgradeBuilding(string buildingId)
@@ -153,11 +147,10 @@ namespace Gameplay.Building
             }
 
             var currentTime = DateTimeUtils.GetCurrentTime();
-            model.UpgradeStartUnixTime = currentTime;
             model.UpgradeEndUnixTime = currentTime + upgradeInfo.Duration;
             model.State.Value = BuildingState.Upgrade;
             model.Stage.ForceEvent();
-            view.UpgradeBar.Initialize(model.UpgradeStartUnixTime, model.UpgradeEndUnixTime);
+            view.UpgradeBar.Initialize(model.UpgradeEndUnixTime);
 
             _userManager.Save();
         }
@@ -214,7 +207,7 @@ namespace Gameplay.Building
                 }
             }
 
-            return array.Aggregate(result, (current, value) => current + value + " ");
+            return array.Aggregate(result, (current, value) => current + value + "  ");
         }
     }
 }

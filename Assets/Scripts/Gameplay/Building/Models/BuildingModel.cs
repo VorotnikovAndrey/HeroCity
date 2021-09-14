@@ -11,7 +11,6 @@ namespace Gameplay.Building.Models
         [JsonProperty] public BuildingType Type;
         [JsonProperty] public EventVariable<int> Stage = new EventVariable<int>();
         [JsonProperty] public EventVariable<BuildingState> State = new EventVariable<BuildingState>();
-        [JsonProperty] public long UpgradeStartUnixTime;
         [JsonProperty] public long UpgradeEndUnixTime;
     }
 }
