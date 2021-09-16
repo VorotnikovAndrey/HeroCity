@@ -2,6 +2,8 @@ using CameraSystem;
 using Characters;
 using Characters.AI.Behaviors;
 using Economies;
+using Gameplay.Characters;
+using Gameplay.Characters.AI.Behaviors;
 using PopupSystem;
 using ResourceSystem;
 using Stages;

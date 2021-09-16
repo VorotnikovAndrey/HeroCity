@@ -1,6 +1,8 @@
 using Characters;
 using Characters.AI.Behaviors;
 using Economies;
+using Gameplay.Characters;
+using Gameplay.Characters.AI.Behaviors;
 using Utils;
 using Zenject;
 

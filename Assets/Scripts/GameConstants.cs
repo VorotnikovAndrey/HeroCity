@@ -4,7 +4,7 @@ public static class GameConstants
     {
         public const string DefaultFormat = "{0}";
         public const string PopupFormat = "Popups/{0}Popup";
-        public const string LocationsFormat = "Locations/{0}";
+        public const string LocationsFormat = "Locations/{0}/{0}";
         public const string CameraFormat = "Camera/{0}Camera";
     }
 

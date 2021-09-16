@@ -1,4 +1,5 @@
 using Events;
+using Gameplay.Characters.AI.Behaviors;
 using Gameplay.Locations.View;
 using Source;
 using UnityEngine;

@@ -3,7 +3,7 @@ using Utils.Events;
 
 namespace Events
 {
-    public class CharacterLeavedFromLocationEvent : BaseEvent
+    public class ReleaseCharacterEvent : BaseEvent
     {
         public BaseCharacterModel Model;
     }

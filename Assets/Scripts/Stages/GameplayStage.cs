@@ -116,7 +116,7 @@ namespace Stages
             _locationView.DestroyAndRemoveFromPool();
             _locationView = null;
 
-            GC.Collect(0, GCCollectionMode.Forced);
+            //GC.Collect(0, GCCollectionMode.Forced);
         }
 
         public override void Show()

@@ -1,25 +1,43 @@
+using Characters;
+using Gameplay.Characters.Models;
 using UnityEngine;
 using Utils.ObjectPool;
 
-namespace Characters
+namespace Gameplay.Characters
 {
     public class BaseCharacterView : AbstractBaseView
     {
         [SerializeField] protected Transform GraphicHolder;
         [SerializeField] protected Vector3 GraphicOffset;
 
-        public virtual Animator Animator { get; protected set; }
+        public BaseCharacterModel Model { get; protected set; }
+        public Animator Animator { get; protected set; }
 
         protected GameObject Graphic;
 
-        public void SetGraphic(CharacterGraphicPresetPair preset)
+        public void Initialize(BaseCharacterModel model)
+        {
+            Model = model;
+        }
+
+        public void DeInitialize()
+        {
+            Model = null;
+
+            if (Graphic != null)
+            {
+                Destroy(Graphic);
+            }
+        }
+
+        public void SetGraphic(GameObject graphic)
         {
             if (Graphic != null)
             {
                 Destroy(Graphic);
             }
 
-            Graphic = Instantiate(preset.Object, GraphicHolder);
+            Graphic = Instantiate(graphic, GraphicHolder);
             Graphic.transform.localPosition = GraphicOffset;
 
             // TODO:

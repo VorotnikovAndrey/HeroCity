@@ -1,168 +1,114 @@
 using System.Collections.Generic;
-using System.Linq;
-using Asyncoroutine;
 using Characters;
-using Characters.Components;
-using Characters.Models;
 using Content;
 using Events;
-using Gameplay.Locations.View;
-using Source;
+using Gameplay.Characters.Components;
+using Gameplay.Characters.Models;
+using Gameplay.Movement;
 using UnityEngine;
-using UserSystem;
 using Utils;
 using Utils.Events;
-using Utils.ObjectPool;
-using Utils.Pathfinding;
 using Zenject;
 
 namespace Gameplay.Characters
 {
     public class CharactersSystem
     {
+        private readonly Dictionary<CharacterType, BaseCharacterComponent> _components;
+
         private EventAggregator _eventAggregator;
-        private UserManager _userManager;
         private TimeTicker _timeTicker;
-        private LocationView _locationView;
 
-        private Dictionary<CharacterType, BaseCharacterComponent> _components;
-        private List<BaseCharacterModel> _characters;
-
-        // TODO:
-        private static readonly int Move = Animator.StringToHash("Move");
-
-        public virtual void Initialize()
+        public CharactersSystem()
         {
-            _locationView = ProjectContext.Instance.Container.Resolve<LocationView>();
-            _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
-            _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
-            _eventAggregator = ProjectContext.Instance.Container.Resolve<EventAggregator>();
-
             _components = new Dictionary<CharacterType, BaseCharacterComponent>
             {
                 {CharacterType.Default, new BaseCharacterComponent()},
-                {CharacterType.Hero, new BaseCharacterComponent()},
-                {CharacterType.Citizen, new BaseCharacterComponent()},
-                {CharacterType.Employee, new BaseCharacterComponent()},
-                {CharacterType.Enemy, new BaseCharacterComponent()}
+                {CharacterType.Hero, new HeroCharacterComponent()},
+                {CharacterType.Enemy, new EnemyCharacterComponent()},
             };
+        }
 
-            _characters = new List<BaseCharacterModel>();
+        public virtual void Initialize()
+        {
+            _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
+            _eventAggregator = ProjectContext.Instance.Container.Resolve<EventAggregator>();
 
-            _eventAggregator.Add<CharacterLeavedFromLocationEvent>(OnCharacterLeavedFromLocation);
-
-            foreach (var component in _components.Values)
+            foreach (var component in _components)
             {
-                component.Initialize();
+                component.Value.Initialize();
             }
 
             _timeTicker.OnTick += Update;
 
-            PlayDebug();
+            _eventAggregator.Add<CreateCharacterEvent>(CreateCharacter);
+            _eventAggregator.Add<ReleaseCharacterEvent>(ReleaseCharacter);
         }
 
         public virtual void DeInitialize()
         {
+            _eventAggregator.Remove<CreateCharacterEvent>(CreateCharacter);
+            _eventAggregator.Remove<ReleaseCharacterEvent>(ReleaseCharacter);
+
             _timeTicker.OnTick -= Update;
 
-            _eventAggregator.Remove<CharacterLeavedFromLocationEvent>(OnCharacterLeavedFromLocation);
-
-            foreach (var component in _components.Values)
+            foreach (var component in _components)
             {
-                component.DeInitialize();
+                component.Value.DeInitialize();
             }
-
-            for (int i = 0; i < _characters.Count; i++)
-            {
-                _characters[i].View.DestroyAndRemoveFromPool();
-                _characters[i].Dispose();
-            }
-
-            _characters.Clear();
         }
 
         private void Update()
         {
-            for (int i = 0; i < _characters.Count; i++)
+            foreach (var component in _components)
             {
-                var element = _characters[i];
-                if (element == null)
-                {
-                    continue;
-                }
+                component.Value.Update();
+            }
 
-                _components[element.CharacterType].Update(element);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                ApplyDebug();
             }
         }
 
-        public BaseCharacterModel CreateModel(CharacterType type)
+        private void CreateCharacter(CreateCharacterEvent sender)
         {
-            BaseCharacterModel model = new BaseCharacterModel
+            if (sender.Model == null)
             {
-                CharacterType = type,
-                GraphicPresetId = ContentProvider.Graphic.CharacterGraphicPreset.Data.GetRandom().Id,
-                AI = ContentProvider.AI.BehaviorsData.Containers.GetRandom().Elements.Select(x => x.GetClone()).ToList(),
-                Stats = new Stats
-                {
-                    HeathPoint = 100,
-                    MovementSpeed = 2f
-                }
-            };
-
-            return model;
-        }
-
-        public void CreateAndSpawn(BaseCharacterModel model)
-        {
-            CharacterGraphicPresetPair preset = ContentProvider.Graphic.CharacterGraphicPreset.Data.FirstOrDefault(x => x.Id == model.GraphicPresetId);
-
-            if (preset == null)
-            {
-                Debug.LogError($"Graphic {model.GraphicPresetId.AddColorTag(Color.yellow)} is not found!".AddColorTag(Color.red));
+                Debug.LogError("Model is null".AddColorTag(Color.red));
                 return;
             }
 
-            var startPosition = _locationView.WaypointsContainer.GetTypePositions(MapWaypointType.Enter).GetRandom().Position;
+            _components[sender.Model.CharacterType].Add(sender.Model);
+        }
 
-            BaseCharacterView view = ViewGenerator.GetOrCreateItemView<BaseCharacterView>(GameConstants.View.DefaultCharacterPath, true, new ViewCreateParams
+        private void ReleaseCharacter(ReleaseCharacterEvent sender)
+        {
+            if (sender.Model == null)
             {
-                Position = startPosition
+                Debug.LogError("Model is null".AddColorTag(Color.red));
+                return;
+            }
+
+            _components[sender.Model.CharacterType].Remove(sender.Model);
+        }
+
+        private void ApplyDebug()
+        {
+            _eventAggregator.SendEvent(new CreateCharacterEvent
+            {
+                Model = new BaseCharacterModel
+                {
+                    CharacterType = CharacterType.Hero,
+                    GraphicPresetId = ContentProvider.Graphic.CharacterGraphicPreset.GetRandom(),
+                    Movement = new WaypointMovement(),
+                    Stats = new Stats
+                    {
+                        HeathPoint = 100,
+                        MovementSpeed = 3f
+                    }
+                }
             });
-
-            model.View = view;
-            view.SetGraphic(preset);
-            model.Movement = new Movement.Movement(view.Transform, startPosition, model.Stats.MovementSpeed);
-            model.Movement.IsMoving.AddListener(x => view.Animator.SetBool(Move, x));
-            model.ApplyAiSequention(model);
-
-            _characters.Add(model);
-        }
-
-        public void ReleaseCharacter(BaseCharacterModel model)
-        {
-            if (!_characters.Contains(model))
-            {
-                Debug.LogError("This model has view".AddColorTag(Color.red));
-                return;
-            }
-
-            model.View.ReleaseItemView();
-            _characters.Remove(model);
-            model.Dispose();
-        }
-
-        private void OnCharacterLeavedFromLocation(CharacterLeavedFromLocationEvent sender)
-        {
-            ReleaseCharacter(sender.Model);
-        }
-
-        private async void PlayDebug()
-        {
-            for (int i = 0; i < 20; i++)
-            {
-                CreateAndSpawn(CreateModel(CharacterType.Default));
-                await new WaitForSeconds(5f);
-            }
         }
     }
 }

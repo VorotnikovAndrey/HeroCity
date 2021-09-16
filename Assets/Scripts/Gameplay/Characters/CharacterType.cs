@@ -1,4 +1,4 @@
-namespace Characters
+namespace Gameplay.Characters
 {
     public enum CharacterType
     {

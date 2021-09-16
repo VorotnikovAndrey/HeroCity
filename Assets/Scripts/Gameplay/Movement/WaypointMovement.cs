@@ -8,7 +8,7 @@ using Zenject;
 
 namespace Gameplay.Movement
 {
-    public class Movement
+    public class WaypointMovement : IMovable
     {
         public EventVariable<bool> IsMoving { get; } = new EventVariable<bool>();
 
@@ -25,7 +25,7 @@ namespace Gameplay.Movement
 
         public float MovementSpeed { get; private set; }
 
-        public Movement(Transform view, Vector3 startPosition, float speed)
+        public void Initialize(Transform view, Vector3 startPosition, float speed)
         {
             _viewTransform = view;
             _currentTargetPos = startPosition;
@@ -33,10 +33,15 @@ namespace Gameplay.Movement
             _waypointSystem = ProjectContext.Instance.Container.Resolve<WaypointSystem>();
         }
 
-        public void Update(float deltaTime)
+        public void Update()
         {
-            UpdateMovement(deltaTime);
-            UpdateCurrentPosition(deltaTime);
+            if (_viewTransform == null)
+            {
+                return;
+            }
+
+            UpdateMovement();
+            UpdateCurrentPosition();
 
             IsMoving.Value = _currentPath?.Count > 0;
         }
@@ -95,7 +100,7 @@ namespace Gameplay.Movement
             _currentPath.Push(new VirtualWaypoint(_currentTargetPos));
         }
 
-        public void Teleport(Vector3 destination, bool callbackSuccess = false)
+        public void Warp(Vector3 destination, bool callbackSuccess = false)
         {
             InvokeMovementEndCallback(callbackSuccess);
             Stop(false);
@@ -104,13 +109,7 @@ namespace Gameplay.Movement
             _currentTargetPos = destination;
         }
 
-        public void TeleportWithoutInvoke(Vector3 destination)
-        {
-            _viewTransform.position = destination;
-            _currentTargetPos = destination;
-        }
-
-        private void UpdateMovement(float deltaTime)
+        private void UpdateMovement()
         {
             if (_currentPath == null || _currentPath.Count == 0)
             {
@@ -119,7 +118,7 @@ namespace Gameplay.Movement
 
             if (_moveTimeCurrent < _moveTimeTotal)
             {
-                _moveTimeCurrent += deltaTime;
+                _moveTimeCurrent += UnityEngine.Time.deltaTime;
 
                 if (_moveTimeCurrent > _moveTimeTotal)
                 {
@@ -161,11 +160,11 @@ namespace Gameplay.Movement
             }
         }
 
-        private void UpdateCurrentPosition(float deltaTime)
+        private void UpdateCurrentPosition()
         {
             _viewTransform.position = Vector3.Distance(_currentTargetPos, _viewTransform.position) > 1 
                 ? _currentTargetPos
-                : Vector3.Lerp(_viewTransform.position, _currentTargetPos, deltaTime * 10);
+                : Vector3.Lerp(_viewTransform.position, _currentTargetPos, UnityEngine.Time.deltaTime * 10);
         }
 
         public void Stop(bool invokeCallback = true)

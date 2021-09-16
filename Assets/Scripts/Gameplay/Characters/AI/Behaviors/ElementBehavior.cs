@@ -1,8 +1,7 @@
 using System;
-using Characters.Models;
-using UnityEngine;
+using Gameplay.Characters.Models;
 
-namespace Characters.AI.Behaviors
+namespace Gameplay.Characters.AI.Behaviors
 {
     [Serializable]
     public abstract class ElementBehavior : EventScriptableObjectBehavior
