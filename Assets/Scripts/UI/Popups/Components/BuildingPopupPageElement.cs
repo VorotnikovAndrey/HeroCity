@@ -8,7 +8,7 @@ using Zenject;
 
 namespace UI.Popups.Components
 {
-    public class BuildingPopupPageElement : MonoBehaviour
+    public class BuildingPopupPageElement : EventMonoBehavior
     {
         public int Index;
         public GameObject Object;

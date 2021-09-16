@@ -175,7 +175,9 @@ namespace Gameplay.Building
 
         private void UpgradeCompleted(BuildingModel model)
         {
-            var improvements = _buildingsEconomy.Get(model.Id).Upgrades[model.Stage].ImprovementOpen;
+            var economy = _buildingsEconomy.Get(model.Id);
+            var upgrade = economy.Upgrades[model.Stage];
+            var improvements = upgrade.ImprovementOpen;
 
             foreach (var improvement in improvements)
             {
@@ -185,6 +187,11 @@ namespace Gameplay.Building
                 }
 
                 _userManager.CurrentUser.Improvement.Add(improvement);
+
+                _eventAggregator.SendEvent(new ImprovementReceivedEvent
+                {
+                    Improvements = improvements
+                });
 
                 Debug.Log($"Improvement {improvement.AddColorTag(Color.yellow)} unlocked".AddColorTag(Color.cyan));
             }
