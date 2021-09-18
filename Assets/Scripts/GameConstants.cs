@@ -25,4 +25,9 @@ public static class GameConstants
     {
         public const string Red = "<color=#C20505>{0}</color>";
     }
+
+    public static class Reason
+    {
+        public const string DefaultInterruptedReason = "Default";
+    }
 }

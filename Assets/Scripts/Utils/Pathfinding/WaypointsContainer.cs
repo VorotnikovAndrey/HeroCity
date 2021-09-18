@@ -37,9 +37,11 @@ namespace Utils.Pathfinding
             }
         }
 
-        public List<MapWaypoint> GetTypePositions(MapWaypointType type)
+        public List<MapWaypoint> GetTypePositions(MapWaypointType type, bool ignoreLocked = false)
         {
-            return Waypoints.Where(x => x.WaypointType == type).ToList();
+            return ignoreLocked 
+                ? Waypoints.Where(x => x.WaypointType == type && x.IsLocked == false).ToList()
+                : Waypoints.Where(x => x.WaypointType == type).ToList();
         }
 
         public MapWaypoint FindClosestWaypoint(Vector3 target, Func<MapWaypoint, bool> check = null, MapWaypointType type = MapWaypointType.Undefined)

@@ -1,47 +1,50 @@
-using Characters;
 using Gameplay.Characters.Models;
 using UnityEngine;
+using Utils;
 using Utils.ObjectPool;
 
 namespace Gameplay.Characters
 {
     public class BaseCharacterView : AbstractBaseView
     {
-        [SerializeField] protected Transform GraphicHolder;
-        [SerializeField] protected Vector3 GraphicOffset;
+        [SerializeField] protected CharacterAnimatorController _animatorController;
+        [SerializeField] protected Transform _graphicHolder;
+        [SerializeField] protected Vector3 _graphicOffset;
 
-        public BaseCharacterModel Model { get; protected set; }
-        public Animator Animator { get; protected set; }
+        private BaseCharacterModel _model;
 
-        protected GameObject Graphic;
+        protected GameObject _graphic;
 
-        public void Initialize(BaseCharacterModel model)
+        public CharacterAnimatorController AnimatorController => _animatorController;
+
+        public override void Initialize(object data)
         {
-            Model = model;
+            _model = data as BaseCharacterModel;
         }
 
-        public void DeInitialize()
+        public override void Deinitialize()
         {
-            Model = null;
+            _model = null;
 
-            if (Graphic != null)
+            if (_graphic != null)
             {
-                Destroy(Graphic);
+                Destroy(_graphic);
             }
+
+            base.Deinitialize();
         }
 
         public void SetGraphic(GameObject graphic)
         {
-            if (Graphic != null)
+            if (_graphic != null)
             {
-                Destroy(Graphic);
+                Destroy(_graphic);
             }
 
-            Graphic = Instantiate(graphic, GraphicHolder);
-            Graphic.transform.localPosition = GraphicOffset;
+            _graphic = Instantiate(graphic, _graphicHolder);
+            _graphic.transform.localPosition = _graphicOffset;
 
-            // TODO:
-            Animator = Graphic.GetComponent<Animator>();
+            AnimatorController.SetAnimator(_graphic.GetComponent<Animator>());
         }
     }
 }

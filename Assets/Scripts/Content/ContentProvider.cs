@@ -1,8 +1,5 @@
-using Characters;
-using Characters.AI.Behaviors;
 using Economies;
 using Gameplay.Characters;
-using Gameplay.Characters.AI.Behaviors;
 using Utils;
 using Zenject;
 
@@ -75,20 +72,6 @@ namespace Content
 
         public class AI
         {
-            private static BehaviorsData _behaviorsData;
-
-            public static BehaviorsData BehaviorsData
-            {
-                get
-                {
-                    if (_behaviorsData == null)
-                    {
-                        _behaviorsData = ProjectContext.Instance.Container.Resolve<BehaviorsData>();
-                    }
-
-                    return _behaviorsData;
-                }
-            }
         }
 
         public class Graphic

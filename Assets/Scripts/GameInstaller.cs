@@ -1,9 +1,6 @@
 using CameraSystem;
-using Characters;
-using Characters.AI.Behaviors;
 using Economies;
 using Gameplay.Characters;
-using Gameplay.Characters.AI.Behaviors;
 using PopupSystem;
 using ResourceSystem;
 using Stages;
@@ -36,7 +33,6 @@ public class GameInstaller : MonoInstaller
         Container.Bind<BuildingsEconomy>().FromScriptableObjectResource("BuildingsEconomyData").AsSingle();
         Container.Bind<ResourcesEconomy>().FromScriptableObjectResource("ResourcesEconomyData").AsSingle();
         Container.Bind<ImprovementEconomy>().FromScriptableObjectResource("ImprovementEconomyData").AsSingle();
-        Container.Bind<BehaviorsData>().FromScriptableObjectResource("SO/Characters/AI/BehaviorsData").AsSingle();
         Container.Bind<CharacterGraphicPreset>().FromScriptableObjectResource("SO/Characters/CharacterGraphicPreset").AsSingle();
         Container.Bind<SpriteBank>().FromScriptableObjectResource("SO/SpriteBank/SpriteBankData").AsSingle();
     }

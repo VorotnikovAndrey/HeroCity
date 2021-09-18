@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Gameplay.Characters.Models;
 using Source;
 using UnityEngine;
 using Utils.Extensions;
@@ -23,10 +24,12 @@ namespace Utils.Pathfinding
         [HideInInspector] public Transform Transform;
 
         public Vector3 Position => Transform.position;
-        public bool Locked;
+        public bool IsLocked => LockedList.Count(x => x != null) > 0;
 
         [HideInInspector] public MapWaypoint previous;
         [HideInInspector] public float heuristicDist;
+
+        [Space] public List<BaseCharacterModel> LockedList = new List<BaseCharacterModel>();
 
         public T GetParam<T>() where T : MapWaypointParam
         {
@@ -36,8 +39,8 @@ namespace Utils.Pathfinding
         private void OnDrawGizmos()
         {
             Gizmos.color = GetGizmosColor();
-            Gizmos.DrawWireSphere(transform.position, 0.125f);
-            Gizmos.DrawSphere(transform.position, 0.1f);
+            Gizmos.DrawWireSphere(transform.position, 0.35f);
+            Gizmos.DrawSphere(transform.position, 0.35f);
 
             Gizmos.color = Color.white.SetAlpha(0.2f);
             foreach (MapWaypoint neighbor in Neighbors)
@@ -58,7 +61,7 @@ namespace Utils.Pathfinding
                 {
                     case MapWaypointType.Enter: return Color.yellow;
                 }
-                return Color.white.SetAlpha(0.5f);
+                return Color.white.SetAlpha(0.75f);
             }
         }
 

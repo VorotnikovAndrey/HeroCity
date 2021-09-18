@@ -6,6 +6,7 @@ using Gameplay.Characters.Components;
 using Gameplay.Characters.Models;
 using Gameplay.Movement;
 using UnityEngine;
+using UserSystem;
 using Utils;
 using Utils.Events;
 using Zenject;
@@ -16,6 +17,7 @@ namespace Gameplay.Characters
     {
         private readonly Dictionary<CharacterType, BaseCharacterComponent> _components;
 
+        private UserManager _userManager;
         private EventAggregator _eventAggregator;
         private TimeTicker _timeTicker;
 
@@ -26,6 +28,8 @@ namespace Gameplay.Characters
                 {CharacterType.Default, new BaseCharacterComponent()},
                 {CharacterType.Hero, new HeroCharacterComponent()},
                 {CharacterType.Enemy, new EnemyCharacterComponent()},
+                {CharacterType.Citizen, new CitizenCharacterComponent()},
+                {CharacterType.Employee, new EmployeeCharacterComponent()},
             };
         }
 
@@ -33,6 +37,7 @@ namespace Gameplay.Characters
         {
             _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
             _eventAggregator = ProjectContext.Instance.Container.Resolve<EventAggregator>();
+            _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
 
             foreach (var component in _components)
             {
@@ -43,6 +48,8 @@ namespace Gameplay.Characters
 
             _eventAggregator.Add<CreateCharacterEvent>(CreateCharacter);
             _eventAggregator.Add<ReleaseCharacterEvent>(ReleaseCharacter);
+
+            LoadCharacters();
         }
 
         public virtual void DeInitialize()
@@ -71,6 +78,17 @@ namespace Gameplay.Characters
             }
         }
 
+        private void LoadCharacters()
+        {
+            foreach (var model in _userManager.CurrentUser.Characters)
+            {
+                _eventAggregator.SendEvent(new CreateCharacterEvent
+                {
+                    Model = model
+                });
+            }
+        }
+
         private void CreateCharacter(CreateCharacterEvent sender)
         {
             if (sender.Model == null)
@@ -95,20 +113,20 @@ namespace Gameplay.Characters
 
         private void ApplyDebug()
         {
+            var model = new HeroModel
+            {
+                CharacterType = CharacterType.Hero,
+                Movement = new WaypointMovement(),
+                Stats = new Stats()
+            };
+
             _eventAggregator.SendEvent(new CreateCharacterEvent
             {
-                Model = new BaseCharacterModel
-                {
-                    CharacterType = CharacterType.Hero,
-                    GraphicPresetId = ContentProvider.Graphic.CharacterGraphicPreset.GetRandom(),
-                    Movement = new WaypointMovement(),
-                    Stats = new Stats
-                    {
-                        HeathPoint = 100,
-                        MovementSpeed = 3f
-                    }
-                }
+                Model = model
             });
+
+            _userManager.CurrentUser.Characters.Add(model);
+            _userManager.Save(true);
         }
     }
 }

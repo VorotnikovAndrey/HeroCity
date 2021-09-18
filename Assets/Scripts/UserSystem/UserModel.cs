@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Economies;
-using Events;
-using Gameplay;
+using Gameplay.Characters.Models;
 using Gameplay.Locations.Models;
 using Newtonsoft.Json;
 using ResourceSystem;
-using UnityEngine;
 
 namespace UserSystem
 {
@@ -18,6 +14,7 @@ namespace UserSystem
         [JsonProperty] public string CurrentLocationId;
         [JsonProperty] public TimeSpan Time;
         [JsonProperty] public List<string> Improvement;
+        [JsonProperty] public List<BaseCharacterModel> Characters;
 
         public UserModel(Dictionary<ResourceType, int> resources)
         {

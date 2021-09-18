@@ -5,9 +5,9 @@ using System.Linq;
 using Content;
 using Economies;
 using Events;
-using Gameplay;
 using Gameplay.Building;
 using Gameplay.Building.Models;
+using Gameplay.Characters.Models;
 using Gameplay.Locations.Models;
 using Newtonsoft.Json;
 using ResourceSystem;
@@ -53,6 +53,8 @@ namespace UserSystem
 
         public void Save(bool force = false)
         {
+            SaveCharacterData();
+
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             File.WriteAllText(SaveUtils.UserModelPath, JsonConvert.SerializeObject(CurrentUser, settings));
             _autoSaveSecondCount = 0;
@@ -79,7 +81,8 @@ namespace UserSystem
                 Time = new TimeSpan(0, 12, 0, 0),
                 CurrentLocationId = ContentProvider.Economies.LocationsEconomy.Data.First().Id,
                 Locations = new Dictionary<string, LocationModel>(),
-                Improvement = new List<string>()
+                Improvement = new List<string>(),
+                Characters = new List<BaseCharacterModel>(),
             };
 
             var locationModel = new LocationModel
@@ -127,6 +130,20 @@ namespace UserSystem
             }
 
             Save(true);
+        }
+
+        private void SaveCharacterData()
+        {
+            foreach (var character in CurrentUser.Characters)
+            {
+                if (character.View == null)
+                {
+                    continue;
+                }
+
+                var position = character.View.WorldPosition;
+                character.SaveData.LastPosition = new List<float> {position.x, position.y, position.z};
+            }
         }
     }
 }

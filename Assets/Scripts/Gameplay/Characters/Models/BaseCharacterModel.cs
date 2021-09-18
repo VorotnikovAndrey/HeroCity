@@ -1,15 +1,21 @@
-using Characters;
+using Gameplay.Characters.AI;
 using Gameplay.Movement;
+using Newtonsoft.Json;
+using UserSystem;
 using Utils.ObjectPool;
 
 namespace Gameplay.Characters.Models
 {
     public class BaseCharacterModel
     {
-        public CharacterType CharacterType;
-        public IView View;
-        public string GraphicPresetId;
-        public Stats Stats;
-        public IMovable Movement;
+        [JsonProperty] public CharacterSaveData SaveData = new CharacterSaveData();
+
+        [JsonProperty] public string GraphicPresetId;
+        [JsonProperty] public Stats Stats;
+        [JsonProperty] public CharacterType CharacterType;
+
+        [JsonIgnore] public IView View;
+        [JsonIgnore] public IMovable Movement;
+        [JsonIgnore] public IAIController AIController;
     }
 }

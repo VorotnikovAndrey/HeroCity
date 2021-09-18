@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using Gameplay.Characters;
 using Source;
 using UnityEngine;
+using Utils;
+using Utils.ObjectPool;
 using Utils.Pathfinding;
 using Zenject;
 
@@ -20,22 +23,41 @@ namespace Gameplay.Movement
         private float _moveTimeCurrent;
         private Action<bool> _movementEndCallback;
         private Tweener _rotateTweener;
-        private Transform _viewTransform;
+        private BaseCharacterView _view;
         private WaypointSystem _waypointSystem;
 
         public float MovementSpeed { get; private set; }
 
-        public void Initialize(Transform view, Vector3 startPosition, float speed)
+        public void Initialize(IView view, Vector3 startPosition, float speed)
         {
-            _viewTransform = view;
+            _view = view as BaseCharacterView;
+
+            if (_view == null)
+            {
+                Debug.LogError("View is null".AddColorTag(Color.red));
+                return;
+            }
+
+            _view.AnimatorController.ConnectToMovement(this);
+
             _currentTargetPos = startPosition;
             MovementSpeed = speed;
             _waypointSystem = ProjectContext.Instance.Container.Resolve<WaypointSystem>();
         }
 
+        public void DeInitialize()
+        {
+            _view.AnimatorController.DisconnectFromMovement();
+
+            Stop(false);
+
+            _view = null;
+            _waypointSystem = null;
+        }
+
         public void Update()
         {
-            if (_viewTransform == null)
+            if (_view == null)
             {
                 return;
             }
@@ -88,24 +110,12 @@ namespace Gameplay.Movement
             return _waypointSystem.GetPath(_currentTargetPos, destination);
         }
 
-        public void GoToDirect(Vector3 destination, Action<bool> callback = null)
-        {
-            _movementEndCallback?.Invoke(false);
-            _movementEndCallback = callback;
-
-            Stop(false);
-
-            _currentPath = new Stack<IWaypoint>();
-            _currentPath.Push(new VirtualWaypoint(destination));
-            _currentPath.Push(new VirtualWaypoint(_currentTargetPos));
-        }
-
         public void Warp(Vector3 destination, bool callbackSuccess = false)
         {
             InvokeMovementEndCallback(callbackSuccess);
             Stop(false);
 
-            _viewTransform.position = destination;
+            _view.Transform.position = destination;
             _currentTargetPos = destination;
         }
 
@@ -148,7 +158,7 @@ namespace Gameplay.Movement
                 {
                     _currentEndWaypoint = _currentPath.Peek();
                     _rotateTweener?.Kill();
-                    _rotateTweener = _viewTransform.DOLookAt(_currentEndWaypoint.Position, 0.5f, AxisConstraint.Y).OnComplete(
+                    _rotateTweener = _view.Transform.DOLookAt(_currentEndWaypoint.Position, 0.5f, AxisConstraint.Y).OnComplete(
                         () =>
                         {
                             _rotateTweener = null;
@@ -162,9 +172,9 @@ namespace Gameplay.Movement
 
         private void UpdateCurrentPosition()
         {
-            _viewTransform.position = Vector3.Distance(_currentTargetPos, _viewTransform.position) > 1 
+            _view.Transform.position = Vector3.Distance(_currentTargetPos, _view.Transform.position) > 1 
                 ? _currentTargetPos
-                : Vector3.Lerp(_viewTransform.position, _currentTargetPos, UnityEngine.Time.deltaTime * 10);
+                : Vector3.Lerp(_view.Transform.position, _currentTargetPos, UnityEngine.Time.deltaTime * 10);
         }
 
         public void Stop(bool invokeCallback = true)
@@ -177,11 +187,6 @@ namespace Gameplay.Movement
             {
                 InvokeMovementEndCallback(false);
             }
-        }
-
-        public void SetSpeedCustom(float speed)
-        {
-            MovementSpeed = speed;
         }
 
         private void InvokeMovementEndCallback(bool success = true)

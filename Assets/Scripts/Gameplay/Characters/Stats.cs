@@ -1,8 +1,11 @@
-namespace Characters
+using Newtonsoft.Json;
+
+namespace Gameplay.Characters
 {
     public class Stats
     {
-        public int HeathPoint;
-        public float MovementSpeed;
+        [JsonProperty] public int MaxHP;
+        [JsonProperty] public int CurrentHP;
+        [JsonProperty] public float MovementSpeed = 2f;
     }
 }

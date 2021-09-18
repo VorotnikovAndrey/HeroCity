@@ -1,17 +1,34 @@
+using System.Linq;
 using Content;
+using Gameplay.Characters.AI;
 using Gameplay.Characters.Models;
-using Source;
+using UnityEngine;
+using UserSystem;
 using Utils.ObjectPool;
-using Utils.Pathfinding;
 
 namespace Gameplay.Characters.Components
 {
     public class HeroCharacterComponent : BaseCharacterComponent
     {
-        protected override BaseCharacterView CreateAndSpawnView(BaseCharacterModel model)
+        public override void DeInitialize()
         {
-            var graphic = ContentProvider.Graphic.CharacterGraphicPreset.Get(model.GraphicPresetId);
-            var position = _locationView.WaypointsContainer.GetTypePositions(MapWaypointType.Enter).GetRandom().Position;
+            foreach (var character in _characters)
+            {
+                character.Key.AIController.DeInitialize();
+                character.Key.AIController = null;
+            }
+
+            base.DeInitialize();
+        }
+
+        protected override BaseCharacterView Spawn(BaseCharacterModel model)
+        {
+            var position = Vector3.zero;
+            if (model.SaveData.LastPosition != null)
+            {
+                position = new Vector3(model.SaveData.LastPosition[0], model.SaveData.LastPosition[1], model.SaveData.LastPosition[2]);
+            }
+
             var view = ViewGenerator.GetOrCreateItemView<BaseCharacterView>(
                 GameConstants.View.DefaultCharacterPath,
                 true,
@@ -20,10 +37,19 @@ namespace Gameplay.Characters.Components
                     Position = position
                 });
 
-            model.View = view;
-            model.Movement.Initialize(view.Transform, view.WorldPosition, model.Stats.MovementSpeed);
+            var graphicData = !string.IsNullOrEmpty(model.GraphicPresetId)
+                ? ContentProvider.Graphic.CharacterGraphicPreset.Get(model.GraphicPresetId, model.CharacterType)
+                : ContentProvider.Graphic.CharacterGraphicPreset.GetRandom(model.CharacterType);
 
-            view.SetGraphic(graphic);
+            model.GraphicPresetId = graphicData.Id;
+            model.View = view;
+
+            view.Initialize(model);
+            view.SetGraphic(graphicData.Object);
+
+            model.AIController = new HeroAIController();
+            model.AIController.Initialize(model); // TODO: Не забыть по DeInitialize
+            model.AIController.Start();
 
             return view;
         }

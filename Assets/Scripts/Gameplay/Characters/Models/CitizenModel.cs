@@ -1,10 +1,9 @@
-using System.Collections.Generic;
-using Gameplay.Characters.Models;
+using Newtonsoft.Json;
 
-namespace Characters.Models
+namespace Gameplay.Characters.Models
 {
     public class CitizenModel : BaseCharacterModel
     {
-
+        [JsonProperty] public string PersonalAIContainerName;
     }
 }

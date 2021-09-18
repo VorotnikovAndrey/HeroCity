@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using Content;
 using Gameplay.Characters.Models;
 using Gameplay.Locations.View;
 using UnityEngine;
+using UserSystem;
 using Utils;
 using Utils.ObjectPool;
 using Zenject;
@@ -13,15 +15,22 @@ namespace Gameplay.Characters.Components
     {
         protected Dictionary<BaseCharacterModel, BaseCharacterView> _characters;
         protected LocationView _locationView;
+        protected UserManager _userManager;
 
         public virtual void Initialize(object data = null)
         {
             _characters = new Dictionary<BaseCharacterModel, BaseCharacterView>();
             _locationView = ProjectContext.Instance.Container.Resolve<LocationView>();
+            _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
         }
 
         public virtual void DeInitialize()
         {
+            foreach (var character in _characters.ToArray())
+            {
+                Remove(character.Key);
+            }
+
             _characters = null;
         }
 
@@ -29,7 +38,7 @@ namespace Gameplay.Characters.Components
         {
             foreach (var character in _characters)
             {
-                character.Key.Movement.Update();
+                character.Key.Movement?.Update();
             }
         }
 
@@ -41,7 +50,7 @@ namespace Gameplay.Characters.Components
                 return;
             }
 
-            _characters.Add(model, CreateAndSpawnView(model));
+            _characters.Add(model, Spawn(model));
         }
 
         public virtual void Remove(BaseCharacterModel model)
@@ -54,19 +63,21 @@ namespace Gameplay.Characters.Components
 
             _characters.Remove(model);
 
+            model.View.Deinitialize();
             model.View.ReleaseItemView();
             model.View = null;
         }
 
-        protected virtual BaseCharacterView CreateAndSpawnView(BaseCharacterModel model)
+        protected virtual BaseCharacterView Spawn(BaseCharacterModel model)
         {
-            var graphic = ContentProvider.Graphic.CharacterGraphicPreset.Get(model.GraphicPresetId);
+            var graphic = ContentProvider.Graphic.CharacterGraphicPreset.Get(model.GraphicPresetId, model.CharacterType);
             var view = ViewGenerator.GetOrCreateItemView<BaseCharacterView>(GameConstants.View.DefaultCharacterPath);
 
             model.View = view;
-            model.Movement.Initialize(view.Transform, view.WorldPosition, model.Stats.MovementSpeed);
+            model.Movement.Initialize(view, view.WorldPosition, model.Stats.MovementSpeed);
 
-            view.SetGraphic(graphic);
+            view.Initialize(model);
+            view.SetGraphic(graphic.Object);
 
             return view;
         }
