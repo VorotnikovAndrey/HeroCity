@@ -3,6 +3,7 @@ using System.Linq;
 using CameraSystem;
 using Events;
 using Gameplay.Building.View;
+using Gameplay.Characters;
 using InputSyatem;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,7 +11,7 @@ using Zenject;
 
 namespace InputSystem
 {
-    public class LocationInput : EventBehavior, IInputSystem
+    public class GameInput : EventBehavior, IInputSystem
     {
         private const float MinDistance = 15f;
         private readonly HashSet<object> _inputBlockers = new HashSet<object>();
@@ -59,6 +60,11 @@ namespace InputSystem
 
         private void ProcessHit(RaycastHit hit)
         {
+            if (TrySelectCharacter(hit))
+            {
+                return;
+            }
+
             if (TrySelectBuilding(hit))
             {
                 return;
@@ -94,18 +100,36 @@ namespace InputSystem
             return Physics.Raycast(ray, out hit);
         }
 
+        private bool TrySelectCharacter(RaycastHit hit)
+        {
+            var view = hit.transform.GetComponent<BaseCharacterView>();
+
+            if (view == null)
+            {
+                return false;
+            }
+
+            EventAggregator.SendEvent(new CharacterViewSelectedEvent
+            {
+                View = view,
+                TapPosition = hit.point
+            });
+
+            return true;
+        }
+
         private bool TrySelectBuilding(RaycastHit hit)
         {
-            BuildingView building = hit.transform.GetComponent<BuildingView>();
+            var view = hit.transform.GetComponent<BuildingView>();
 
-            if (building == null)
+            if (view == null)
             {
                 return false;
             }
 
             EventAggregator.SendEvent(new BuildingViewSelectedEvent
             {
-                View = building,
+                View = view,
                 TapPosition = hit.point
             });
 

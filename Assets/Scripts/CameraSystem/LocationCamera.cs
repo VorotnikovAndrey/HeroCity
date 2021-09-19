@@ -23,6 +23,7 @@ namespace CameraSystem
         [SerializeField] private float _camDistanceFromTarget = 50;
         [SerializeField] private float _closeViewZoom = 3f;
         [SerializeField] private float _offsetYK;
+        [SerializeField] private float _followingZoom = 6f;
         [Space]
         [SerializeField] private float _zoomSensitivity = 1f;
         [SerializeField] private float _zoomMinSize = 3f;
@@ -58,16 +59,11 @@ namespace CameraSystem
         private float _currentDampSmoothTime;
         private Transform _followTarget;
         private IInputSystem _inputSystem;
-        private bool _isFollowTargetNull;
+        private bool _lockFollowing;
 
         public CameraStates CameraState { get; private set; }
         public Camera Camera => _cam;
         public Vector3 CurrentCenterPlanePosition { get; private set; }
-
-        private void Start()
-        {
-            _isFollowTargetNull = _followTarget == null;
-        }
 
         private void OnValidate()
         {
@@ -123,15 +119,13 @@ namespace CameraSystem
                     UpdateZoom();
                     break;
                 case CameraStates.Following:
-                    if (_isFollowTargetNull)
+
+                    if (!_lockFollowing)
                     {
-                        break;
+                        _currentTargetPoint = _defaultStatePosition = _followTarget.position - Camera.transform.rotation * Vector3.forward * _camDistanceFromTarget;
+                        _currentTargetPoint.x = Mathf.Clamp(_currentTargetPoint.x, _bounds.min.x, _bounds.max.x);
+                        _currentTargetPoint.z = Mathf.Clamp(_currentTargetPoint.z, _bounds.min.z, _bounds.max.z);
                     }
-
-                    _currentTargetPoint = _followTarget.position - Camera.transform.rotation * Vector3.forward * _camDistanceFromTarget;
-
-                    //_currentTargetPoint.x = Mathf.Clamp(_currentTargetPoint.x, _bounds.min.x, _bounds.max.x);
-                    //_currentTargetPoint.z = Mathf.Clamp(_currentTargetPoint.z, _bounds.min.z, _bounds.max.z);
 
                     UpdateMovement();
                     break;
@@ -307,9 +301,10 @@ namespace CameraSystem
                 _switchStateSeq = null;
             };
         }
-
+        
         public void SwitchToDefaultState(bool returnToPrevPos = true)
         {
+            _lockFollowing = true;
             _currentViewTarget = null;
             _switchStateSeq?.Kill();
 
@@ -319,6 +314,7 @@ namespace CameraSystem
                 _currentTargetPoint = _defaultStatePosition = CurrentCenterPlanePosition - Camera.transform.forward * _camDistanceFromTarget;
                 _currentTargetZoom = _defaultStateOrthoSize = Camera.orthographicSize;
             }
+
             _switchStateSeq.Join(Camera.transform.DOMove(_defaultStatePosition, _targetMoveOutDuration).SetEase(_targetMoveOutCurve));
             _switchStateSeq.Join(Camera.DOOrthoSize(_defaultStateOrthoSize, _targetZoomOutDuration).SetEase(_targetZoomOutCurve));
             _switchStateSeq.SetUpdate(UpdateType.Late);
@@ -332,8 +328,25 @@ namespace CameraSystem
 
         public void SwitchToFollow(Transform followTarget)
         {
-            CameraState = CameraStates.Following;
+            _lockFollowing = false;
             _followTarget = followTarget;
+
+            _switchStateSeq?.Kill();
+
+            if (CameraState == CameraStates.Default)
+            {
+                _defaultStateOrthoSize = Camera.orthographicSize;
+            }
+
+            CameraState = CameraStates.Following;
+
+            _switchStateSeq = DOTween.Sequence();
+            _switchStateSeq.Join(Camera.DOOrthoSize(_followingZoom, _targetZoomInDuration).SetEase(_targetZoomInCurve));
+            _switchStateSeq.SetUpdate(UpdateType.Late);
+            _switchStateSeq.onKill = () =>
+            {
+                _switchStateSeq = null;
+            };
         }
 
         private Vector3 PlanePositionDelta(Vector3 mousePos)

@@ -7,5 +7,6 @@ namespace PopupSystem
         Hud = 2,
         Building = 3,
         Improvement = 4,
+        Character = 5,
     }
 }

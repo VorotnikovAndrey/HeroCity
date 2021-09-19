@@ -17,8 +17,8 @@ namespace Gameplay.Characters.AI
         {
             _possibleStates = new List<AbstractAIBehavior>
             {
-                new FreeMovementAIBehavior(10),
-                new WanderingAIBehavior(10),
+                new FreeMovementAIBehavior(1),
+                new WanderingAIBehavior(999),
             };
         }
 
@@ -34,16 +34,9 @@ namespace Gameplay.Characters.AI
 
         public void Start()
         {
-            _currentState = _possibleStates[0];
+            _currentState = _possibleStates[1];
             _currentState.Initialize(_model);
             _currentState.Begin();
-            _currentState.Ended += () =>
-            {
-                _currentState.DeInitialize();
-                _currentState = _possibleStates[1];
-                _currentState.Initialize(_model);
-                _currentState.Begin();
-            };
         }
 
         public void Stop()

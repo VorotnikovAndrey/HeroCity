@@ -107,6 +107,7 @@ MonoBehaviour:
   _camDistanceFromTarget: 16
   _closeViewZoom: 12
   _offsetYK: 0
+  _followingZoom: 6
   _zoomSensitivity: 10
   _zoomMinSize: 7
   _zoomMaxSize: 20

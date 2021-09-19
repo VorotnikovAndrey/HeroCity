@@ -1,14 +1,15 @@
 using System.Collections.Generic;
-using Characters;
-using Content;
+using CameraSystem;
 using Events;
 using Gameplay.Characters.Components;
 using Gameplay.Characters.Models;
 using Gameplay.Movement;
+using PopupSystem;
 using UnityEngine;
 using UserSystem;
 using Utils;
 using Utils.Events;
+using Utils.PopupSystem;
 using Zenject;
 
 namespace Gameplay.Characters
@@ -18,8 +19,10 @@ namespace Gameplay.Characters
         private readonly Dictionary<CharacterType, BaseCharacterComponent> _components;
 
         private UserManager _userManager;
+        private PopupManager<PopupType> _popupManager;
         private EventAggregator _eventAggregator;
         private TimeTicker _timeTicker;
+        private LocationCamera _locationCamera;
 
         public CharactersSystem()
         {
@@ -38,6 +41,8 @@ namespace Gameplay.Characters
             _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
             _eventAggregator = ProjectContext.Instance.Container.Resolve<EventAggregator>();
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
+            _locationCamera = ProjectContext.Instance.Container.Resolve<CameraManager>().ActiveCameraView as LocationCamera;
+            _popupManager = ProjectContext.Instance.Container.Resolve<PopupManager<PopupType>>();
 
             foreach (var component in _components)
             {
@@ -48,6 +53,8 @@ namespace Gameplay.Characters
 
             _eventAggregator.Add<CreateCharacterEvent>(CreateCharacter);
             _eventAggregator.Add<ReleaseCharacterEvent>(ReleaseCharacter);
+            _eventAggregator.Add<CharacterViewSelectedEvent>(OnCharacterViewSelected);
+            _eventAggregator.Add<CharacterViewUnSelectedEvent>(OnCharacterViewUnSelected);
 
             LoadCharacters();
         }
@@ -56,6 +63,8 @@ namespace Gameplay.Characters
         {
             _eventAggregator.Remove<CreateCharacterEvent>(CreateCharacter);
             _eventAggregator.Remove<ReleaseCharacterEvent>(ReleaseCharacter);
+            _eventAggregator.Remove<CharacterViewSelectedEvent>(OnCharacterViewSelected);
+            _eventAggregator.Remove<CharacterViewUnSelectedEvent>(OnCharacterViewUnSelected);
 
             _timeTicker.OnTick -= Update;
 
@@ -109,6 +118,22 @@ namespace Gameplay.Characters
             }
 
             _components[sender.Model.CharacterType].Remove(sender.Model);
+        }
+
+        private void OnCharacterViewSelected(CharacterViewSelectedEvent sender)
+        {
+            if (_locationCamera.CameraState != CameraStates.Default)
+            {
+                return;
+            }
+
+            _locationCamera.SwitchToFollow(sender.View.Transform);
+            _popupManager.ShowPopup(PopupType.Character, sender.View);
+        }
+
+        private void OnCharacterViewUnSelected(CharacterViewUnSelectedEvent sender)
+        {
+            _locationCamera.SwitchToDefaultState(sender.ReturnToPrevPos);
         }
 
         private void ApplyDebug()

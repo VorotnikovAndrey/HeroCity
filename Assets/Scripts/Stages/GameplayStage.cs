@@ -33,7 +33,7 @@ namespace Stages
         private readonly UserManager _userManager;
 
         private LocationCamera _locationCamera;
-        private LocationInput _locationInput;
+        private GameInput _gameInput;
         private BuildingsManager _buildingsManager;
         private CharactersSystem _charactersSystem;
         private WaypointSystem _waypointSystem;
@@ -70,9 +70,9 @@ namespace Stages
             // Camera
             _cameraManager.SetCameraType(GameCameraType.Location);
             _locationCamera = _cameraManager.ActiveCameraView as LocationCamera;
-            _locationInput = new LocationInput();
-            _locationCamera?.Init(_locationInput, _locationView.CameraSettings);
-            _timeTicker.OnTick += _locationInput.Update;
+            _gameInput = new GameInput();
+            _locationCamera?.Init(_gameInput, _locationView.CameraSettings);
+            _timeTicker.OnTick += _gameInput.Update;
 
             // UI
             _popupManager.ShowPopup(PopupType.Hud);
@@ -94,8 +94,8 @@ namespace Stages
             base.DeInitialize();
 
             // Camera
-            _timeTicker.OnTick -= _locationInput.Update;
-            _locationInput = null;
+            _timeTicker.OnTick -= _gameInput.Update;
+            _gameInput = null;
             _locationCamera.SwitchToDefaultState();
             _cameraManager.SetCameraType(GameCameraType.Preloader);
 
