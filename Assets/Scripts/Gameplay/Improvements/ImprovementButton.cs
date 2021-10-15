@@ -24,7 +24,7 @@ namespace Gameplay.Improvements
 
             _improvementData = data;
 
-            var sprite = ContentProvider.Graphic.SpriteBank.GetSprite(_improvementData.SpriteBankId);
+            var sprite = ContentProvider.Graphic.SpriteBank.Data.FirstOrDefault(x => x.Id == _improvementData.SpriteBankId)?.Sprite;
             if (sprite != null)
             {
                 _iconImage.sprite = sprite;

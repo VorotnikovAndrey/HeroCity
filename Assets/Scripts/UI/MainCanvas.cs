@@ -8,5 +8,10 @@ namespace UI
         {
             ProjectContext.Instance.Container.BindInstances(this);
         }
+
+        public void OnDestroy()
+        {
+            ProjectContext.Instance.Container.Unbind<MainCanvas>();
+        }
     }
 }

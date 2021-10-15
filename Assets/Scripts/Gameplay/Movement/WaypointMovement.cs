@@ -4,6 +4,7 @@ using DG.Tweening;
 using Gameplay.Characters;
 using Source;
 using UnityEngine;
+using UnityEngine.AI;
 using Utils;
 using Utils.ObjectPool;
 using Utils.Pathfinding;
@@ -37,6 +38,8 @@ namespace Gameplay.Movement
                 Debug.LogError("View is null".AddColorTag(Color.red));
                 return;
             }
+
+            _view.Transform.GetComponent<NavMeshAgent>().enabled = false;
 
             _view.AnimatorController.ConnectToMovement(this);
 

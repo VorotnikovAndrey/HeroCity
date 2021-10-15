@@ -1,6 +1,5 @@
 using Gameplay.Characters.Models;
 using UnityEngine;
-using Utils;
 using Utils.ObjectPool;
 
 namespace Gameplay.Characters
@@ -11,20 +10,20 @@ namespace Gameplay.Characters
         [SerializeField] protected Transform _graphicHolder;
         [SerializeField] protected Vector3 _graphicOffset;
 
-        private BaseCharacterModel _model;
-
         protected GameObject _graphic;
+
+        public BaseCharacterModel Model { get; private set; }
 
         public CharacterAnimatorController AnimatorController => _animatorController;
 
         public override void Initialize(object data)
         {
-            _model = data as BaseCharacterModel;
+            Model = data as BaseCharacterModel;
         }
 
         public override void Deinitialize()
         {
-            _model = null;
+            Model = null;
 
             if (_graphic != null)
             {

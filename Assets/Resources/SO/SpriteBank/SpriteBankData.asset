@@ -21,3 +21,19 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 8f7f251283ef6754f9d0dfd085ec3d17, type: 3}
   - Id: debug_icon_legendary
     Sprite: {fileID: 21300000, guid: b78702c142bf0f84f8f97203226f6b1e, type: 3}
+  Items:
+  - Id: helm1
+    Sprite: {fileID: 21300000, guid: 3ae885ce9cc160a4a8ccf79fb02a8b31, type: 3}
+  - Id: armor1
+    Sprite: {fileID: 21300000, guid: c46548eeae763b547bdc8e10b6d6ba79, type: 3}
+  - Id: sword1
+    Sprite: {fileID: 21300000, guid: d7f5ad444e87b744fa1b705525d329fb, type: 3}
+  ItemsRarity:
+  - Rarity: 0
+    Sprite: {fileID: 21300000, guid: 1e6d84bd0ca754a4d9139f4128359137, type: 3}
+  - Rarity: 1
+    Sprite: {fileID: 21300000, guid: 80b043f19b104d44f85cc2625fe5a767, type: 3}
+  - Rarity: 2
+    Sprite: {fileID: 21300000, guid: 3345a5e5c0a03f54b85a3867118aed47, type: 3}
+  - Rarity: 3
+    Sprite: {fileID: 21300000, guid: f3f484d3b8300a74a996bd51be4e132a, type: 3}

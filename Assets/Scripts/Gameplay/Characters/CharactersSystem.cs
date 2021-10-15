@@ -3,6 +3,7 @@ using CameraSystem;
 using Events;
 using Gameplay.Characters.Components;
 using Gameplay.Characters.Models;
+using Gameplay.Equipments;
 using Gameplay.Movement;
 using PopupSystem;
 using UnityEngine;
@@ -142,7 +143,23 @@ namespace Gameplay.Characters
             {
                 CharacterType = CharacterType.Hero,
                 Movement = new WaypointMovement(),
-                Stats = new Stats()
+                Stats = new Stats(),
+                Name = "Petrovich",
+                Inventory = new CharacterInventory
+                {
+                    Items = new List<Item>
+                    {
+                        new Item
+                        {
+                            Title = "Common Helm",
+                            Description = string.Empty,
+                            Equipped = true,
+                            IconId = "helm1",
+                            Rarity = Rarity.Common,
+                            SlotType = ItemSlotType.Head
+                        }
+                    }
+                }
             };
 
             _eventAggregator.SendEvent(new CreateCharacterEvent

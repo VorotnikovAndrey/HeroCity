@@ -11,6 +11,8 @@ public static class GameConstants
     public static class View
     {
         public const string DefaultCharacterPath = "Characters/DefaultCharacter";
+        public const string StatsInfoElement = "Popups/Components/StatsInfoElement";
+        public const string InventoryItem = "Equipments/InventoryItem";
     }
 
     public static class Resources

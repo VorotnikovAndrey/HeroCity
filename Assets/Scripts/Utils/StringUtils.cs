@@ -6,6 +6,9 @@ namespace Utils
 {
     public static class StringUtils
     {
+        public static string LeftAlignFormat = "<align=left>{0}</align>";
+        public static string RightAlignFormat = "<align=right>{0}</align>";
+
         private static readonly string[] NumberClassName = { "", "k", "M" };
 
         /// <summary>

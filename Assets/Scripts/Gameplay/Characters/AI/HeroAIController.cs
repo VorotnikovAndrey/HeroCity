@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using Gameplay.Characters.AI.Behaviors;
 using Gameplay.Characters.Models;
-using Source;
-using UnityEngine;
-using Utils;
 
 namespace Gameplay.Characters.AI
 {
