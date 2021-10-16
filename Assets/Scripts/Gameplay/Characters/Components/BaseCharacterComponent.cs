@@ -13,30 +13,31 @@ namespace Gameplay.Characters.Components
 {
     public class BaseCharacterComponent
     {
-        protected Dictionary<BaseCharacterModel, BaseCharacterView> _characters;
+        public Dictionary<BaseCharacterModel, BaseCharacterView> Characters;
+
         protected LocationView _locationView;
         protected UserManager _userManager;
 
         public virtual void Initialize(object data = null)
         {
-            _characters = new Dictionary<BaseCharacterModel, BaseCharacterView>();
+            Characters = new Dictionary<BaseCharacterModel, BaseCharacterView>();
             _locationView = ProjectContext.Instance.Container.Resolve<LocationView>();
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
         }
 
         public virtual void DeInitialize()
         {
-            foreach (var character in _characters.ToArray())
+            foreach (var character in Characters.ToArray())
             {
                 Remove(character.Key);
             }
 
-            _characters = null;
+            Characters = null;
         }
 
         public virtual void Update()
         {
-            foreach (var character in _characters)
+            foreach (var character in Characters)
             {
                 character.Key.Movement?.Update();
             }
@@ -44,24 +45,24 @@ namespace Gameplay.Characters.Components
 
         public virtual void Add(BaseCharacterModel model)
         {
-            if (_characters.ContainsKey(model))
+            if (Characters.ContainsKey(model))
             {
                 Debug.LogError("Duplicate model".AddColorTag(Color.red));
                 return;
             }
 
-            _characters.Add(model, Spawn(model));
+            Characters.Add(model, Spawn(model));
         }
 
         public virtual void Remove(BaseCharacterModel model)
         {
-            if (!_characters.ContainsKey(model))
+            if (!Characters.ContainsKey(model))
             {
                 Debug.LogError("Model is not found".AddColorTag(Color.red));
                 return;
             }
 
-            _characters.Remove(model);
+            Characters.Remove(model);
 
             model.View.Deinitialize();
             model.View.ReleaseItemView();

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CameraSystem;
 using Content;
 using Events;
 using Gameplay.Characters;
@@ -20,6 +21,8 @@ namespace UI.Popups
 
         private BaseCharacterView _characterView;
         private CharacterRawModelHolder _rawModelHolder;
+        private CharactersSystem _charactersSystem;
+        private LocationCamera _locationCamera;
 
         private void OnValidate()
         {
@@ -35,6 +38,10 @@ namespace UI.Popups
                 Debug.LogError("View is null".AddColorTag(Color.red));
                 return;
             }
+
+            _charactersSystem = ProjectContext.Instance.Container.Resolve<CharactersSystem>();
+            _locationCamera = ProjectContext.Instance.Container.Resolve<CameraManager>().ActiveCameraView as LocationCamera;
+            _rawModelHolder = ProjectContext.Instance.Container.Resolve<CharacterRawModelHolder>();
 
             foreach (var page in _pages)
             {
@@ -79,7 +86,6 @@ namespace UI.Popups
 
         private void SpawnRawDummy()
         {
-            _rawModelHolder = ProjectContext.Instance.Container.Resolve<CharacterRawModelHolder>();
             _rawModelHolder.SetState(true);
 
             CharacterGraphicPresetPair data = ContentProvider.Graphic.CharacterGraphicPreset.Get(_characterView.Model.GraphicPresetId, _characterView.Model.CharacterType);
@@ -93,6 +99,33 @@ namespace UI.Popups
         private void ReleaseRawDummy()
         {
             _rawModelHolder.Hide();
+        }
+
+        public void SwitchCharacter(int shift)
+        {
+            var array = _charactersSystem.Components[_characterView.Model.CharacterType].Characters.Values.ToList();
+            int index = array.IndexOf(_characterView);
+
+            index += shift;
+            if (index >= array.Count)
+            {
+                index = 0;
+            }
+            else if (index < 0)
+            {
+                index = array.Count - 1;
+            }
+
+            _characterView = array[index];
+            _locationCamera.SwitchToFollow(_characterView.Transform);
+
+            foreach (var page in _pages)
+            {
+                page.SetModel(_characterView.Model);
+            }
+
+            ReleaseRawDummy();
+            SpawnRawDummy();
         }
     }
 }

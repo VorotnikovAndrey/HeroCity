@@ -18,10 +18,10 @@ namespace Gameplay.Characters
             return element;
         }
 
-        public CharacterGraphicPresetPair GetRandom(CharacterType type)
+        public CharacterGraphicPresetPair GetRandom(CharacterType type, Gender gender)
         {
             var collection = Data.FirstOrDefault(x => x.Type == type);
-            return collection?.Value.GetRandom();
+            return collection?.Value.Where(x => x.Gender == gender).ToList().GetRandom();
         }
     }
 
@@ -37,6 +37,7 @@ namespace Gameplay.Characters
     {
         public string Id;
         public CharacterType Type;
+        public Gender Gender;
         public GameObject Object;
     }
 }

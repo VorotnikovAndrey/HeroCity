@@ -104,6 +104,21 @@ namespace Content
 
                     return _spriteBank;
                 }
+            }  
+            
+            private static CharacterNames _characterNames;
+
+            public static CharacterNames CharacterNames
+            {
+                get
+                {
+                    if (_characterNames == null)
+                    {
+                        _characterNames = ProjectContext.Instance.Container.Resolve<CharacterNames>();
+                    }
+
+                    return _characterNames;
+                }
             }
         }
     }

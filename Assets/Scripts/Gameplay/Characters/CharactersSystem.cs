@@ -17,7 +17,7 @@ namespace Gameplay.Characters
 {
     public class CharactersSystem
     {
-        private readonly Dictionary<CharacterType, BaseCharacterComponent> _components;
+        public readonly Dictionary<CharacterType, BaseCharacterComponent> Components;
 
         private UserManager _userManager;
         private PopupManager<PopupType> _popupManager;
@@ -27,7 +27,7 @@ namespace Gameplay.Characters
 
         public CharactersSystem()
         {
-            _components = new Dictionary<CharacterType, BaseCharacterComponent>
+            Components = new Dictionary<CharacterType, BaseCharacterComponent>
             {
                 {CharacterType.Default, new BaseCharacterComponent()},
                 {CharacterType.Hero, new HeroCharacterComponent()},
@@ -39,13 +39,15 @@ namespace Gameplay.Characters
 
         public virtual void Initialize()
         {
+            ProjectContext.Instance.Container.BindInstances(this);
+
             _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
             _eventAggregator = ProjectContext.Instance.Container.Resolve<EventAggregator>();
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
             _locationCamera = ProjectContext.Instance.Container.Resolve<CameraManager>().ActiveCameraView as LocationCamera;
             _popupManager = ProjectContext.Instance.Container.Resolve<PopupManager<PopupType>>();
 
-            foreach (var component in _components)
+            foreach (var component in Components)
             {
                 component.Value.Initialize();
             }
@@ -62,6 +64,8 @@ namespace Gameplay.Characters
 
         public virtual void DeInitialize()
         {
+            ProjectContext.Instance.Container.Unbind<CharactersSystem>();
+
             _eventAggregator.Remove<CreateCharacterEvent>(CreateCharacter);
             _eventAggregator.Remove<ReleaseCharacterEvent>(ReleaseCharacter);
             _eventAggregator.Remove<CharacterViewSelectedEvent>(OnCharacterViewSelected);
@@ -69,7 +73,7 @@ namespace Gameplay.Characters
 
             _timeTicker.OnTick -= Update;
 
-            foreach (var component in _components)
+            foreach (var component in Components)
             {
                 component.Value.DeInitialize();
             }
@@ -77,7 +81,7 @@ namespace Gameplay.Characters
 
         private void Update()
         {
-            foreach (var component in _components)
+            foreach (var component in Components)
             {
                 component.Value.Update();
             }
@@ -107,7 +111,7 @@ namespace Gameplay.Characters
                 return;
             }
 
-            _components[sender.Model.CharacterType].Add(sender.Model);
+            Components[sender.Model.CharacterType].Add(sender.Model);
         }
 
         private void ReleaseCharacter(ReleaseCharacterEvent sender)
@@ -118,7 +122,7 @@ namespace Gameplay.Characters
                 return;
             }
 
-            _components[sender.Model.CharacterType].Remove(sender.Model);
+            Components[sender.Model.CharacterType].Remove(sender.Model);
         }
 
         private void OnCharacterViewSelected(CharacterViewSelectedEvent sender)
@@ -139,28 +143,7 @@ namespace Gameplay.Characters
 
         private void ApplyDebug()
         {
-            var model = new HeroModel
-            {
-                CharacterType = CharacterType.Hero,
-                Movement = new WaypointMovement(),
-                Stats = new Stats(),
-                Name = "Petrovich",
-                Inventory = new CharacterInventory
-                {
-                    Items = new List<Item>
-                    {
-                        new Item
-                        {
-                            Title = "Common Helm",
-                            Description = string.Empty,
-                            Equipped = true,
-                            IconId = "helm1",
-                            Rarity = Rarity.Common,
-                            SlotType = ItemSlotType.Head
-                        }
-                    }
-                }
-            };
+            var model = CharacterFactory.Get(CharacterType.Hero, (Gender)Random.Range(0, 2), (Rarity)Random.Range(0, 4));
 
             _eventAggregator.SendEvent(new CreateCharacterEvent
             {

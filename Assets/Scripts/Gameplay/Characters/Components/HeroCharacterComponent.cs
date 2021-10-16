@@ -12,7 +12,7 @@ namespace Gameplay.Characters.Components
     {
         public override void DeInitialize()
         {
-            foreach (var character in _characters)
+            foreach (var character in Characters)
             {
                 character.Key.AIController.DeInitialize();
                 character.Key.AIController = null;
@@ -39,7 +39,7 @@ namespace Gameplay.Characters.Components
 
             var graphicData = !string.IsNullOrEmpty(model.GraphicPresetId)
                 ? ContentProvider.Graphic.CharacterGraphicPreset.Get(model.GraphicPresetId, model.CharacterType)
-                : ContentProvider.Graphic.CharacterGraphicPreset.GetRandom(model.CharacterType);
+                : ContentProvider.Graphic.CharacterGraphicPreset.GetRandom(model.CharacterType, model.Gender);
 
             model.GraphicPresetId = graphicData.Id;
             model.View = view;
@@ -48,7 +48,7 @@ namespace Gameplay.Characters.Components
             view.SetGraphic(graphicData.Object);
 
             model.AIController = new HeroAIController();
-            model.AIController.Initialize(model); // TODO: Не забыть по DeInitialize
+            model.AIController.Initialize(model); // TODO: Не забыть про DeInitialize
             model.AIController.Start();
 
             return view;
