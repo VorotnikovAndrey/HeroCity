@@ -5,7 +5,7 @@ namespace Gameplay.Equipments
 {
     public class InventorySlot : MonoBehaviour
     {
-        public ItemSlotType SlotType = ItemSlotType.Head;
+        public EquipSlotType _equipSlotType = EquipSlotType.Head;
         public string Id;
 
         private RectTransform _rectTransform;
@@ -13,7 +13,7 @@ namespace Gameplay.Equipments
 
         private void OnValidate()
         {
-            gameObject.name = $"Slot [{SlotType}]";
+            gameObject.name = $"Slot [{_equipSlotType}]";
             Id ??= Guid.NewGuid().ToString();
         }
 

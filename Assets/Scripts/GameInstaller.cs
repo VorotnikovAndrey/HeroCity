@@ -33,6 +33,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<BuildingsEconomy>().FromScriptableObjectResource("BuildingsEconomyData").AsSingle();
         Container.Bind<ResourcesEconomy>().FromScriptableObjectResource("ResourcesEconomyData").AsSingle();
         Container.Bind<ImprovementEconomy>().FromScriptableObjectResource("ImprovementEconomyData").AsSingle();
+        Container.Bind<WeaponShopEconomy>().FromScriptableObjectResource("WeaponShopEconomyData").AsSingle();
         Container.Bind<CharacterGraphicPreset>().FromScriptableObjectResource("SO/Characters/CharacterGraphicPreset").AsSingle();
         Container.Bind<CharacterNames>().FromScriptableObjectResource("SO/Characters/CharacterNames").AsSingle();
         Container.Bind<SpriteBank>().FromScriptableObjectResource("SO/SpriteBank/SpriteBankData").AsSingle();

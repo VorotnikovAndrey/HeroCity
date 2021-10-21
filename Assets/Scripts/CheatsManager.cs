@@ -28,6 +28,14 @@ public class CheatsManager
         {
             _gameResourceManager.AddResourceValue(ResourceType.Coins, -1000);
         }
+        else if(Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            _gameResourceManager.AddResourceValue(ResourceType.Gems, -1000);
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            _gameResourceManager.AddResourceValue(ResourceType.Gems, 1000);
+        }
     }
 
     ~CheatsManager()

@@ -9,7 +9,8 @@ namespace Gameplay.Equipments
 {
     public class InventoryItem : AbstractBaseViewUI
     {
-        [SerializeField] private Image _rarity;
+        [SerializeField] private Image _rarityBackground;
+        [SerializeField] private Image _rarityBoard;
         [SerializeField] private Image _icon;
 
         private Item _item;
@@ -18,18 +19,57 @@ namespace Gameplay.Equipments
         {
             base.Initialize(data);
 
-            _item = data as Item;
+            SetItem(data as Item);
+        }
 
-            if (_item == null)
+        public void SetItem(Item item)
+        {
+            if (item == null)
             {
                 Debug.LogError("Item is null".AddColorTag(Color.red));
                 return;
             }
 
-            var bank = ContentProvider.Graphic.SpriteBank;
+            _item = item;
 
-            _rarity.sprite = bank.ItemsRarity.FirstOrDefault(x => x.Rarity == _item.Rarity)?.Sprite;
-            _icon.sprite = bank.Items.FirstOrDefault(x => x.Id == _item.IconId)?.Sprite;
+            UpdateRarity();
+            UpdateIcon();
+        }
+
+        private void UpdateRarity()
+        {
+            SpriteBankRarityElement data = ContentProvider.Graphic.SpriteBank.ItemsRarity.FirstOrDefault(x => x.Rarity == _item.Rarity);
+
+            if (data == null)
+            {
+                Debug.LogError("Data is null".AddColorTag(Color.red));
+                return;
+            }
+
+            _rarityBoard.sprite = data.Sprite;
+            _rarityBackground.color = data.Color;
+        }
+
+        private void UpdateIcon()
+        {
+            if (_item is EquipingItem equipingItem)
+            {
+                var data = ContentProvider.Graphic.SpriteBank.Items.FirstOrDefault(x => x.SlotType == equipingItem.EquipSlotType);
+
+                if (data != null)
+                {
+                    var spriteData = data.Data.FirstOrDefault(x => x.Id == equipingItem.IconId);
+
+                    if (spriteData != null)
+                    {
+                        _icon.sprite = spriteData.Sprite;
+                    }
+                    else
+                    {
+                        Debug.LogError("Icon is not found");
+                    }
+                }
+            }
         }
 
         public override void Deinitialize()

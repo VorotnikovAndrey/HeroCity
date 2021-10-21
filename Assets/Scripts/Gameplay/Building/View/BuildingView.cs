@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using PopupSystem;
 using UI.Popups.Components;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace Gameplay.Building.View
     {
         [HideInInspector] public string BuildingId;
 
+        public PopupType ShowablePopup;
+        [Space]
         public List<BuildingStateContainer> States = new List<BuildingStateContainer>();
         public UpgradeBar UpgradeBar;
         public BoxCollider Collider;

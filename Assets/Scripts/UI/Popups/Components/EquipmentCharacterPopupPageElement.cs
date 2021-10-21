@@ -51,14 +51,17 @@ namespace UI.Popups.Components
 
         private void LoadEquip()
         {
-            var items = _model.Inventory.Items.Where(x => x.Equipped);
-
-            foreach (var item in items)
+            foreach (var item in _model.Inventory.Items)
             {
+                if (!(item is EquipingItem equipingItem))
+                {
+                    continue;
+                }
+
                 var inventoryItem = ViewGenerator.GetOrCreateItemView<InventoryItem>(GameConstants.View.InventoryItem);
                 inventoryItem.Initialize(item);
 
-                _slots.FirstOrDefault(x => x.SlotType == item.SlotType)?.Snap(inventoryItem);
+                _slots.FirstOrDefault(x => x._equipSlotType == equipingItem.EquipSlotType)?.Snap(inventoryItem);
 
                 _inventoryItems.Add(inventoryItem);
             }

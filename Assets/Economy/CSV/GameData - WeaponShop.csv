@@ -1,0 +1,5 @@
+Index,Title,Description,Rarity,IconId,EquipSlotType,WeaponType,Affixes
+0,Knife 1,NULL,Common,knife_1,LeftHand,Sword,
+1,Knife 2,NULL,Rare,knife_2,LeftHand,Sword,life
+2,Knife 3,NULL,Epic,knife_3,LeftHand,Sword,"frost, dark"
+3,Knife 4,NULL,Legendary,knife_4,LeftHand,Sword,"fire, life, dark"

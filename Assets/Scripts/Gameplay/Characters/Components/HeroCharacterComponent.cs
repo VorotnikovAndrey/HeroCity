@@ -2,6 +2,7 @@ using System.Linq;
 using Content;
 using Gameplay.Characters.AI;
 using Gameplay.Characters.Models;
+using Gameplay.Equipments;
 using UnityEngine;
 using UserSystem;
 using Utils.ObjectPool;

@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using CameraSystem;
 using Events;
 using Gameplay.Characters.Components;
-using Gameplay.Characters.Models;
 using Gameplay.Equipments;
-using Gameplay.Movement;
 using PopupSystem;
 using UnityEngine;
 using UserSystem;
@@ -64,8 +62,6 @@ namespace Gameplay.Characters
 
         public virtual void DeInitialize()
         {
-            ProjectContext.Instance.Container.Unbind<CharactersSystem>();
-
             _eventAggregator.Remove<CreateCharacterEvent>(CreateCharacter);
             _eventAggregator.Remove<ReleaseCharacterEvent>(ReleaseCharacter);
             _eventAggregator.Remove<CharacterViewSelectedEvent>(OnCharacterViewSelected);
@@ -77,6 +73,8 @@ namespace Gameplay.Characters
             {
                 component.Value.DeInitialize();
             }
+
+            ProjectContext.Instance.Container.Unbind<CharactersSystem>();
         }
 
         private void Update()

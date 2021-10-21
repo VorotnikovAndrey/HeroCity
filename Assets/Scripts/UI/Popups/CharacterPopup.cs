@@ -18,6 +18,7 @@ namespace UI.Popups
         public override PopupType Type => PopupType.Character;
 
         [SerializeField] private List<CharacterPopupPageElement> _pages;
+        [SerializeField] private GameObject _switchButtonsHolder;
 
         private BaseCharacterView _characterView;
         private CharacterRawModelHolder _rawModelHolder;
@@ -50,6 +51,8 @@ namespace UI.Popups
 
             SetPage(0);
             SpawnRawDummy();
+
+            _switchButtonsHolder.gameObject.SetActive(_charactersSystem.Components[_characterView.Model.CharacterType].Characters.Count > 1);
         }
 
         protected override void OnHide()
