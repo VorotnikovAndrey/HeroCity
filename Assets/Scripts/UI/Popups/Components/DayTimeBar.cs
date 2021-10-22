@@ -12,7 +12,6 @@ namespace UI.Popups.Components
         private void Start()
         {
             DayTime.OnValueChanged += OnUpdate;
-            OnUpdate(DayTime.Time);
         }
 
         private void OnUpdate(TimeSpan value)

@@ -4,7 +4,6 @@ using System.Linq;
 using Content;
 using DG.Tweening;
 using Gameplay.LightSystem;
-using UI;
 using UnityEngine;
 using UserSystem;
 using Utils;
@@ -17,17 +16,13 @@ namespace Gameplay.Time
         public static event Action<TimeSpan> OnValueChanged;
         public static event Action<DayTimeType, bool> OnDayTimeTypeChanged;
 
-        public static TimeSpan Time { get; private set; }
-
         private readonly TimeTicker _timeTicker;
         private readonly UserManager _userManager;
         private readonly DayTimeParams _dayTimeParams;
 
         private MainDirectionLight _directionLight;
-        private float _timeFactor = 1;
         private List<Tweener> _tweeners = new List<Tweener>();
-
-        private int _test = 1;
+        private DayTimeType _currentType;
 
         public DayTime()
         {
@@ -35,60 +30,48 @@ namespace Gameplay.Time
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
             _directionLight = ProjectContext.Instance.Container.Resolve<MainDirectionLight>();
             _dayTimeParams = ContentProvider.Graphic.DayTimeParams;
-
-            Time = _userManager.CurrentUser.Time;
         }
 
         public void Initialize()
         {
-            _timeTicker.OnTick += OnUpdate;
+            SetDayType(_dayTimeParams.TimeData[_userManager.CurrentUser.Time.Hours].Type, true);
 
-            SetDayType(DayTimeType.Afternoon, true);
+            _timeTicker.OnTick += OnUpdate;
         }
 
         public void DeInitialize()
         {
             _timeTicker.OnTick -= OnUpdate;
+
+#if UNITY_EDITOR
+            ResetMaterials();
+#endif
         }
 
         private void OnUpdate()
         {
-            Time += TimeSpan.FromMinutes(UnityEngine.Time.deltaTime * _timeFactor);
-            OnValueChanged?.Invoke(Time);
+            _userManager.CurrentUser.Time += TimeSpan.FromMinutes(UnityEngine.Time.deltaTime * _dayTimeParams.TimeFactor);
 
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                _test--;
+            OnValueChanged?.Invoke(_userManager.CurrentUser.Time);
 
-                if (_test < 0)
-                {
-                    _test = 3;
-                }
-
-                SetDayType((DayTimeType)_test);
-            }
-
-            if (Input.GetKeyDown(KeyCode.D))
-            {
-                _test++;
-
-                if (_test > 3)
-                {
-                    _test = 0;
-                }
-
-                SetDayType((DayTimeType)_test);
-            }
+            SetDayType(_dayTimeParams.TimeData[_userManager.CurrentUser.Time.Hours].Type);
         }
 
         private void SetDayType(DayTimeType type, bool force = false)
         {
+            if (_currentType == type)
+            {
+                return;
+            }
+
             var data = _dayTimeParams.Data.FirstOrDefault(x => x.Type == type);
             if (data == null)
             {
                 Debug.LogError("Data is null".AddColorTag(Color.red));
                 return;
             }
+
+            _currentType = type;
 
             var duration = force ? 0f : data.SwitchDuratation;
 
@@ -109,6 +92,30 @@ namespace Gameplay.Time
             }
 
             OnDayTimeTypeChanged?.Invoke(type, force);
+        }
+
+        private void ResetMaterials()
+        {
+            var data = _dayTimeParams.Data.FirstOrDefault(x => x.Type == DayTimeType.Afternoon);
+            if (data == null)
+            {
+                Debug.LogError("Data is null".AddColorTag(Color.red));
+                return;
+            }
+
+            foreach (var material in _dayTimeParams.Materials)
+            {
+                material.color = data.MaterialColor;
+            }
+
+            _directionLight.Light.color = data.LightColor;
+
+            foreach (var material in _dayTimeParams.GlassMaterials)
+            {
+                material.color = _dayTimeParams._glassColorOff;
+            }
+
+            Debug.Log("Reset Meterials".AddColorTag(Color.yellow));
         }
     }
 }

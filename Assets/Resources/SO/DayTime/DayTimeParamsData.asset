@@ -12,44 +12,96 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab4458b6617e3ad4c88a53b1284c5aa0, type: 3}
   m_Name: DayTimeParamsData
   m_EditorClassIdentifier: 
+  TimeData:
+  - Type: 3
+    Time: 0
+  - Type: 3
+    Time: 1
+  - Type: 3
+    Time: 2
+  - Type: 3
+    Time: 3
+  - Type: 3
+    Time: 4
+  - Type: 0
+    Time: 5
+  - Type: 0
+    Time: 6
+  - Type: 0
+    Time: 7
+  - Type: 0
+    Time: 8
+  - Type: 0
+    Time: 9
+  - Type: 1
+    Time: 10
+  - Type: 1
+    Time: 11
+  - Type: 1
+    Time: 12
+  - Type: 1
+    Time: 13
+  - Type: 1
+    Time: 14
+  - Type: 1
+    Time: 15
+  - Type: 1
+    Time: 16
+  - Type: 1
+    Time: 17
+  - Type: 2
+    Time: 18
+  - Type: 2
+    Time: 19
+  - Type: 2
+    Time: 20
+  - Type: 2
+    Time: 21
+  - Type: 2
+    Time: 22
+  - Type: 3
+    Time: 23
+  TimeFactor: 4
   Data:
   - Type: 0
-    IntervalStart: 6
-    IntervalEnd: 12
+    IntervalStart: 5
+    IntervalEnd: 10
     MaterialColor: {r: 0.69411767, g: 0.8117647, b: 0.80784315, a: 1}
     LightColor: {r: 1, g: 1, b: 1, a: 1}
     LightRotation: {x: 47.002, y: -102.467, z: 0.395}
     SwitchEase: 1
-    SwitchDuratation: 3
+    SwitchDuratation: 5
   - Type: 1
-    IntervalStart: 12
+    IntervalStart: 10
     IntervalEnd: 18
     MaterialColor: {r: 1, g: 1, b: 1, a: 1}
     LightColor: {r: 1, g: 1, b: 1, a: 1}
     LightRotation: {x: 46.789, y: -152.144, z: -40.309}
     SwitchEase: 1
-    SwitchDuratation: 3
+    SwitchDuratation: 5
   - Type: 2
     IntervalStart: 18
-    IntervalEnd: 22
+    IntervalEnd: 23
     MaterialColor: {r: 1, g: 1, b: 1, a: 1}
     LightColor: {r: 1, g: 1, b: 1, a: 1}
     LightRotation: {x: 21.829, y: -214.862, z: -58.339}
     SwitchEase: 1
-    SwitchDuratation: 3
+    SwitchDuratation: 5
   - Type: 3
-    IntervalStart: 22
-    IntervalEnd: 6
+    IntervalStart: 23
+    IntervalEnd: 5
     MaterialColor: {r: 0.23137255, g: 0.39607844, b: 0.5176471, a: 1}
     LightColor: {r: 0, g: 0.74509805, b: 1, a: 1}
     LightRotation: {x: 26.695, y: -240.234, z: -117.792}
     SwitchEase: 1
-    SwitchDuratation: 3
+    SwitchDuratation: 5
   Materials:
   - {fileID: 2100000, guid: 6a44a971d60f41d4591ba8d045270062, type: 2}
   - {fileID: 2100000, guid: 24795a88a5547a2438ea85c4561ba7c7, type: 2}
   - {fileID: 2100000, guid: 5ec5815f62a0d37488d95601e3f0129f, type: 2}
-  GlassMaterials:
-  - {fileID: 2100000, guid: 6c41720c969ef3642a46e8175de13773, type: 2}
+  _glassDuration: 5
   _glassColorOn: {r: 0.78431374, g: 0.49411765, b: 0.16078432, a: 1}
   _glassColorOff: {r: 0.28627452, g: 0.35686275, b: 0.38039216, a: 1}
+  _glassEase: 8
+  GlassMaterials:
+  - {fileID: 2100000, guid: 6c41720c969ef3642a46e8175de13773, type: 2}

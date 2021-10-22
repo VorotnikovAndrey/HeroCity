@@ -1,3 +1,4 @@
+using System;
 using Defong.ObjectPool;
 using PopupSystem;
 using Stages;
@@ -32,5 +33,10 @@ public class GameManager : SingletonBehaviour<GameManager>
         Application.targetFrameRate = 60;
 
         _cheatsManager = new CheatsManager();
+    }
+
+    private void OnApplicationQuit()
+    {
+        StageController.Stage?.DeInitialize();
     }
 }

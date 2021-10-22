@@ -22,28 +22,33 @@ namespace Gameplay.LightSystem
         private void DayTypeChanged(DayTimeType type, bool force)
         {
             var data = ContentProvider.Graphic.DayTimeParams.Data.FirstOrDefault(x => x.Type == type);
+
             if (data == null)
             {
                 Debug.LogError("Data is null".AddColorTag(Color.red));
                 return;
             }
 
-            var duration = force ? 0f : data.SwitchDuratation;
+            var duration = force ? 0f : ContentProvider.Graphic.DayTimeParams._glassDuration;
 
             if (type == DayTimeType.Night)
             {
                 _light.enabled = true;
                 _tweener?.Kill();
-                _tweener = DOTween.To(() => _light.intensity, x => _light.intensity = x, _value, duration).SetEase(data.SwitchEase).OnKill(() => _tweener = null);
+                _tweener = DOTween.To(() => _light.intensity, x => _light.intensity = x, _value, duration).SetEase(ContentProvider.Graphic.DayTimeParams._glassEase).OnKill(() => _tweener = null);
             }
-            else if (_light.intensity > 0)
+            else if (type == DayTimeType.Morning && _light.intensity > 0)
             {
                 _tweener?.Kill();
-                _tweener = DOTween.To(() => _light.intensity, x => _light.intensity = x, 0f, duration).SetEase(data.SwitchEase).OnKill(() =>
+                _tweener = DOTween.To(() => _light.intensity, x => _light.intensity = x, 0f, duration).SetEase(ContentProvider.Graphic.DayTimeParams._glassEase).OnKill(() =>
                 {
                     _light.enabled = false;
                     _tweener = null;
                 });
+            }
+            else
+            {
+                _light.enabled = false;
             }
         }
 
