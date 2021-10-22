@@ -5,6 +5,6 @@ namespace Gameplay.Equipments
         Common = 0,
         Rare = 1,
         Epic = 2,
-        Legendaty = 3
+        Legendary = 3
     }
 }

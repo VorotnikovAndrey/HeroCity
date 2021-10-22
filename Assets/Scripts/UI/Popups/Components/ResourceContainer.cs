@@ -21,9 +21,6 @@ namespace UI.Popups.Components
         [Space]
         [SerializeField] private Image _icon = default;
         [SerializeField] private TextMeshProUGUI _text = default;
-        [SerializeField] private RectTransform layoutGroup = default;
-        [Space] 
-        [SerializeField] private LocalEvent _events;
 
         private Tweener _tweener;
         private int _value;
@@ -35,10 +32,6 @@ namespace UI.Popups.Components
             {
                 _value = value;
                 _text.text = _converter != null ? _converter.Convert(_value) : _value.ToString();
-
-                LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroup);
-
-                _events.OnValueChanged?.Invoke(_value);
             }
         }
 
@@ -64,12 +57,6 @@ namespace UI.Popups.Components
         private void OnDestroy()
         {
             _tweener?.Kill();
-        }
-
-        [Serializable]
-        public class LocalEvent
-        {
-            public UnityEvent<int> OnValueChanged;
         }
     }
 }

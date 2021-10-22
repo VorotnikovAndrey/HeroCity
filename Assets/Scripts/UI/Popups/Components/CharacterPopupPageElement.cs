@@ -1,6 +1,10 @@
+using System.Linq;
+using Content;
 using Gameplay.Characters.Models;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using Utils;
 using Zenject;
 
 namespace UI.Popups.Components
@@ -11,10 +15,10 @@ namespace UI.Popups.Components
         public GameObject Object;
 
         [SerializeField] public TextMeshProUGUI _characterName;
-        [SerializeField] public TextMeshProUGUI _characterDescription;
+        [SerializeField] public Image _characterClassImage;
 
         protected CharacterRawModelHolder _rawModelHolder;
-        protected BaseCharacterModel _model;
+        protected HeroModel _model;
 
         private void OnValidate()
         {
@@ -31,10 +35,32 @@ namespace UI.Popups.Components
 
         public virtual void SetModel(BaseCharacterModel model)
         {
-            _model = model;
+            _model = model as HeroModel;
 
-            _characterName.text = model.Name;
-            _characterDescription.text = $"{model.CharacterType} - level {model.Stats.Level}";
+            if (_model == null)
+            {
+                Debug.LogError("Model is null".AddColorTag(Color.red));
+                return;
+            }
+
+            UpdateName();
+            UpdateClassIcon();
+        }
+
+        private void UpdateName()
+        {
+            _characterName.text = _model.Name;
+        }
+
+        private void UpdateClassIcon()
+        {
+            if (_characterClassImage == null)
+            {
+                return;
+            }
+
+            _characterClassImage.sprite = ContentProvider.Graphic.SpriteBank.HeroClassIcons
+                .FirstOrDefault(x => x.Class == _model.HeroClassType)?.Sprite;
         }
 
         public virtual void Show()

@@ -14,8 +14,8 @@ namespace UI.Popups.Components
     public class ResourcesBar : EventMonoBehavior
     {
         public List<ResourcesPair> ResourcesList = new List<ResourcesPair>();
-        [Space]
-        [SerializeField] private RectTransform layoutGroup = default;
+
+        [SerializeField] private RectTransform _layoutGroup;
 
         private void OnValidate()
         {
@@ -47,6 +47,8 @@ namespace UI.Popups.Components
             {
                 pair.Container.SetValue(ProjectContext.Instance.Container.Resolve<UserManager>().CurrentUser.Resources[pair.Type], true);
             }
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_layoutGroup);
         }
 
         private void OnUpdateResource(ResourceModifiedEvent sender)
@@ -58,11 +60,6 @@ namespace UI.Popups.Components
         {
             ResourcesPair element = ResourcesList.FirstOrDefault(x => x.Type == type);
             element?.Container.SetValue(newValue);
-        }
-
-        public void RebuildLayout()
-        {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroup);
         }
 
         private void OnDestroy()

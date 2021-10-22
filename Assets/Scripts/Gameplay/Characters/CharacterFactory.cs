@@ -1,9 +1,11 @@
 using System.Linq;
+using Characters;
 using Content;
 using Gameplay.Characters.Models;
 using Gameplay.Equipments;
 using Gameplay.Movement;
 using Source;
+using UnityEngine;
 
 namespace Gameplay.Characters
 {
@@ -13,9 +15,9 @@ namespace Gameplay.Characters
         {
             switch (type)
             {
-                case CharacterType.Hero: 
+                case CharacterType.Hero:
                     return GetHero(gender, rarity);
-                default: 
+                default:
                     return null;
             }
         }
@@ -30,7 +32,8 @@ namespace Gameplay.Characters
                 Name = ContentProvider.Graphic.CharacterNames.Data.FirstOrDefault(x => x.Gender == gender)?.Info.GetRandom().Name,
                 Gender = gender,
                 Rarity = rarity,
-                Inventory = new CharacterInventory()
+                Inventory = new CharacterInventory(),
+                HeroClassType = (HeroClassType)Random.Range(0, 6)
             };
         }
     }

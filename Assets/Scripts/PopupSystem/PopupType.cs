@@ -5,8 +5,10 @@ namespace PopupSystem
         None = 0,
         Default = 1,
         Hud = 2,
-        Building = 3,
+        BuildingUpgrade = 3,
         Improvement = 4,
         Character = 5,
+        WeaponShop = 6,
+        ArmorShop = 7,
     }
 }

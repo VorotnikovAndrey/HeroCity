@@ -9,6 +9,21 @@ namespace Content
     {
         public class Economies
         {
+            private static WeaponShopEconomy _weaponShopEconomy;
+
+            public static WeaponShopEconomy WeaponShopEconomy
+            {
+                get
+                {
+                    if (_weaponShopEconomy == null)
+                    {
+                        _weaponShopEconomy = ProjectContext.Instance.Container.Resolve<WeaponShopEconomy>();
+                    }
+
+                    return _weaponShopEconomy;
+                }
+            }
+
             private static LocationsEconomy _locationsEconomy;
 
             public static LocationsEconomy LocationsEconomy

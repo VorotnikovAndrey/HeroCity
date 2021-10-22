@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using CameraSystem;
 using Content;
@@ -86,15 +87,36 @@ namespace Gameplay.Building
 
         private void OnBuildingViewSelected(BuildingViewSelectedEvent sender)
         {
+            var model = GetBuildingModel(sender.View.BuildingId);
+            if (model == null)
+            {
+                Debug.LogError("Model is null".AddColorTag(Color.red));
+                return;
+            }
+
+            if (model.Stage.Value == 0)
+            {
+                _popupManager.ShowPopup(PopupType.BuildingUpgrade, sender.View.BuildingId);
+            }
+            else if (sender.View.ShowablePopup != PopupType.None)
+            {
+                _popupManager.ShowPopup(sender.View.ShowablePopup, sender.View.BuildingId);
+            }
+            else
+            {
+                return;
+            }
+
             if (_locationCamera.CameraState != CameraStates.Default)
             {
                 return;
             }
 
-            _locationCamera.SwitchToViewTransform(sender.View.transform, sender.View.ActiveStageElement.CameraOffset != null ?
-                sender.View.ActiveStageElement.CameraOffset.Offset : Vector3.zero);
-
-            _popupManager.ShowPopup(PopupType.Building, sender.View.BuildingId);
+            _locationCamera.SwitchToViewTransform(
+                sender.View.transform,
+                sender.View.ActiveStageElement.CameraOffset != null ?
+                sender.View.ActiveStageElement.CameraOffset.Offset :
+                Vector3.zero);
         }
 
         private void OnUpgradeBuilding(UpgradeBuildingEvent sender)

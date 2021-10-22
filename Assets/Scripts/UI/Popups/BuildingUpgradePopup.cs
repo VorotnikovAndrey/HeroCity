@@ -1,65 +1,104 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Content;
+using Economies;
 using Events;
 using Gameplay.Building;
 using Gameplay.Building.Models;
 using Gameplay.Improvements;
 using Polyglot;
+using PopupSystem;
 using ResourceSystem;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UserSystem;
+using Utils;
 using Utils.ObjectPool;
+using Utils.PopupSystem;
 using Zenject;
 
-namespace UI.Popups.Components
+namespace UI.Popups
 {
-    public class BuildingUpgradePage : BuildingPopupPageElement
+    public class BuildingUpgradePopup : AbstractPopupBase<PopupType>
     {
+        public override PopupType Type => PopupType.BuildingUpgrade;
+
         public const string ImprovementButtonPath = "Popups/Components/ImprovementButton";
         public const string DependencyButtonPath = "Popups/Components/DependencyButton";
         public const string BuildKey = "BUILD";
         public const string UpgradeKey = "UPGRADE";
 
-        [SerializeField] private Button _buyButton;
-        [SerializeField] private Button _backButton;
+        [SerializeField] private ButtonInteractableTextColorHelper _buyButton;
         [SerializeField] private TextMeshProUGUI _buyButtonText;
         [SerializeField] private TextMeshProUGUI _priceText;
         [SerializeField] private Transform _improvementsHolder;
         [SerializeField] private Transform _dependenciesHolder;
         [SerializeField] private GameObject _dependencyBar;
+        [Space]
+        [SerializeField] private LocalEvents _events;
 
+        private BuildingsManager _buildingsManager;
+        private BuildingModel _buildingModel;
+        private BuildingData _economyData;
         private GameResourceManager _gameResourceManager;
         private UserManager _userManager;
+
+        private string _buildingId;
 
         private List<ImprovementButton> _improvementButtons = new List<ImprovementButton>();
         private List<ImprovementButton> _dependencyButtons = new List<ImprovementButton>();
 
-        private void Awake()
+        protected override void OnAwake()
         {
+            _buildingsManager = ProjectContext.Instance.Container.Resolve<BuildingsManager>();
             _gameResourceManager = ProjectContext.Instance.Container.Resolve<GameResourceManager>();
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
         }
 
-        public override void Initialize(BuildingModel buildingModel)
+        protected override void OnShow(object args = null)
         {
-            base.Initialize(buildingModel);
+            _buildingId = args?.ToString();
+            _buildingModel = _buildingsManager.GetBuildingModel(_buildingId);
 
-            if (buildingModel.Stage >= _economyData.Upgrades.Count)
+            if (_buildingModel == null)
             {
+                Debug.LogError("Model is null".AddColorTag(Color.red));
+                return;
+            }
+
+            _economyData = ContentProvider.Economies.BuildingsEconomy.Data.FirstOrDefault(x => x.Id == _buildingId);
+
+            if (_economyData == null)
+            {
+                Debug.LogError("EconomyData is null".AddColorTag(Color.red));
                 return;
             }
 
             UpdateState();
-
             CreateImprovements();
             CreateDependencies();
 
-            _backButton.gameObject.SetActive(buildingModel.Stage > 0);
-
             EventAggregator.Add<ResourceModifiedEvent>(OnResourceModified);
             EventAggregator.Add<ImprovementReceivedEvent>(OnImprovementReceived);
+
+            _events.EmitTitleText?.Invoke($"{_buildingModel.Id}");
+        }
+
+        protected override void OnHide()
+        {
+            ReleaseAllImprovementButtons();
+            ReleaseAllDependencyButtons();
+
+            EventAggregator.Remove<ResourceModifiedEvent>(OnResourceModified);
+            EventAggregator.Remove<ImprovementReceivedEvent>(OnImprovementReceived);
+
+            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent
+            {
+                ReturnToPrevPos = true
+            });
         }
 
         private void OnImprovementReceived(ImprovementReceivedEvent sender)
@@ -72,6 +111,21 @@ namespace UI.Popups.Components
             UpdateState();
         }
 
+        public void OnBuyPressed()
+        {
+            EventAggregator.SendEvent(new BuildingViewUnSelectedEvent
+            {
+                ReturnToPrevPos = false
+            });
+
+            EventAggregator.SendEvent(new UpgradeBuildingEvent
+            {
+                BuildingId = _buildingId
+            });
+
+            Hide();
+        }
+
         private void UpdateState()
         {
             var data = _economyData.Upgrades[_buildingModel.Stage];
@@ -79,7 +133,7 @@ namespace UI.Popups.Components
             bool hasResources = data.Price.All(y => _gameResourceManager.HasResource(y.Type, y.Value));
             bool hasImprovements = data.ImprovementDependencies.All(dependency => _userManager.CurrentUser.Improvement.Contains(dependency));
 
-            _buyButton.interactable = hasResources;
+            _buyButton.SetState(hasResources);
             _buyButtonText.text = _buildingModel.State.Value == BuildingState.Inactive ? Localization.Get(BuildKey) : Localization.Get(UpgradeKey);
             _priceText.text = _gameResourceManager.GetPriceText(_economyData.Upgrades[_buildingModel.Stage].Price);
 
@@ -143,15 +197,10 @@ namespace UI.Popups.Components
             _dependencyButtons.Clear();
         }
 
-        public override void DeInitialize()
+        [Serializable]
+        public class LocalEvents
         {
-            base.DeInitialize();
-
-            ReleaseAllImprovementButtons();
-            ReleaseAllDependencyButtons();
-
-            EventAggregator.Remove<ResourceModifiedEvent>(OnResourceModified);
-            EventAggregator.Remove<ImprovementReceivedEvent>(OnImprovementReceived);
+            public UnityEvent<string> EmitTitleText;
         }
     }
 }
