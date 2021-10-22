@@ -324,8 +324,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 12, y: 12, z: 12}
-  m_Center: {x: 0, y: 6, z: 0}
+  m_Size: {x: 12, y: 1, z: 12}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &8694006992985238443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,6 +339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BuildingId: townhall
+  ShowablePopup: 0
   States:
   - State: 0
     Object: {fileID: 7151423250213917102}

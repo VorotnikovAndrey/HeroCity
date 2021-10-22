@@ -59,7 +59,7 @@ MonoBehaviour:
       ImprovementDependencies: []
       ImprovementOpen:
       - jewelry_upgrade_1
-  - Id: smithy
+  - Id: weapon_shop
     Type: 0
     State: 1
     Upgrades:
@@ -80,7 +80,7 @@ MonoBehaviour:
       ImprovementDependencies: []
       ImprovementOpen:
       - smithy_upgrade_1
-  - Id: armory
+  - Id: 'armor_shop '
     Type: 0
     State: 1
     Upgrades:

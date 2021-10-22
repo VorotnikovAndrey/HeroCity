@@ -14,26 +14,58 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data:
   - Id: debug_icon_common
-    Sprite: {fileID: 21300000, guid: 148ac16f1fd27814291b4aa6febbe114, type: 3}
+    Sprite: {fileID: 21300000, guid: 6ab2534e69bd644c1b88a3bbf9e248a6, type: 3}
   - Id: debug_icon_rare
-    Sprite: {fileID: 21300000, guid: 690c3084d72710d4bb2681136c47c3ad, type: 3}
+    Sprite: {fileID: 21300000, guid: eaa1fab7e733e454dbacda8cf6fe92b0, type: 3}
   - Id: debug_icon_epic
-    Sprite: {fileID: 21300000, guid: 8f7f251283ef6754f9d0dfd085ec3d17, type: 3}
+    Sprite: {fileID: 21300000, guid: e3f68f3902aae4ee4980023ed3086fe5, type: 3}
   - Id: debug_icon_legendary
-    Sprite: {fileID: 21300000, guid: b78702c142bf0f84f8f97203226f6b1e, type: 3}
-  Items:
-  - Id: helm1
-    Sprite: {fileID: 21300000, guid: 3ae885ce9cc160a4a8ccf79fb02a8b31, type: 3}
-  - Id: armor1
-    Sprite: {fileID: 21300000, guid: c46548eeae763b547bdc8e10b6d6ba79, type: 3}
-  - Id: sword1
-    Sprite: {fileID: 21300000, guid: d7f5ad444e87b744fa1b705525d329fb, type: 3}
+    Sprite: {fileID: 21300000, guid: 1c8a65ec79c2444e68ec52920e8242dc, type: 3}
   ItemsRarity:
   - Rarity: 0
-    Sprite: {fileID: 21300000, guid: 1e6d84bd0ca754a4d9139f4128359137, type: 3}
+    Color: {r: 0.078431375, g: 0.18039216, b: 0.13333334, a: 1}
+    Sprite: {fileID: 21300000, guid: be53c2d198c7d4210888d879a530f0f7, type: 3}
   - Rarity: 1
-    Sprite: {fileID: 21300000, guid: 80b043f19b104d44f85cc2625fe5a767, type: 3}
+    Color: {r: 0.007843138, g: 0.07450981, b: 0.20000002, a: 1}
+    Sprite: {fileID: 21300000, guid: 70db338447d354c36a0975fb616b135e, type: 3}
   - Rarity: 2
-    Sprite: {fileID: 21300000, guid: 3345a5e5c0a03f54b85a3867118aed47, type: 3}
+    Color: {r: 0.12941177, g: 0.050980393, b: 0.20392157, a: 1}
+    Sprite: {fileID: 21300000, guid: 1757479cd707b4180a861faf78aeccb2, type: 3}
   - Rarity: 3
-    Sprite: {fileID: 21300000, guid: f3f484d3b8300a74a996bd51be4e132a, type: 3}
+    Color: {r: 0.1764706, g: 0.11764706, b: 0.07058824, a: 1}
+    Sprite: {fileID: 21300000, guid: 38b5dbcdbb36e4957abdff78cfe48537, type: 3}
+  Items:
+  - SlotType: 5
+    Data:
+    - Id: knife_1
+      Sprite: {fileID: 21300000, guid: ed440c6541762464282588fcf77028e5, type: 3}
+    - Id: knife_2
+      Sprite: {fileID: 21300000, guid: 1fb8109e20e3d4545b44d4cd5ff410f0, type: 3}
+    - Id: knife_3
+      Sprite: {fileID: 21300000, guid: 6c86701c722a17640b71315b37af97c2, type: 3}
+    - Id: knife_4
+      Sprite: {fileID: 21300000, guid: d7f5ad444e87b744fa1b705525d329fb, type: 3}
+  AffixesIcons:
+  - Id: life
+    Sprite: {fileID: 21300000, guid: c4a4a3889725445dd8786804a24c10e2, type: 3}
+  - Id: frost
+    Sprite: {fileID: 21300000, guid: 3b6b568ee5936411984359316412b01d, type: 3}
+  - Id: dark
+    Sprite: {fileID: 21300000, guid: 7b68dc7e40c7e49ec84ac88cee279514, type: 3}
+  - Id: fire
+    Sprite: {fileID: 21300000, guid: d72ffa11fc5fc487f96ca11c753a0292, type: 3}
+  HeroClassIcons:
+  - Class: 0
+    Sprite: {fileID: 21300000, guid: 9eca797aa990c44a0a1d11f290e1d63d, type: 3}
+  - Class: 1
+    Sprite: {fileID: 21300000, guid: 39ef3ee733c904f08a85268391803a80, type: 3}
+  - Class: 2
+    Sprite: {fileID: 21300000, guid: 7c590330b56f5478fa08eebb283dff0c, type: 3}
+  - Class: 3
+    Sprite: {fileID: 21300000, guid: e3c6fd8e5adf541adb992f6a1f75e2b9, type: 3}
+  - Class: 4
+    Sprite: {fileID: 21300000, guid: 92885073c980349c2a786888bd70f710, type: 3}
+  - Class: 5
+    Sprite: {fileID: 21300000, guid: d0eb0a9b0830b4c0bbc18dfa164f2492, type: 3}
+  - Class: 6
+    Sprite: {fileID: 21300000, guid: 2055fd42ce4d8486295b232b0f3db096, type: 3}

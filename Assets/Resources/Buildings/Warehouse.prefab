@@ -350,8 +350,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 7, y: 6, z: 7}
-  m_Center: {x: -0.78, y: 3, z: 0}
+  m_Size: {x: 7, y: 1, z: 7}
+  m_Center: {x: -0.78, y: 0.5, z: 0}
 --- !u!114 &8694006992985238443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,6 +365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BuildingId: warehouse
+  ShowablePopup: 0
   States:
   - State: 0
     Object: {fileID: 8245206848388922610}

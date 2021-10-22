@@ -21,7 +21,7 @@ MonoBehaviour:
   - Id: Location1
     BuildingsIds:
     - townhall
-    - smithy
+    - 'armor_shop '
     - jewelry
-    - armory
+    - weapon_shop
     - warehouse
