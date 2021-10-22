@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Characters;
-using Gameplay.Characters;
 using Gameplay.Equipments;
 using OneLine;
 using UnityEngine;

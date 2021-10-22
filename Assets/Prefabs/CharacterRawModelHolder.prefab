@@ -48,6 +48,7 @@ MonoBehaviour:
   _holder: {fileID: 3418897731368923139}
   _cameraParent: {fileID: 8326131771095676511}
   _defaultRotate: {x: 0, y: 25, z: 0}
+  _originCharacterMaterial: {fileID: 2100000, guid: 535206f62b348e84c93257b22113d72a, type: 2}
 --- !u!1 &3893368291125288872
 GameObject:
   m_ObjectHideFlags: 0

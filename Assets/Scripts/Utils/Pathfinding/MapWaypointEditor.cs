@@ -8,7 +8,6 @@ public class MapWaypointEditor : Editor
 {
     private SerializedProperty _neighborsProp;
     private SerializedProperty _paramsProp;
-    private SerializedProperty _lockersProp;
 
     private int _entranceIndex = 0;
 
@@ -16,7 +15,6 @@ public class MapWaypointEditor : Editor
     {
         _neighborsProp = serializedObject.FindProperty("Neighbors");
         _paramsProp = serializedObject.FindProperty("Params");
-        _lockersProp = serializedObject.FindProperty("LockedList");
     }
         
     public override void OnInspectorGUI()
@@ -28,8 +26,6 @@ public class MapWaypointEditor : Editor
         DrawTypeContent(waypoint);
             
         GUILayout.Space(5);
-
-        EditorGUILayout.PropertyField(_lockersProp);
 
         EditorGUILayout.PropertyField(_neighborsProp);
 

@@ -1,6 +1,7 @@
 using CameraSystem;
 using Economies;
 using Gameplay.Characters;
+using Gameplay.Time;
 using PopupSystem;
 using ResourceSystem;
 using Stages;
@@ -37,5 +38,6 @@ public class GameInstaller : MonoInstaller
         Container.Bind<CharacterGraphicPreset>().FromScriptableObjectResource("SO/Characters/CharacterGraphicPreset").AsSingle();
         Container.Bind<CharacterNames>().FromScriptableObjectResource("SO/Characters/CharacterNames").AsSingle();
         Container.Bind<SpriteBank>().FromScriptableObjectResource("SO/SpriteBank/SpriteBankData").AsSingle();
+        Container.Bind<DayTimeParams>().FromScriptableObjectResource("SO/DayTime/DayTimeParamsData").AsSingle();
     }
 }

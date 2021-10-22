@@ -1,5 +1,6 @@
 using Economies;
 using Gameplay.Characters;
+using Gameplay.Time;
 using Utils;
 using Zenject;
 
@@ -133,6 +134,21 @@ namespace Content
                     }
 
                     return _characterNames;
+                }
+            } 
+            
+            private static DayTimeParams _dayTimeParams;
+
+            public static DayTimeParams DayTimeParams
+            {
+                get
+                {
+                    if (_dayTimeParams == null)
+                    {
+                        _dayTimeParams = ProjectContext.Instance.Container.Resolve<DayTimeParams>();
+                    }
+
+                    return _dayTimeParams;
                 }
             }
         }

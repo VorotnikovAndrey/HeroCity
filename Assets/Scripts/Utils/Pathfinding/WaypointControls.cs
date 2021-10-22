@@ -62,7 +62,7 @@ public static class WaypointControls
         Undo.RegisterCreatedObjectUndo(newWp.gameObject, "Waypoint");
         newWp.gameObject.layer = 10;
         newWp.transform.parent = parent;
-        newWp.transform.position = pos + Vector3.right * 0.2f;
+        newWp.transform.position = pos;
         Selection.activeObject = newWp.gameObject;
         return newWp;
     }

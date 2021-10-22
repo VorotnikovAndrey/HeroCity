@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CameraSystem;
 using Gameplay.Building;
 using Gameplay.Building.View;
@@ -17,6 +18,8 @@ namespace Gameplay.Locations.View
         public WaypointsContainer WaypointsContainer;
         [Space]
         public List<BuildingView> Buildings;
+        [Space] 
+        [SerializeField] private Color _lightColor;
 
         private BuildingsManager _buildingsManager;
 

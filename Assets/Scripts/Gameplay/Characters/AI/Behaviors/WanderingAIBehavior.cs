@@ -1,3 +1,4 @@
+using Asyncoroutine;
 using Gameplay.Locations.View;
 using Gameplay.Movement;
 using Source;
@@ -61,13 +62,20 @@ namespace Gameplay.Characters.AI.Behaviors
             {
                 if (_count < _iterations)
                 {
-                    GoToNext();
+                    Wait();
                 }
                 else
                 {
                     End();
                 }
             });
+        }
+
+        private async void Wait()
+        {
+            await new WaitForSeconds(Random.Range(1f, 4f));
+
+            GoToNext();
         }
     }
 }
