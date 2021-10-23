@@ -13,6 +13,7 @@ namespace UserSystem
         [JsonProperty] public Dictionary<string, LocationModel> Locations;
         [JsonProperty] public string CurrentLocationId;
         [JsonProperty] public TimeSpan Time;
+        [JsonProperty] public DateTime LastPlayTime;
         [JsonProperty] public List<string> Improvement;
         [JsonProperty] public List<BaseCharacterModel> Characters;
 

@@ -42,6 +42,7 @@ namespace UserSystem
                 var serializedData = File.ReadAllText(SaveUtils.UserModelPath);
                 JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
                 CurrentUser = JsonConvert.DeserializeObject<UserModel>(serializedData, settings);
+
                 Debug.Log($"User loaded {SaveUtils.UserModelPath.AddColorTag(Color.yellow)}".AddColorTag(Color.green));
             }
             else
@@ -54,6 +55,8 @@ namespace UserSystem
         public void Save(bool force = false)
         {
             SaveCharacterData();
+
+            CurrentUser.LastPlayTime = DateTime.UtcNow;
 
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             File.WriteAllText(SaveUtils.UserModelPath, JsonConvert.SerializeObject(CurrentUser, settings));
@@ -78,6 +81,7 @@ namespace UserSystem
 
             CurrentUser = new UserModel(defaultResources)
             {
+                LastPlayTime = DateTime.UtcNow,
                 Time = new TimeSpan(0, 12, 0, 0),
                 CurrentLocationId = ContentProvider.Economies.LocationsEconomy.Data.First().Id,
                 Locations = new Dictionary<string, LocationModel>(),

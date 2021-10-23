@@ -34,6 +34,7 @@ namespace Gameplay.Time
 
         public void Initialize()
         {
+            AddTimeSpentOffline();
             SetDayType(_dayTimeParams.TimeData[_userManager.CurrentUser.Time.Hours].Type, true);
 
             _timeTicker.OnTick += OnUpdate;
@@ -55,6 +56,12 @@ namespace Gameplay.Time
             OnValueChanged?.Invoke(_userManager.CurrentUser.Time);
 
             SetDayType(_dayTimeParams.TimeData[_userManager.CurrentUser.Time.Hours].Type);
+        }
+
+        private void AddTimeSpentOffline()
+        {
+            var totalSeconds = (DateTime.UtcNow - _userManager.CurrentUser.LastPlayTime).TotalSeconds;
+            _userManager.CurrentUser.Time += TimeSpan.FromMinutes(totalSeconds * ContentProvider.Graphic.DayTimeParams.TimeFactor);
         }
 
         private void SetDayType(DayTimeType type, bool force = false)
