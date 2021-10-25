@@ -36,7 +36,7 @@ namespace Gameplay.Craft
 
         public void AddItem(ItemCraftContainer item)
         {
-            item.Transform.SetParent(_content.Content);
+            item.SetParent(_content.Content);
         }
 
         public void OnButtonPressed()

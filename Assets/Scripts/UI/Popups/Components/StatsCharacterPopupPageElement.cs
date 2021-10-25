@@ -62,7 +62,7 @@ namespace UI.Popups.Components
 
                 element.SetTitle(stat.Key);
                 element.SetValue(stat.Value);
-                element.Transform.SetParent(_statsContentHolder);
+                element.SetParent(_statsContentHolder);
 
                 _statsInfoElements.Add(element);
             }

@@ -4,6 +4,7 @@ using DG.Tweening;
 using Gameplay.Time;
 using UnityEngine;
 using Utils;
+using Zenject;
 
 namespace Gameplay.LightSystem
 {
@@ -12,11 +13,15 @@ namespace Gameplay.LightSystem
         [SerializeField] private Light _light;
         [SerializeField] private float _value;
 
+        private DayTime _dayTime;
         private Tweener _tweener;
 
         private void Awake()
         {
-            DayTime.OnDayTimeTypeChanged += DayTypeChanged;
+            _dayTime = ProjectContext.Instance.Container.Resolve<DayTime>();
+            _dayTime.OnDayTimeTypeChanged += DayTypeChanged;
+
+            DayTypeChanged(_dayTime.CurrentType, true);
         }
 
         private void DayTypeChanged(DayTimeType type, bool force)
@@ -33,12 +38,16 @@ namespace Gameplay.LightSystem
 
             if (type == DayTimeType.Night)
             {
+                _light.intensity = 0f;
                 _light.enabled = true;
+
                 _tweener?.Kill();
                 _tweener = DOTween.To(() => _light.intensity, x => _light.intensity = x, _value, duration).SetEase(ContentProvider.Graphic.DayTimeParams._glassEase).OnKill(() => _tweener = null);
             }
             else if (type == DayTimeType.Morning && _light.intensity > 0)
             {
+                _light.intensity = _value;
+
                 _tweener?.Kill();
                 _tweener = DOTween.To(() => _light.intensity, x => _light.intensity = x, 0f, duration).SetEase(ContentProvider.Graphic.DayTimeParams._glassEase).OnKill(() =>
                 {
@@ -54,7 +63,7 @@ namespace Gameplay.LightSystem
 
         private void OnDestroy()
         {
-            DayTime.OnDayTimeTypeChanged -= DayTypeChanged;
+            _dayTime.OnDayTimeTypeChanged -= DayTypeChanged;
         }
     }
 }

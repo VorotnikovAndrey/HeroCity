@@ -13,8 +13,10 @@ namespace Gameplay.Time
 {
     public class DayTime
     {
-        public static event Action<TimeSpan> OnValueChanged;
-        public static event Action<DayTimeType, bool> OnDayTimeTypeChanged;
+        public event Action<TimeSpan> OnValueChanged;
+        public event Action<DayTimeType, bool> OnDayTimeTypeChanged;
+
+        public DayTimeType CurrentType { get; private set; }
 
         private readonly TimeTicker _timeTicker;
         private readonly UserManager _userManager;
@@ -22,10 +24,11 @@ namespace Gameplay.Time
 
         private MainDirectionLight _directionLight;
         private List<Tweener> _tweeners = new List<Tweener>();
-        private DayTimeType _currentType;
-
+        
         public DayTime()
         {
+            ProjectContext.Instance.Container.BindInstances(this);
+
             _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
             _directionLight = ProjectContext.Instance.Container.Resolve<MainDirectionLight>();
@@ -43,6 +46,8 @@ namespace Gameplay.Time
         public void DeInitialize()
         {
             _timeTicker.OnTick -= OnUpdate;
+
+            ProjectContext.Instance.Container.Unbind<DayTime>();
 
 #if UNITY_EDITOR
             ResetMaterials();
@@ -66,7 +71,7 @@ namespace Gameplay.Time
 
         private void SetDayType(DayTimeType type, bool force = false)
         {
-            if (_currentType == type)
+            if (CurrentType == type)
             {
                 return;
             }
@@ -78,7 +83,7 @@ namespace Gameplay.Time
                 return;
             }
 
-            _currentType = type;
+            CurrentType = type;
 
             var duration = force ? 0f : data.SwitchDuratation;
 

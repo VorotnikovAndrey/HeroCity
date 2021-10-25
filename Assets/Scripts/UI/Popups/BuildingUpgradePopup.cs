@@ -37,6 +37,7 @@ namespace UI.Popups
         [SerializeField] private Transform _improvementsHolder;
         [SerializeField] private Transform _dependenciesHolder;
         [SerializeField] private GameObject _dependencyBar;
+        [SerializeField] private RectTransform[] _layoutGroups;
         [Space]
         [SerializeField] private LocalEvents _events;
 
@@ -85,6 +86,11 @@ namespace UI.Popups
             EventAggregator.Add<ImprovementReceivedEvent>(OnImprovementReceived);
 
             _events.EmitTitleText?.Invoke($"{_buildingModel.Id}");
+        }
+
+        protected override void OnShowLate()
+        {
+            RebuildLayouts();
         }
 
         protected override void OnHide()
@@ -147,6 +153,8 @@ namespace UI.Popups
                 _dependencyBar.SetActive(true);
                 _buyButton.gameObject.SetActive(false);
             }
+
+            RebuildLayouts();
         }
 
         private void CreateImprovements()
@@ -157,7 +165,7 @@ namespace UI.Popups
             {
                 var improvementButton = ViewGenerator.GetOrCreateItemView<ImprovementButton>(ImprovementButtonPath);
                 improvementButton.Initialize(improvementId);
-                improvementButton.Transform.SetParent(_improvementsHolder);
+                improvementButton.SetParent(_improvementsHolder);
 
                 _improvementButtons.Add(improvementButton);
             }
@@ -171,7 +179,7 @@ namespace UI.Popups
             {
                 var improvementButton = ViewGenerator.GetOrCreateItemView<ImprovementButton>(DependencyButtonPath);
                 improvementButton.Initialize(improvementId);
-                improvementButton.Transform.SetParent(_dependenciesHolder);
+                improvementButton.SetParent(_dependenciesHolder);
 
                 _dependencyButtons.Add(improvementButton);
             }
@@ -195,6 +203,14 @@ namespace UI.Popups
             }
 
             _dependencyButtons.Clear();
+        }
+
+        private void RebuildLayouts()
+        {
+            foreach (var element in _layoutGroups)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(element);
+            }
         }
 
         [Serializable]

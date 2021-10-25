@@ -2,6 +2,7 @@ using System;
 using Gameplay.Time;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace UI.Popups.Components
 {
@@ -9,9 +10,12 @@ namespace UI.Popups.Components
     {
         [SerializeField] private TextMeshProUGUI _text;
 
+        private DayTime _dayTime;
+
         private void Start()
         {
-            DayTime.OnValueChanged += OnUpdate;
+            _dayTime = ProjectContext.Instance.Container.Resolve<DayTime>();
+            _dayTime.OnValueChanged += OnUpdate;
         }
 
         private void OnUpdate(TimeSpan value)
@@ -21,7 +25,7 @@ namespace UI.Popups.Components
 
         private void OnDestroy()
         {
-            DayTime.OnValueChanged -= OnUpdate;
+            _dayTime.OnValueChanged -= OnUpdate;
         }
     }
 }

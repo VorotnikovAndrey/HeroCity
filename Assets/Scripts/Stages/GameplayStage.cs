@@ -61,6 +61,10 @@ namespace Stages
                 return;
             }
 
+            // Main
+            _dayTime = new DayTime();
+            _dayTime.Initialize();
+
             // Location
             if (!TryLoadLocation(locationModel))
             {
@@ -84,8 +88,6 @@ namespace Stages
             _buildingsManager.Initialize();
             _charactersSystem = new CharactersSystem();
             _charactersSystem.Initialize();
-            _dayTime = new DayTime();
-            _dayTime.Initialize();
             _locationView.Initialize();
         }
 
@@ -108,13 +110,15 @@ namespace Stages
             _buildingsManager = null;
             _charactersSystem.DeInitialize();
             _charactersSystem = null;
-            _dayTime.DeInitialize();
-            _dayTime = null;
             _waypointSystem = null;
 
             // Location
             _locationView.DestroyAndRemoveFromPool();
             _locationView = null;
+
+            // Main
+            _dayTime.DeInitialize();
+            _dayTime = null;
 
             //GC.Collect(0, GCCollectionMode.Forced);
         }

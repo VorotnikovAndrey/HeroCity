@@ -30,6 +30,14 @@ namespace Gameplay.Craft
         private InventoryItem _inventoryItem;
         private Item _item;
 
+        private void OnValidate()
+        {
+            for (int i = 0; i < _inventoryItemHolder.transform.childCount; i++)
+            {
+                _inventoryItemHolder.GetChild(i).GetComponent<RectTransform>().sizeDelta = _inventoryItemScale;
+            }
+        }
+
         public void SetItem(Item item)
         {
             _item = item;
