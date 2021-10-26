@@ -47,6 +47,12 @@ MonoBehaviour:
       Price:
       - Type: 0
         Value: 500
+      - Type: 1
+        Value: 500
+      - Type: 2
+        Value: 500
+      - Type: 3
+        Value: 500
       ImprovementDependencies:
       - townhall_upgrade_0
       ImprovementOpen:

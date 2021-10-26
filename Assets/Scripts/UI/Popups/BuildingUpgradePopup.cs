@@ -11,6 +11,7 @@ using Polyglot;
 using PopupSystem;
 using ResourceSystem;
 using TMPro;
+using UI.Popups.Components;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -33,7 +34,7 @@ namespace UI.Popups
 
         [SerializeField] private ButtonInteractableTextColorHelper _buyButton;
         [SerializeField] private TextMeshProUGUI _buyButtonText;
-        [SerializeField] private TextMeshProUGUI _priceText;
+        [SerializeField] private RectTransform _requiredResourcesHolder;
         [SerializeField] private Transform _improvementsHolder;
         [SerializeField] private Transform _dependenciesHolder;
         [SerializeField] private GameObject _dependencyBar;
@@ -51,6 +52,7 @@ namespace UI.Popups
 
         private List<ImprovementButton> _improvementButtons = new List<ImprovementButton>();
         private List<ImprovementButton> _dependencyButtons = new List<ImprovementButton>();
+        private List<ResourceRequiredContainer> _resourceRequiredContainers = new List<ResourceRequiredContainer>();
 
         protected override void OnAwake()
         {
@@ -97,6 +99,7 @@ namespace UI.Popups
         {
             ReleaseAllImprovementButtons();
             ReleaseAllDependencyButtons();
+            ReleaseAllRequiredResources();
 
             EventAggregator.Remove<ResourceModifiedEvent>(OnResourceModified);
             EventAggregator.Remove<ImprovementReceivedEvent>(OnImprovementReceived);
@@ -141,7 +144,8 @@ namespace UI.Popups
 
             _buyButton.SetState(hasResources);
             _buyButtonText.text = _buildingModel.State.Value == BuildingState.Inactive ? Localization.Get(BuildKey) : Localization.Get(UpgradeKey);
-            _priceText.text = _gameResourceManager.GetPriceText(_economyData.Upgrades[_buildingModel.Stage].Price);
+
+            UpdateRequiredResources();
 
             if (hasImprovements)
             {
@@ -155,6 +159,24 @@ namespace UI.Popups
             }
 
             RebuildLayouts();
+        }
+
+        private void UpdateRequiredResources()
+        {
+            var resources = _economyData.Upgrades[_buildingModel.Stage].Price;
+
+            _requiredResourcesHolder.gameObject.SetActive(resources.Count > 0);
+
+            ReleaseAllRequiredResources();
+
+            foreach (ResourcesData element in resources)
+            {
+                ResourceRequiredContainer container = ViewGenerator.GetOrCreateItemView<ResourceRequiredContainer>(GameConstants.View.ResourceRequiredContainer);
+                container.SetParent(_requiredResourcesHolder);
+                container.SetResourcesData(element);
+
+                _resourceRequiredContainers.Add(container);
+            }
         }
 
         private void CreateImprovements()
@@ -203,6 +225,16 @@ namespace UI.Popups
             }
 
             _dependencyButtons.Clear();
+        }
+
+        private void ReleaseAllRequiredResources()
+        {
+            foreach (var resourceRequiredContainer in _resourceRequiredContainers)
+            {
+                resourceRequiredContainer.ReleaseItemView();
+            }
+
+            _resourceRequiredContainers.Clear();
         }
 
         private void RebuildLayouts()

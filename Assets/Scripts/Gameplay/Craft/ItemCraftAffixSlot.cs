@@ -6,11 +6,11 @@ namespace Gameplay.Craft
     public class ItemCraftAffixSlot : MonoBehaviour
     {
         [SerializeField] private Image _icon;
+        [SerializeField] private Sprite _defaultIcon;
 
         public void SetIcon(Sprite sprite)
         {
-            _icon.enabled = sprite != null;
-            _icon.sprite = sprite;
+            _icon.sprite = sprite != null ? sprite : _defaultIcon;
         }
     }
 }

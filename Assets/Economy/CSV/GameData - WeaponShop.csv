@@ -1,5 +1,7 @@
-Index,Title,Description,Rarity,IconId,EquipSlotType,WeaponType,Affixes
-0,Knife 1,NULL,Common,knife_1,LeftHand,Sword,
-1,Knife 2,NULL,Rare,knife_2,LeftHand,Sword,life
-2,Knife 3,NULL,Epic,knife_3,LeftHand,Sword,"frost, dark"
-3,Knife 4,NULL,Legendary,knife_4,LeftHand,Sword,"fire, life, dark"
+Id,Index,Title,Description,Rarity,IconId,EquipSlotType,WeaponType,Affixes,PriceResourceType,PriceResourceValue
+weapon_shop_item_1,0,Knife 1,NULL,Common,knife_1,LeftHand,Sword,,Coins,1000
+weapon_shop_item_2,1,Knife 2,NULL,Rare,knife_2,LeftHand,Sword,life,Coins,5000
+weapon_shop_item_3,2,Knife 3,NULL,Epic,knife_3,LeftHand,Sword,"frost, dark",Coins,10000
+,,,,,,,,,Gems,100
+weapon_shop_item_4,3,Knife 4,NULL,Legendary,knife_4,LeftHand,Sword,"fire, life, dark",Coins,20000
+,,,,,,,,,Gems,200

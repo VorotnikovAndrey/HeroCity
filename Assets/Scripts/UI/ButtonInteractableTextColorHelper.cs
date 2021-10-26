@@ -17,6 +17,8 @@ namespace UI
         private void OnValidate()
         {
             _button = GetComponent<Button>();
+
+            SetState(_button.interactable);
         }
 
         public void SetState(bool value)

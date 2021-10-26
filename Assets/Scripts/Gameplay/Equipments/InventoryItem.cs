@@ -1,5 +1,7 @@
 using System.Linq;
 using Content;
+using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
@@ -10,7 +12,7 @@ namespace Gameplay.Equipments
     public class InventoryItem : AbstractBaseViewUI
     {
         [SerializeField] private Image _rarityBackground;
-        [SerializeField] private Image _rarityBoard;
+        [SerializeField] private Image _rarityBorders;
         [SerializeField] private Image _icon;
 
         private Item _item;
@@ -46,8 +48,8 @@ namespace Gameplay.Equipments
                 return;
             }
 
-            _rarityBoard.sprite = data.Sprite;
-            _rarityBackground.color = data.Color;
+            _rarityBorders.sprite = data.Sprite;
+            _rarityBackground.color = data.ColorBackground;
         }
 
         private void UpdateIcon()
@@ -83,6 +85,14 @@ namespace Gameplay.Equipments
         {
             // TODO: Show item info popup
             Debug.Log($"Item {_item.Title.AddColorTag(Color.yellow)}".AddColorTag(Color.red));
+        }
+
+        public void SetRarityFromEditor(Color backgroundColor, Sprite bordersSprite)
+        {
+#if UNITY_EDITOR
+            _rarityBorders.sprite = bordersSprite;
+            _rarityBackground.color = backgroundColor;
+#endif
         }
     }
 }

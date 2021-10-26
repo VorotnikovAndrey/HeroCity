@@ -1,11 +1,9 @@
-using System;
-using System.Linq;
-using Content;
 using Gameplay.Equipments;
+using PopupSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utils;
+using Utils.Events;
 using Utils.ObjectPool;
 
 namespace Gameplay.Craft
@@ -29,14 +27,6 @@ namespace Gameplay.Craft
         private ItemCraftContainerState _state;
         private InventoryItem _inventoryItem;
         private Item _item;
-
-        private void OnValidate()
-        {
-            for (int i = 0; i < _inventoryItemHolder.transform.childCount; i++)
-            {
-                _inventoryItemHolder.GetChild(i).GetComponent<RectTransform>().sizeDelta = _inventoryItemScale;
-            }
-        }
 
         public void SetItem(Item item)
         {
@@ -99,7 +89,22 @@ namespace Gameplay.Craft
 
         public void OnButtonSelectPressed()
         {
-
+            EventAggregator.SendEvent(new ShowPopupEvent<PopupType>
+            {
+                PopupType = PopupType.ItemCraft,
+                Data = _item
+            });
         }
+
+#if UNITY_EDITOR
+        [ContextMenu("Resize item")]
+        public void ResizeItem()
+        {
+            for (int i = 0; i < _inventoryItemHolder.transform.childCount; i++)
+            {
+                _inventoryItemHolder.GetChild(i).GetComponent<RectTransform>().sizeDelta = _inventoryItemScale;
+            }
+        }
+#endif
     }
 }

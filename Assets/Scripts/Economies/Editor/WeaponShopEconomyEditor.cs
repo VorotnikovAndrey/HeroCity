@@ -9,6 +9,7 @@ using Gameplay.Craft;
 using Gameplay.Equipments;
 using UnityEditor;
 using UnityEngine;
+using Utils;
 
 namespace Economies.Editor
 {
@@ -64,25 +65,33 @@ namespace Economies.Editor
                 csv.Configuration.HasHeaderRecord = true;
                 csv.Configuration.Delimiter = ",";
 
+                WeaponShopData data = null;
+
                 foreach (WeaponShopDataMapping line in csv.EnumerateRecords(new WeaponShopDataMapping()))
                 {
-                    var data = new WeaponShopData
+                    if (!string.IsNullOrEmpty(line.Id))
                     {
-                        Index = line.Index,
-                        Item = new WeaponItem
+                        data = new WeaponShopData
                         {
-                            Title = line.Title,
-                            Description = line.Description,
-                            Rarity = (Rarity)Enum.Parse(typeof(Rarity), line.Rarity),
-                            IconId = line.IconId,
-                            EquipSlotType = (EquipSlotType)Enum.Parse(typeof(EquipSlotType), line.EquipSlotType),
-                            WeaponType = (WeaponType)Enum.Parse(typeof(WeaponType), line.WeaponType),
-                            AffixesIds = line.Affixes.Split(',').Select(x => x.Replace(" ", string.Empty)).Where(x => !string.IsNullOrEmpty(x)).ToList(),
-                            Equipped = false
-                        }
-                    };
+                            Index = line.Index,
+                            Item = new WeaponItem
+                            {
+                                Id = line.Id,
+                                Title = line.Title,
+                                Description = line.Description,
+                                Rarity = (Rarity)Enum.Parse(typeof(Rarity), line.Rarity),
+                                IconId = line.IconId,
+                                EquipSlotType = (EquipSlotType)Enum.Parse(typeof(EquipSlotType), line.EquipSlotType),
+                                WeaponType = (WeaponType)Enum.Parse(typeof(WeaponType), line.WeaponType),
+                                AffixesIds = line.Affixes.Split(',').Select(x => x.Replace(" ", string.Empty)).Where(x => !string.IsNullOrEmpty(x)).ToList(),
+                                Equipped = false
+                            }
+                        };
 
-                    _target.Data.Add(data);
+                        _target.Data.Add(data);
+                    }
+
+                    data?.Item.Price.Add(EconomyUtils.GetPrice(line.PriceResourceType, line.PriceResourceValue));
                 }
 
                 return true;

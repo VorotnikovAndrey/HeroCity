@@ -18,5 +18,11 @@ namespace UI
         {
             _value.text = value;
         }
+
+        private void SetColor(Color color)
+        {
+            _title.color = color;
+            _value.color = color;
+        }
     }
 }

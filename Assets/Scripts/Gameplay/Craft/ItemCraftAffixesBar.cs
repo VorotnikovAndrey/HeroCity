@@ -12,21 +12,23 @@ namespace Gameplay.Craft
 
         public void SetAffixes(List<string> affixes)
         {
-            int count = 0;
-
-            foreach (var affix in affixes)
+            for (int i = 0; i < _affixes.Count; i++)
             {
-                SpriteBankElement spriteData = ContentProvider.Graphic.SpriteBank.AffixesIcons.FirstOrDefault(x => x.Id == affix);
+                if (i >= affixes.Count)
+                {
+                    _affixes[i].SetIcon(null);
+                    continue;
+                }
+
+                SpriteBankElement spriteData = ContentProvider.Graphic.SpriteBank.AffixesIcons.FirstOrDefault(x => x.Id == affixes[i]);
                 if (spriteData != null)
                 {
-                    _affixes[count].SetIcon(spriteData.Sprite);
+                    _affixes[i].SetIcon(spriteData.Sprite);
                 }
                 else
                 {
                     Debug.LogError("Affixe is not found".AddColorTag(Color.red));
                 }
-
-                count++;
             }
         }
     }

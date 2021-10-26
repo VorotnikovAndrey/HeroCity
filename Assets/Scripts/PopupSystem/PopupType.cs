@@ -10,5 +10,6 @@ namespace PopupSystem
         Character = 5,
         WeaponShop = 6,
         ArmorShop = 7,
+        ItemCraft = 8,
     }
 }

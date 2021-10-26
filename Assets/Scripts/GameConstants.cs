@@ -14,6 +14,7 @@ public static class GameConstants
         public const string StatsInfoElement = "Popups/Components/StatsInfoElement";
         public const string InventoryItem = "Equipments/InventoryItem";
         public const string ItemCraftContainer = "Equipments/ItemCraftContainer";
+        public const string ResourceRequiredContainer = "Equipments/ResourceRequiredContainer";
     }
 
     public static class Resources

@@ -20,32 +20,46 @@ MonoBehaviour:
   Data:
   - Index: 0
     Item:
+      Id: weapon_shop_item_1
       Title: Knife 1
       Description: NULL
       Rarity: 0
       IconId: knife_1
-      EquipSlotType: 5
+      Price:
+      - Type: 0
+        Value: 1000
+      EquipSlotType: 4
       Equipped: 0
       WeaponType: 0
       AffixesIds: []
   - Index: 1
     Item:
+      Id: weapon_shop_item_2
       Title: Knife 2
       Description: NULL
       Rarity: 1
       IconId: knife_2
-      EquipSlotType: 5
+      Price:
+      - Type: 0
+        Value: 5000
+      EquipSlotType: 4
       Equipped: 0
       WeaponType: 0
       AffixesIds:
       - life
   - Index: 2
     Item:
+      Id: weapon_shop_item_3
       Title: Knife 3
       Description: NULL
       Rarity: 2
       IconId: knife_3
-      EquipSlotType: 5
+      Price:
+      - Type: 0
+        Value: 10000
+      - Type: 1
+        Value: 100
+      EquipSlotType: 4
       Equipped: 0
       WeaponType: 0
       AffixesIds:
@@ -53,11 +67,17 @@ MonoBehaviour:
       - dark
   - Index: 3
     Item:
+      Id: weapon_shop_item_4
       Title: Knife 4
       Description: NULL
       Rarity: 3
       IconId: knife_4
-      EquipSlotType: 5
+      Price:
+      - Type: 0
+        Value: 20000
+      - Type: 1
+        Value: 200
+      EquipSlotType: 4
       Equipped: 0
       WeaponType: 0
       AffixesIds:

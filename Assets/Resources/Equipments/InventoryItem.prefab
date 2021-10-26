@@ -288,7 +288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rarityBackground: {fileID: 5473162738422229919}
-  _rarityBoard: {fileID: 2485737610959349739}
+  _rarityBorders: {fileID: 2485737610959349739}
   _icon: {fileID: 5146544351486885201}
 --- !u!1 &6119002139125385495
 GameObject:
@@ -511,7 +511,7 @@ GameObject:
   - component: {fileID: 3714266953541717682}
   - component: {fileID: 2485737610959349739}
   m_Layer: 5
-  m_Name: RarityBoard
+  m_Name: RarityBorders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

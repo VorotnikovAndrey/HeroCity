@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Characters;
 using Gameplay.Equipments;
 using OneLine;
+using ResourceSystem;
 using UnityEngine;
 
 namespace Utils
@@ -12,6 +13,8 @@ namespace Utils
     public class SpriteBank : ScriptableObject
     {
         [OneLine] public List<SpriteBankElement> Data = new List<SpriteBankElement>();
+        [Space]
+        [OneLine] public List<SpriteResourceTypeElement> ResourceIcons = new List<SpriteResourceTypeElement>();
         [Space]
         [OneLine] public List<SpriteBankRarityElement> ItemsRarity = new List<SpriteBankRarityElement>();
         [Space]
@@ -30,10 +33,18 @@ namespace Utils
     }
 
     [Serializable]
+    public class SpriteResourceTypeElement
+    {
+        public ResourceType Type;
+        public Sprite Sprite;
+    }
+
+    [Serializable]
     public class SpriteBankRarityElement
     {
         public Rarity Rarity;
-        public Color Color;
+        public Color ColorBackground;
+        public Color ColorItemName;
         public Sprite Sprite;
     }
 
