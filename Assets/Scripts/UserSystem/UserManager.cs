@@ -11,7 +11,6 @@ using Gameplay.Characters.Models;
 using Gameplay.Locations.Models;
 using Newtonsoft.Json;
 using ResourceSystem;
-using Source;
 using UnityEngine;
 using Utils;
 using Zenject;
@@ -97,15 +96,10 @@ namespace UserSystem
 
             CurrentUser.Locations.Add(locationModel.LocationId, locationModel);
 
-            foreach (var building in ContentProvider.Economies.BuildingsEconomy.Data)
+            foreach (var data in ContentProvider.Economies.BuildingsEconomy.Data)
             {
-                CurrentUser.CurrentLocation.Buildings.Add(building.Id, new BuildingModel
-                {
-                    Id = building.Id,
-                    Type = building.Type,
-                    Stage = new EventVariable<int>(),
-                    State = new EventVariable<BuildingState>(building.State)
-                });
+                var model = BuildingModelFactory.Get(data);
+                CurrentUser.CurrentLocation.Buildings.Add(model.Id, model);
             }
 
             Debug.Log($"User created {SaveUtils.UserModelPath.AddColorTag(Color.yellow)}".AddColorTag(Color.green));

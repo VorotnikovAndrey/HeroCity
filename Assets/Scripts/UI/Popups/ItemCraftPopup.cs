@@ -4,6 +4,7 @@ using System.Linq;
 using Content;
 using Economies;
 using Events;
+using Gameplay.Building.Models;
 using Gameplay.Craft;
 using Gameplay.Equipments;
 using PopupSystem;
@@ -24,6 +25,7 @@ namespace UI.Popups
         public override PopupType Type => PopupType.ItemCraft;
 
         [SerializeField] private TextMeshProUGUI _itemType;
+        [SerializeField] private TextMeshProUGUI _insufficientResources;
         [SerializeField] private RectTransform _inventoryItemHolder = default;
         [SerializeField] private Vector2 _inventoryItemScale;
         [SerializeField] private Color _defaultItemNameColor;
@@ -39,19 +41,29 @@ namespace UI.Popups
         private List<StatsInfoElement> _statsInfoElementContainers = new List<StatsInfoElement>();
         private List<ResourceRequiredContainer> _resourceRequiredContainers = new List<ResourceRequiredContainer>();
         private GameResourceManager _gameResourceManager;
+        private ProductionManager _productionManager;
         private InventoryItem _inventoryItem;
-        private CraftedItem _item;
+        private ProductionBuildingModel _buildingModel;
+        private ProductionItem _item;
 
         private void Awake()
         {
             _gameResourceManager = ProjectContext.Instance.Container.Resolve<GameResourceManager>();
+            _productionManager = ProjectContext.Instance.Container.Resolve<ProductionManager>();
         }
 
         protected override void OnShow(object args = null)
         {
             base.OnShow(args);
 
-            _item = args as CraftedItem;
+            if (!(args is List<object> data))
+            {
+                Debug.LogError("Data is null".AddColorTag(Color.red));
+                return;
+            }
+
+            _buildingModel = data[0] as ProductionBuildingModel;
+            _item = data[1] as ProductionItem;
 
             if (_item == null)
             {
@@ -150,6 +162,7 @@ namespace UI.Popups
                 hasResources = _item.Price.All(y => _gameResourceManager.HasResource(y.Type, y.Value));
             }
 
+            _insufficientResources.gameObject.SetActive(!hasResources);
             _createTimerText.text = TimeSpan.FromSeconds(_item.TimeCreationTick).ToString(@"hh\:mm\:ss");
             _buttonCraft.gameObject.SetActive(hasResources);
         }
@@ -217,7 +230,21 @@ namespace UI.Popups
 
         public void OnCraftButtonPressed()
         {
+            var currentTime = DateTimeUtils.GetCurrentTime();
 
+            EventAggregator.SendEvent(new BeginProductionEvent
+            {
+                Data = new ProductionData
+                {
+                    ProductionId = _item.Id,
+                    ProductionType = _productionManager.GetProductionType(_item),
+                    ProductionBuildingId = _buildingModel.Id,
+                    ProductionStartUnixTime = currentTime,
+                    ProductionEndUnixTime = currentTime + _item.TimeCreationTick
+                }
+            });
+
+            Hide();
         }
 
 #if UNITY_EDITOR

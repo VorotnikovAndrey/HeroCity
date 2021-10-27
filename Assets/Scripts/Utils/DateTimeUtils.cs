@@ -22,18 +22,18 @@ public static class DateTimeUtils
         {
             return time.ToString("HH:mm:ss");
         }
-        else if (time.Minute > 0)
+        else
         {
             return time.ToString("mm:ss");
         }
-        else if (time.Second >= 10)
-        {
-            return time.ToString("ss");
-        }
-        else
-        {
-            return time.ToString("ss").Replace("0", "");
-        }
+        //else if (time.Second >= 10)
+        //{
+        //    return time.ToString("ss");
+        //}
+        //else
+        //{
+        //    return time.ToString("ss").Replace("0", "");
+        //}
     }
 
     public static int GetCurrentTime()

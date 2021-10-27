@@ -38,7 +38,7 @@ namespace Gameplay.Locations.View
 
                 if (model.State.Value == BuildingState.Upgrade)
                 {
-                    view.UpgradeBar.Initialize(model.UpgradeEndUnixTime);
+                    view.UpgradeBar.Initialize(model.UpgradeStartUnixTime, model.UpgradeEndUnixTime);
                 }
             }
         }

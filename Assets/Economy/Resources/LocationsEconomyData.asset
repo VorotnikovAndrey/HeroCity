@@ -21,7 +21,7 @@ MonoBehaviour:
   - Id: Location1
     BuildingsIds:
     - townhall
-    - 'armor_shop '
+    - armor_shop
     - jewelry
     - weapon_shop
     - warehouse

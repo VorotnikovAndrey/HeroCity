@@ -1578,7 +1578,6 @@ MonoBehaviour:
   - {fileID: 4758082412920099972}
   - {fileID: 3215961631084827112}
   - {fileID: 3744913809541918621}
-  _lightColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &8286070270648552378
 GameObject:
   m_ObjectHideFlags: 0
@@ -7139,7 +7138,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8694006992985238443, guid: b18a95b0106747f4a9e348d37160981a, type: 3}
       propertyPath: BuildingId
-      value: 'armor_shop '
+      value: armor_shop
+      objectReference: {fileID: 0}
+    - target: {fileID: 8694006992985238443, guid: b18a95b0106747f4a9e348d37160981a, type: 3}
+      propertyPath: ShowablePopup
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b18a95b0106747f4a9e348d37160981a, type: 3}

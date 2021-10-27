@@ -1,10 +1,15 @@
+using System.Collections.Generic;
 using System.Linq;
 using Content;
+using DG.Tweening;
+using Events;
+using Gameplay.Building.Models;
 using Gameplay.Equipments;
 using PopupSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 using Utils.Events;
 using Utils.ObjectPool;
 
@@ -12,22 +17,49 @@ namespace Gameplay.Craft
 {
     public class ItemCraftContainer : AbstractBaseViewUI
     {
+        [SerializeField] private RectTransform _mainRect;
         [SerializeField] private RectTransform _inventoryItemHolder;
         [SerializeField] private Vector2 _inventoryItemScale;
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _description;
         [SerializeField] private ItemCraftAffixesBar _affixesBar;
-        [SerializeField] private Button _selectButton;
         [Space]
+        [SerializeField] private GameObject _selectionButton;
         [SerializeField] private GameObject _progressHolder;
-        [SerializeField] private Image _progressFillImage;
+        [SerializeField] private Slider _progressSlider;
         [SerializeField] private TextMeshProUGUI _progressText;
-        [SerializeField] private float _defaultY;
-        [SerializeField] private float _progressY;
+        [SerializeField] private GameObject _claimHolder;
 
-        private ItemCraftContainerState _state;
+        private ProductionBuildingModel _model;
         private InventoryItem _inventoryItem;
         private Item _item;
+        private Tweener _tweener;
+
+        public override void Initialize(object data)
+        {
+            base.Initialize(data);
+
+            _model = data as ProductionBuildingModel;
+
+            if (_model == null)
+            {
+                Debug.LogError("Model is null".AddColorTag(Color.red));
+                return;
+            }
+
+            EventAggregator.Add<BeginProductionEvent>(OnBeginProductionEvent);
+            EventAggregator.Add<EndProductionEvent>(OnEndProductionEvent);
+        }
+
+        public override void Deinitialize()
+        {
+            base.Deinitialize();
+
+            EventAggregator.Remove<BeginProductionEvent>(OnBeginProductionEvent);
+            EventAggregator.Remove<EndProductionEvent>(OnEndProductionEvent);
+
+            _model = null;
+        }
 
         public void SetItem(Item item)
         {
@@ -39,7 +71,73 @@ namespace Gameplay.Craft
             UpdateTitleColor();
             UpdateInventoryItem();
             UpdateAffixes();
-            UpdateItemLevel();
+            UpdateState();
+        }
+
+        private void UpdateState()
+        {
+            var state = ItemCraftContainerState.Default;
+            ProductionData data = null;
+
+            foreach (var element in _model.ProductionData)
+            {
+                if (element.ProductionId != _item.Id)
+                {
+                    continue;
+                }
+
+                data = element;
+                state = data.Finished ? ItemCraftContainerState.Completed : ItemCraftContainerState.Crafting;
+            }
+
+            data?.TimeLeft.RemoveListener(UpdateProgressText);
+
+            switch (state)
+            {
+                case ItemCraftContainerState.Default:
+                    _selectionButton.SetActive(true);
+                    _progressHolder.SetActive(false);
+                    _claimHolder.SetActive(false);
+
+                    break;
+                case ItemCraftContainerState.Crafting:
+
+                    if (data == null)
+                    {
+                        break;
+                    }
+
+                    data.TimeLeft.AddListener(UpdateProgressText);
+
+                    UpdateProgressText(data.ProductionEndUnixTime - DateTimeUtils.GetCurrentTime());
+
+                    var totalTime = data.ProductionEndUnixTime - data.ProductionStartUnixTime;
+                    var timeLeft = data.ProductionEndUnixTime - DateTimeUtils.GetCurrentTime();
+                    var progress = 1 - (float)timeLeft / totalTime;
+
+                    _progressSlider.value = progress;
+
+                    _tweener?.Kill();
+                    _tweener = DOTween.To(() => _progressSlider.value, x => _progressSlider.value = x, 1f, timeLeft)
+                        .SetEase(Ease.Linear).OnKill(() =>
+                        {
+                            _tweener = null;
+                        });
+
+                    _selectionButton.SetActive(true);
+                    _progressHolder.SetActive(true);
+                    _claimHolder.SetActive(false);
+
+                    break;
+                case ItemCraftContainerState.Completed:
+                    _selectionButton.SetActive(false);
+                    _progressHolder.SetActive(false);
+                    _claimHolder.SetActive(true);
+
+                    break;
+            }
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_mainRect);
         }
 
         private string TryOverrideDescription()
@@ -80,40 +178,69 @@ namespace Gameplay.Craft
             } 
         }
 
-        private void UpdateItemLevel()
-        {
-            // TODO:
-        }
-
-        public void SetState(ItemCraftContainerState state)
-        {
-            switch (state)
-            {
-                case ItemCraftContainerState.Default:
-                    RectTransform.sizeDelta = new Vector2(RectTransform.sizeDelta.x, _defaultY);
-                    _progressHolder.SetActive(false);
-                    break;
-                case ItemCraftContainerState.Crafting:
-                    RectTransform.sizeDelta = new Vector2(RectTransform.sizeDelta.x, _progressY);
-                    _progressHolder.SetActive(true);
-                    break;
-                case ItemCraftContainerState.Completed:
-                    RectTransform.sizeDelta = new Vector2(RectTransform.sizeDelta.x, _progressY);
-                    _progressHolder.SetActive(true);
-                    break;
-                default:
-                    return;
-            }
-        }
-
         public void OnButtonSelectPressed()
         {
             EventAggregator.SendEvent(new ShowPopupEvent<PopupType>
             {
                 PopupType = PopupType.ItemCraft,
-                Data = _item
+                Data = new List<object>
+                {
+                    _model,
+                    _item
+                }
             });
         }
+
+        public void OnButtonClaimPressed()
+        {
+            ProductionData data = null;
+
+            foreach (var element in _model.ProductionData)
+            {
+                if (element.ProductionId != _item.Id)
+                {
+                    continue;
+                }
+
+                data = element;
+                break;
+            }
+
+            if (data == null)
+            {
+                Debug.LogError("Data is null".AddColorTag(Color.red));
+                return;
+            }
+
+            EventAggregator.SendEvent(new ClaimProductionEvent
+            {
+                Data = data
+            });
+
+            UpdateState();
+        }
+
+        private void UpdateProgressText(long unixTime)
+        {
+            _progressText.text = DateTimeUtils.GetTimerText(DateTimeUtils.UnixTimeToDateTime(unixTime));
+        }
+
+        private void OnBeginProductionEvent(BeginProductionEvent sender)
+        {
+            if (sender.Data.ProductionId == _item.Id)
+            {
+                UpdateState();
+            }
+        }
+
+        private void OnEndProductionEvent(EndProductionEvent sender)
+        {
+            if (sender.Data.ProductionId == _item.Id)
+            {
+                UpdateState();
+            }
+        }
+
 
 #if UNITY_EDITOR
         [ContextMenu("Resize item")]

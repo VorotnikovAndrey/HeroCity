@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using CameraSystem;
 using Content;
@@ -94,7 +93,7 @@ namespace Gameplay.Building
                 return;
             }
 
-            if (model.Stage.Value == 0)
+            if (model.Stage.Value == 0 && model.State.Value == BuildingState.Inactive)
             {
                 _popupManager.ShowPopup(PopupType.BuildingUpgrade, sender.View.BuildingId);
             }
@@ -167,10 +166,13 @@ namespace Gameplay.Building
             }
 
             var currentTime = DateTimeUtils.GetCurrentTime();
+
+            model.UpgradeStartUnixTime = currentTime;
             model.UpgradeEndUnixTime = currentTime + upgradeInfo.Duration;
             model.State.Value = BuildingState.Upgrade;
             model.Stage.ForceEvent();
-            view.UpgradeBar.Initialize(model.UpgradeEndUnixTime);
+
+            view.UpgradeBar.Initialize(model.UpgradeStartUnixTime, model.UpgradeEndUnixTime);
 
             _userManager.Save();
         }

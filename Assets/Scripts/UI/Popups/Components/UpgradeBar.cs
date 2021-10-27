@@ -1,7 +1,9 @@
+using System;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace UI.Popups.Components
 {
@@ -11,6 +13,7 @@ namespace UI.Popups.Components
         [SerializeField] private TextMeshProUGUI _timerText;
         [SerializeField] private Image _fillImage;
 
+        private long _startUnixTime;
         private long _endUnixTime;
         private Tweener _tweener;
         private float _progress;
@@ -42,8 +45,9 @@ namespace UI.Popups.Components
             }
         }
 
-        public void Initialize(long endUnixTime)
+        public void Initialize(long startUnixTime, long endUnixTime)
         {
+            _startUnixTime = startUnixTime;
             _endUnixTime = endUnixTime;
 
             Holder.SetActive(true);
@@ -65,7 +69,11 @@ namespace UI.Popups.Components
 
         private void UpdateAnimation()
         {
+            var totalTime = _endUnixTime - _startUnixTime;
             var timeLeft = _endUnixTime - DateTimeUtils.GetCurrentTime();
+            var progress = 1 - (float)timeLeft / totalTime;
+
+            Progress = progress;
 
             _tweener?.Kill();
             _tweener = DOTween.To(() => Progress, x => Progress = x, 1f, timeLeft).SetEase(_animationEase).OnKill(() =>

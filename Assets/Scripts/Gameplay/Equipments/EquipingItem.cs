@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace Gameplay.Equipments
 {
     [Serializable]
-    public class EquipingItem : CraftedItem
+    public class EquipingItem : ProductionItem
     {
         [JsonProperty] public EquipSlotType EquipSlotType;
         [JsonProperty] public bool Equipped;

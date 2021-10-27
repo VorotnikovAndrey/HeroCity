@@ -5,6 +5,7 @@ using Defong.Utils;
 using Events;
 using Gameplay.Building;
 using Gameplay.Characters;
+using Gameplay.Craft;
 using Gameplay.Locations.Models;
 using Gameplay.Locations.View;
 using Gameplay.Time;
@@ -39,6 +40,7 @@ namespace Stages
         private WaypointSystem _waypointSystem;
         private LocationView _locationView;
         private DayTime _dayTime;
+        private ProductionManager _productionManager;
 
         [Inject]
         public GameplayStage(PopupManager<PopupType> popupManager, EventAggregator eventAggregator,
@@ -88,6 +90,8 @@ namespace Stages
             _buildingsManager.Initialize();
             _charactersSystem = new CharactersSystem();
             _charactersSystem.Initialize();
+            _productionManager = new ProductionManager();
+            _productionManager.Initialize();
             _locationView.Initialize();
         }
 
@@ -105,14 +109,16 @@ namespace Stages
             _popupManager.HidePopupByType(PopupType.Hud);
 
             // Gameplay
-            _locationView.DeInitialize();
             _buildingsManager.DeInitialize();
             _buildingsManager = null;
             _charactersSystem.DeInitialize();
             _charactersSystem = null;
+            _productionManager.DeInitialize();
+            _productionManager = null;
             _waypointSystem = null;
 
             // Location
+            _locationView.DeInitialize();
             _locationView.DestroyAndRemoveFromPool();
             _locationView = null;
 

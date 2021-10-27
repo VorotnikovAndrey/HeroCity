@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace Gameplay.Equipments
 {
-    public class CraftedItem : Item
+    public class ProductionItem : Item
     {
         [JsonProperty] public long TimeCreationTick;
     }
