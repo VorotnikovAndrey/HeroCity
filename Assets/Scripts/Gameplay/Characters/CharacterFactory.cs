@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Characters;
 using Content;
@@ -5,7 +6,7 @@ using Gameplay.Characters.Models;
 using Gameplay.Equipments;
 using Gameplay.Movement;
 using Source;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Gameplay.Characters
 {
@@ -28,13 +29,34 @@ namespace Gameplay.Characters
             {
                 CharacterType = CharacterType.Hero,
                 Movement = new WaypointMovement(),
-                Stats = new Stats(),
+                CharacterStats = GetDefaultCharacterStats(),
                 Name = ContentProvider.Graphic.CharacterNames.Data.FirstOrDefault(x => x.Gender == gender)?.Info.GetRandom().Name,
                 Gender = gender,
                 Rarity = rarity,
                 Inventory = new CharacterInventory(),
                 HeroClassType = (HeroClassType)Random.Range(0, 6)
             };
+        }
+
+        private static CharacterStats GetDefaultCharacterStats()
+        {
+            var data = new CharacterStats
+            {
+                Level = 1,
+                MaxHealthPoint = 100,
+                MaxManaPoint = 100,
+                CurrentHealthPoint = 100,
+                CurrentManaPoint = 100
+            };
+
+            foreach (var stat in Enum.GetValues(typeof(StatType)))
+            {
+                data.BaseStats.Add((StatType)stat, 0);
+            }
+
+            data.BaseStats[StatType.MovementSpeed] = 2f;
+
+            return data;
         }
     }
 }

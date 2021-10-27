@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Content;
 using Economies;
@@ -22,34 +23,35 @@ namespace UI.Popups
     {
         public override PopupType Type => PopupType.ItemCraft;
 
+        [SerializeField] private TextMeshProUGUI _itemType;
         [SerializeField] private RectTransform _inventoryItemHolder = default;
         [SerializeField] private Vector2 _inventoryItemScale;
         [SerializeField] private Color _defaultItemNameColor;
         [SerializeField] private Button _buttonCraft;
         [SerializeField] private RectTransform[] _layoutGroups;
         [SerializeField] private ItemCraftAffixesBar _affixesBar;
-        [SerializeField] private ItemLevelBar _itemLevelBar;
+        [SerializeField] private RectTransform _statsHolder;
         [SerializeField] private RectTransform _requiredResourcesHolder;
         [Space]
         [SerializeField] private TextMeshProUGUI _itemName;
+        [SerializeField] private TextMeshProUGUI _createTimerText;
 
+        private List<StatsInfoElement> _statsInfoElementContainers = new List<StatsInfoElement>();
         private List<ResourceRequiredContainer> _resourceRequiredContainers = new List<ResourceRequiredContainer>();
-        private WeaponShopEconomy _weaponShopEconomy;
         private GameResourceManager _gameResourceManager;
         private InventoryItem _inventoryItem;
-        private Item _item;
+        private CraftedItem _item;
 
         private void Awake()
         {
             _gameResourceManager = ProjectContext.Instance.Container.Resolve<GameResourceManager>();
-            _weaponShopEconomy = ContentProvider.Economies.WeaponShopEconomy;
         }
 
         protected override void OnShow(object args = null)
         {
             base.OnShow(args);
 
-            _item = args as Item;
+            _item = args as CraftedItem;
 
             if (_item == null)
             {
@@ -59,11 +61,21 @@ namespace UI.Popups
 
             _itemName.text = _item.Title;
 
+            if (_item is EquipingItem equipingItem)
+            {
+                _itemType.text = equipingItem.EquipSlotType.ToString();
+            }
+            else
+            {
+                _itemType.text = "Item";
+            }
+
             UpdateInventoryItem();
             UpdateItemNameColor();
             UpdateAffixes();
             UpdateCraftButtonState();
             UpdateRequiredResources();
+            UpdateItemStats();
 
             EventAggregator.Add<ResourceModifiedEvent>(OnResourceModified);
         }
@@ -86,20 +98,38 @@ namespace UI.Popups
             UpdateRequiredResources();
         }
 
-        private void UpdateRequiredResources()
+        private void UpdateItemStats()
         {
-            var data = _weaponShopEconomy.Data.FirstOrDefault(x => x.Item.Id == _item.Id);
-            if (data == null)
+            ReleaseAllStatElements();
+
+            if (_item is WeaponItem weaponItem)
             {
-                Debug.LogError("Data is null".AddColorTag(Color.red));
-                return;
+                var container = ViewGenerator.GetOrCreateItemView<StatsInfoElement>(GameConstants.View.ItemCraftStatsContainer);
+                container.SetParent(_statsHolder);
+                container.SetKey("Damage");
+                container.SetValue($"{weaponItem.Damage.x}-{weaponItem.Damage.y}");
+
+                _statsInfoElementContainers.Add(container);
             }
 
-            _requiredResourcesHolder.gameObject.SetActive(data.Item.Price.Count > 0);
+            foreach (var stat in _item.Stats.BaseStats)
+            {
+                var container = ViewGenerator.GetOrCreateItemView<StatsInfoElement>(GameConstants.View.ItemCraftStatsContainer);
+                container.SetParent(_statsHolder);
+                container.SetKey(stat.Key.ToString());
+                container.SetValue(stat.Value.ToString(), true);
+
+                _statsInfoElementContainers.Add(container);
+            }
+        }
+
+        private void UpdateRequiredResources()
+        {
+            _requiredResourcesHolder.gameObject.SetActive(_item.Price.Count > 0);
 
             ReleaseAllRequiredResources();
 
-            foreach (ResourcesData element in data.Item.Price)
+            foreach (ResourcesData element in _item.Price)
             {
                 ResourceRequiredContainer container = ViewGenerator.GetOrCreateItemView<ResourceRequiredContainer>(GameConstants.View.ResourceRequiredContainer);
                 container.SetParent(_requiredResourcesHolder);
@@ -120,6 +150,7 @@ namespace UI.Popups
                 hasResources = _item.Price.All(y => _gameResourceManager.HasResource(y.Type, y.Value));
             }
 
+            _createTimerText.text = TimeSpan.FromSeconds(_item.TimeCreationTick).ToString(@"hh\:mm\:ss");
             _buttonCraft.gameObject.SetActive(hasResources);
         }
 
@@ -158,12 +189,22 @@ namespace UI.Popups
 
         private void ReleaseAllRequiredResources()
         {
-            foreach (var resourceRequiredContainer in _resourceRequiredContainers)
+            foreach (var element in _resourceRequiredContainers)
             {
-                resourceRequiredContainer.ReleaseItemView();
+                element.ReleaseItemView();
             }
 
             _resourceRequiredContainers.Clear();
+        }  
+        
+        private void ReleaseAllStatElements()
+        {
+            foreach (var element in _statsInfoElementContainers)
+            {
+                element.ReleaseItemView();
+            }
+
+            _statsInfoElementContainers.Clear();
         }
 
         private void RebuildLayouts()

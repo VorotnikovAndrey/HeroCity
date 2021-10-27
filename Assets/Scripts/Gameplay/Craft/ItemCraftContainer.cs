@@ -1,3 +1,5 @@
+using System.Linq;
+using Content;
 using Gameplay.Equipments;
 using PopupSystem;
 using TMPro;
@@ -14,7 +16,6 @@ namespace Gameplay.Craft
         [SerializeField] private Vector2 _inventoryItemScale;
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _description;
-        [SerializeField] private ItemLevelBar _itemLevel;
         [SerializeField] private ItemCraftAffixesBar _affixesBar;
         [SerializeField] private Button _selectButton;
         [Space]
@@ -33,11 +34,29 @@ namespace Gameplay.Craft
             _item = item;
 
             _title.text = _item.Title;
-            _description.text = _item.Description;
+            _description.text = TryOverrideDescription();
 
+            UpdateTitleColor();
             UpdateInventoryItem();
             UpdateAffixes();
             UpdateItemLevel();
+        }
+
+        private string TryOverrideDescription()
+        {
+            if (_item is WeaponItem weaponItem)
+            {
+                return $"<sprite=4> {weaponItem.Damage.x} - {weaponItem.Damage.y}";
+            }
+
+            return _item.Description;
+        }
+
+        private void UpdateTitleColor()
+        {
+            var data = ContentProvider.Graphic.SpriteBank.ItemsRarity.FirstOrDefault(x => x.Rarity == _item.Rarity);
+            
+            _title.color = data?.ColorItemName ?? Color.white;
         }
 
         private void UpdateInventoryItem()

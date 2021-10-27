@@ -1,7 +1,12 @@
-Id,Index,Title,Description,Rarity,IconId,EquipSlotType,WeaponType,Affixes,PriceResourceType,PriceResourceValue
-weapon_shop_item_1,0,Knife 1,NULL,Common,knife_1,LeftHand,Sword,,Coins,1000
-weapon_shop_item_2,1,Knife 2,NULL,Rare,knife_2,LeftHand,Sword,life,Coins,5000
-weapon_shop_item_3,2,Knife 3,NULL,Epic,knife_3,LeftHand,Sword,"frost, dark",Coins,10000
-,,,,,,,,,Gems,100
-weapon_shop_item_4,3,Knife 4,NULL,Legendary,knife_4,LeftHand,Sword,"fire, life, dark",Coins,20000
-,,,,,,,,,Gems,200
+Id,Index,Title,Description,Rarity,IconId,EquipSlotType,WeaponType,MinDamage,MaxDamage,StatsType,StatsValue,Affixes,PriceResourceType,PriceResourceValue,TimeCreationUnix
+weapon_shop_item_1,0,Knife 1,,Common,knife_1,LeftHand,Sword,10,14,Strength,12,,Coins,1000,60
+,,,,,,,,,,Accuracy,"2,4",,,,
+weapon_shop_item_2,1,Knife 2,,Rare,knife_2,LeftHand,Sword,24,32,Dexterity,15,life,Coins,5000,80
+,,,,,,,,,,CriticalChance,"5,2",,,,
+,,,,,,,,,,CriticalFactor,"0,4",,,,
+weapon_shop_item_3,2,Knife 3,,Epic,knife_3,LeftHand,Sword,45,60,Intelligence,14,"frost, dark",Coins,10000,100
+,,,,,,,,,,Concentration,8,,Gems,100,
+,,,,,,,,,,MagicProtection,20,,,,
+weapon_shop_item_4,3,Knife 4,,Legendary,knife_4,LeftHand,Sword,84,98,Dexterity,35,"fire, life, dark",Coins,20000,200
+,,,,,,,,,,MovementSpeed,"1,2",,Gems,200,
+,,,,,,,,,,Evasion,30,,,,

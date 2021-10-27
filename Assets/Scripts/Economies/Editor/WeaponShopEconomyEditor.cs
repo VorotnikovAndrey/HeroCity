@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Economies.Parsing.Mapping;
+using Gameplay.Characters;
 using Gameplay.Craft;
 using Gameplay.Equipments;
 using UnityEditor;
@@ -84,14 +86,18 @@ namespace Economies.Editor
                                 EquipSlotType = (EquipSlotType)Enum.Parse(typeof(EquipSlotType), line.EquipSlotType),
                                 WeaponType = (WeaponType)Enum.Parse(typeof(WeaponType), line.WeaponType),
                                 AffixesIds = line.Affixes.Split(',').Select(x => x.Replace(" ", string.Empty)).Where(x => !string.IsNullOrEmpty(x)).ToList(),
-                                Equipped = false
+                                Equipped = false,
+                                TimeCreationTick = line.TimeCreationUnix,
+                                Stats = new Stats(),
+                                Damage = new Vector2(Convert.ToInt32(line.MinDamage), Convert.ToInt32(line.MaxDamage))
                             }
                         };
 
                         _target.Data.Add(data);
                     }
 
-                    data?.Item.Price.Add(EconomyUtils.GetPrice(line.PriceResourceType, line.PriceResourceValue));
+                    AddPrice(data?.Item.Price, line.PriceResourceType, line.PriceResourceValue);
+                    AddStats(data?.Item.Stats, line.StatsType, line.StatsValue);
                 }
 
                 return true;
@@ -102,6 +108,36 @@ namespace Economies.Editor
             }
 
             return false;
+        }
+
+        private void AddPrice(ICollection<ResourcesData> data, string type, int value)
+        {
+            if (data == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(type))
+            {
+                return;
+            }
+
+            data.Add(EconomyUtils.GetPrice(type, value));
+        }
+
+        private void AddStats(Stats stats, string type, string value)
+        {
+            if (stats == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+            
+            stats.BaseStats.Add((StatType)Enum.Parse(typeof(StatType), type), Convert.ToSingle(value));
         }
     }
 }

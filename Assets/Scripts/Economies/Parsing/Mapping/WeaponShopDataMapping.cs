@@ -15,5 +15,10 @@ namespace Economies.Parsing.Mapping
         [Name("Affixes"), Default("")] public string Affixes { get; set; }
         [Name("PriceResourceType"), Default("")] public string PriceResourceType { get; set; }
         [Name("PriceResourceValue"), Default(0)] public int PriceResourceValue { get; set; }
+        [Name("TimeCreationUnix"), Default(0)] public long TimeCreationUnix { get; set; }
+        [Name("StatsType"), Default("")] public string StatsType { get; set; }
+        [Name("StatsValue"), Default("")] public string StatsValue { get; set; }
+        [Name("MinDamage"), Default("")] public string MinDamage { get; set; }
+        [Name("MaxDamage"), Default("")] public string MaxDamage { get; set; }
     }
 }

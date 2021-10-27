@@ -25,7 +25,7 @@ namespace Gameplay.Characters.AI.Behaviors
             _locationView = ProjectContext.Instance.Container.Resolve<LocationView>();
 
             Model.Movement = new WaypointMovement();
-            Model.Movement.Initialize(Model.View, Model.View.WorldPosition, Model.Stats.MovementSpeed);
+            Model.Movement.Initialize(Model.View, Model.View.WorldPosition, Model.CharacterStats.BaseStats[StatType.MovementSpeed]);
 
             GoToNext();
 

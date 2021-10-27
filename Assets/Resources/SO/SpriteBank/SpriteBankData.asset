@@ -60,13 +60,13 @@ MonoBehaviour:
       Sprite: {fileID: 21300000, guid: d7f5ad444e87b744fa1b705525d329fb, type: 3}
   AffixesIcons:
   - Id: life
-    Sprite: {fileID: 21300000, guid: c4a4a3889725445dd8786804a24c10e2, type: 3}
+    Sprite: {fileID: 21300000, guid: 5cf45be31d988ba4c831f82c7a57ab1f, type: 3}
   - Id: frost
-    Sprite: {fileID: 21300000, guid: 3b6b568ee5936411984359316412b01d, type: 3}
+    Sprite: {fileID: 21300000, guid: 4990f3f14c138a2408f336f88c5839fa, type: 3}
   - Id: dark
-    Sprite: {fileID: 21300000, guid: 7b68dc7e40c7e49ec84ac88cee279514, type: 3}
+    Sprite: {fileID: 21300000, guid: 2e4ec9d20eeb2854697d608f06edf1ee, type: 3}
   - Id: fire
-    Sprite: {fileID: 21300000, guid: d72ffa11fc5fc487f96ca11c753a0292, type: 3}
+    Sprite: {fileID: 21300000, guid: 55aac4d93f232464c88cd97596839db9, type: 3}
   HeroClassIcons:
   - Class: 0
     Sprite: {fileID: 21300000, guid: 9eca797aa990c44a0a1d11f290e1d63d, type: 3}

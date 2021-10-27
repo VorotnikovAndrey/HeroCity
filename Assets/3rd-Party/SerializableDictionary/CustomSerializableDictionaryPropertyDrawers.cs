@@ -1,6 +1,9 @@
-﻿using Source;
+﻿using System;
+using Gameplay.Characters;
+using Source;
 using UnityEditor;
 
+[CustomPropertyDrawer(typeof(StatTypeDictionary))]
 [CustomPropertyDrawer(typeof(IntStringDictionary))]
 [CustomPropertyDrawer(typeof(StringStringDictionary))]
 [CustomPropertyDrawer(typeof(GameObjectPairDictionary))]
@@ -10,3 +13,6 @@ using UnityEditor;
 [CustomPropertyDrawer(typeof(MapWaypointVector3Dictionary))]
 
 public class AnySerializableDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer { }
+
+[Serializable]
+public class StatTypeDictionary : SerializableDictionary<StatType, float> { }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Gameplay.Craft;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Gameplay.Equipments
 {
@@ -10,5 +11,6 @@ namespace Gameplay.Equipments
     {
         [JsonProperty] public WeaponType WeaponType;
         [JsonProperty] public List<string> AffixesIds;
+        [JsonProperty] public Vector2 Damage = Vector2.zero;
     }
 }

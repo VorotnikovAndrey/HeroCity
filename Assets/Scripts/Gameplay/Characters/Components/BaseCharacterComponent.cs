@@ -75,7 +75,7 @@ namespace Gameplay.Characters.Components
             var view = ViewGenerator.GetOrCreateItemView<BaseCharacterView>(GameConstants.View.DefaultCharacterPath);
 
             model.View = view;
-            model.Movement.Initialize(view, view.WorldPosition, model.Stats.MovementSpeed);
+            model.Movement.Initialize(view, view.WorldPosition, model.CharacterStats.BaseStats[StatType.MovementSpeed]);
 
             view.Initialize(model);
             view.SetGraphic(graphic.Object);

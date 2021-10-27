@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using Utils.ObjectPool;
@@ -9,20 +10,21 @@ namespace UI
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _value;
 
-        public void SetTitle(string value)
+        public void SetKey(string value)
         {
             _title.text = value;
         }
 
-        public void SetValue(string value)
+        public void SetValue(string value, bool format = false)
         {
-            _value.text = value;
+            _value.text = format ? FormatValue(value) : value;
         }
 
-        private void SetColor(Color color)
+        private string FormatValue(string value)
         {
-            _title.color = color;
-            _value.color = color;
+            float result = Convert.ToSingle(value);
+
+            return result > 0 ? $"+{result}" : result.ToString();
         }
     }
 }

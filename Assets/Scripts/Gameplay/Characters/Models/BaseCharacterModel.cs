@@ -14,7 +14,7 @@ namespace Gameplay.Characters.Models
         [JsonProperty] public string GraphicPresetId;
         [JsonProperty] public string Name;
         [JsonProperty] public Gender Gender;
-        [JsonProperty] public Stats Stats;
+        [JsonProperty] public CharacterStats CharacterStats;
         [JsonProperty] public CharacterInventory Inventory;
         [JsonProperty] public CharacterType CharacterType;
         [JsonProperty] public Rarity Rarity;

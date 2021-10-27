@@ -30,7 +30,7 @@ namespace UI.Popups
 
             foreach (var element in itemsData)
             {
-                var view = ViewGenerator.GetOrCreateItemView<ItemCraftContainer>(GameConstants.View.ItemCraftContainer);
+                var view = ViewGenerator.GetOrCreateItemView<ItemCraftContainer>(GameConstants.View.ItemCraftContainer.WeaponCraftContainer);
                 view.SetItem(element.Item);
 
                 var holder = _buttons.FirstOrDefault(x => x.Types.Contains(element.Item.WeaponType));

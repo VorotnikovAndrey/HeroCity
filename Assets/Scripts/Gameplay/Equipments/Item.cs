@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Economies;
+using Gameplay.Characters;
 using Newtonsoft.Json;
 
 namespace Gameplay.Equipments
@@ -14,5 +15,6 @@ namespace Gameplay.Equipments
         [JsonProperty] public Rarity Rarity;
         [JsonProperty] public string IconId;
         [JsonProperty] public List<ResourcesData> Price = new List<ResourcesData>();
+        [JsonProperty] public Stats Stats = new Stats();
     }
 }

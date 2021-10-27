@@ -12,9 +12,14 @@ public static class GameConstants
     {
         public const string DefaultCharacterPath = "Characters/DefaultCharacter";
         public const string StatsInfoElement = "Popups/Components/StatsInfoElement";
+        public const string ItemCraftStatsContainer = "Equipments/ItemCraftStatsContainer";
         public const string InventoryItem = "Equipments/InventoryItem";
-        public const string ItemCraftContainer = "Equipments/ItemCraftContainer";
         public const string ResourceRequiredContainer = "Equipments/ResourceRequiredContainer";
+
+        public static class ItemCraftContainer
+        {
+            public const string WeaponCraftContainer = "Equipments/WeaponCraftContainer";
+        }
     }
 
     public static class Resources

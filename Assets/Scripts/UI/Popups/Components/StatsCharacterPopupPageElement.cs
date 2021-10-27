@@ -38,30 +38,12 @@ namespace UI.Popups.Components
 
         private void FillStatsBar()
         {
-            var stats = new Dictionary<string, string>
-            {
-                {"HealthPoint", _model.Stats.MaxHealthPoint.ToString()},
-                {"ManaPoint", _model.Stats.MaxManaPoint.ToString()},
-                {"Strength", _model.Stats.Strength.ToString()},
-                {"Dexterity", _model.Stats.Dexterity.ToString()},
-                {"Intelligence", _model.Stats.Intelligence.ToString()},
-                {"Concentration", _model.Stats.Concentration.ToString()},
-                {"MovementSpeed", _model.Stats.MovementSpeed.ToString()},
-                {"CriticalChance", _model.Stats.CriticalChance.ToString()},
-                {"CriticalFactor", _model.Stats.CriticalFactor.ToString()},
-                {"Accuracy", _model.Stats.Accuracy.ToString()},
-                {"Evasion", _model.Stats.Evasion.ToString()},
-                {"BlockChance", _model.Stats.BlockChance.ToString()},
-                {"Protection", _model.Stats.Protection.ToString()},
-                {"MagicProtection", _model.Stats.MagicProtection.ToString()},
-            };
-
-            foreach (var stat in stats)
+            foreach (var stat in _model.CharacterStats.BaseStats)
             {
                 var element = ViewGenerator.GetOrCreateItemView<StatsInfoElement>(GameConstants.View.StatsInfoElement);
 
-                element.SetTitle(stat.Key);
-                element.SetValue(stat.Value);
+                element.SetKey(stat.Key.ToString());
+                element.SetValue(stat.Value.ToString());
                 element.SetParent(_statsContentHolder);
 
                 _statsInfoElements.Add(element);
