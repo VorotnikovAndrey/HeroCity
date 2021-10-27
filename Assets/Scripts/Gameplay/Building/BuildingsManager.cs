@@ -93,7 +93,7 @@ namespace Gameplay.Building
                 return;
             }
 
-            if (model.Stage.Value == 0 && model.State.Value == BuildingState.Inactive)
+            if (model.Stage.Value == 0)
             {
                 _popupManager.ShowPopup(PopupType.BuildingUpgrade, sender.View.BuildingId);
             }

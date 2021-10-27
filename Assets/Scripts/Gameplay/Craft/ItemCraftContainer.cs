@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Content;
@@ -59,6 +60,14 @@ namespace Gameplay.Craft
             EventAggregator.Remove<EndProductionEvent>(OnEndProductionEvent);
 
             _model = null;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (true)
+            {
+                UpdateState();
+            }
         }
 
         public void SetItem(Item item)
