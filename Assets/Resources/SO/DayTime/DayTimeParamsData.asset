@@ -67,18 +67,22 @@ MonoBehaviour:
     IntervalStart: 5
     IntervalEnd: 10
     MaterialColor: {r: 0.69411767, g: 0.8117647, b: 0.80784315, a: 1}
-    LightColor: {r: 1, g: 1, b: 1, a: 1}
+    LightColor: {r: 1, g: 0.91376394, b: 0.8537736, a: 1}
     LightRotation: {x: 47.002, y: -102.467, z: 0.395}
     SwitchEase: 1
     SwitchDuratation: 5
+    SwitchLightDuratation: 2
+    BlurIntensity: 0.5
   - Type: 1
     IntervalStart: 10
     IntervalEnd: 18
     MaterialColor: {r: 1, g: 1, b: 1, a: 1}
-    LightColor: {r: 1, g: 1, b: 1, a: 1}
+    LightColor: {r: 0.8901961, g: 0.8901961, b: 0.8901961, a: 1}
     LightRotation: {x: 46.789, y: -152.144, z: -40.309}
     SwitchEase: 1
     SwitchDuratation: 5
+    SwitchLightDuratation: 2
+    BlurIntensity: 0.5
   - Type: 2
     IntervalStart: 18
     IntervalEnd: 23
@@ -87,14 +91,18 @@ MonoBehaviour:
     LightRotation: {x: 21.829, y: -214.862, z: -58.339}
     SwitchEase: 1
     SwitchDuratation: 5
+    SwitchLightDuratation: 2
+    BlurIntensity: 0.5
   - Type: 3
     IntervalStart: 23
     IntervalEnd: 5
     MaterialColor: {r: 0.23137255, g: 0.39607844, b: 0.5176471, a: 1}
-    LightColor: {r: 0, g: 0.74509805, b: 1, a: 1}
+    LightColor: {r: 1, g: 0.81960785, b: 0.69411767, a: 1}
     LightRotation: {x: 26.695, y: -240.234, z: -117.792}
     SwitchEase: 1
     SwitchDuratation: 5
+    SwitchLightDuratation: 2
+    BlurIntensity: 1
   Materials:
   - {fileID: 2100000, guid: 6a44a971d60f41d4591ba8d045270062, type: 2}
   - {fileID: 2100000, guid: 24795a88a5547a2438ea85c4561ba7c7, type: 2}
@@ -102,6 +110,6 @@ MonoBehaviour:
   _glassDuration: 5
   _glassColorOn: {r: 0.78431374, g: 0.49411765, b: 0.16078432, a: 1}
   _glassColorOff: {r: 0.28627452, g: 0.35686275, b: 0.38039216, a: 1}
-  _glassEase: 8
+  _glassEase: 1
   GlassMaterials:
   - {fileID: 2100000, guid: 6c41720c969ef3642a46e8175de13773, type: 2}

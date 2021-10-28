@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 4713236957866354329}
   - component: {fileID: 8137338276933736360}
   - component: {fileID: 1258516866169779400}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BodyCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -250,7 +250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RenderShadows: 1
+  m_RenderShadows: 0
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0

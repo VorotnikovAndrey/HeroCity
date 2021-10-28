@@ -44,5 +44,7 @@ namespace Gameplay.Time
         public Vector3 LightRotation;
         public Ease SwitchEase = Ease.Linear;
         public float SwitchDuratation = 5f;
+        public float SwitchLightDuratation = 2f;
+        public float BlurIntensity = 0.5f;
     }
 }

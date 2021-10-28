@@ -5,6 +5,7 @@ using Content;
 using DG.Tweening;
 using Gameplay.LightSystem;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UserSystem;
 using Utils;
 using Zenject;
@@ -22,6 +23,7 @@ namespace Gameplay.Time
         private readonly UserManager _userManager;
         private readonly DayTimeParams _dayTimeParams;
 
+        private PostProcessingController _postProcessingController;
         private MainDirectionLight _directionLight;
         private List<Tweener> _tweeners = new List<Tweener>();
         
@@ -32,6 +34,7 @@ namespace Gameplay.Time
             _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
             _userManager = ProjectContext.Instance.Container.Resolve<UserManager>();
             _directionLight = ProjectContext.Instance.Container.Resolve<MainDirectionLight>();
+            _postProcessingController = ProjectContext.Instance.Container.Resolve<PostProcessingController>();
             _dayTimeParams = ContentProvider.Graphic.DayTimeParams;
         }
 
@@ -86,6 +89,7 @@ namespace Gameplay.Time
             CurrentType = type;
 
             var duration = force ? 0f : data.SwitchDuratation;
+            var lightDuration = force ? 0f : data.SwitchLightDuratation;
 
             _tweeners.ForEach(x => x?.Kill());
             _tweeners.Clear();
@@ -96,7 +100,13 @@ namespace Gameplay.Time
             }
 
             _tweeners.Add(_directionLight.Transform.DORotate(data.LightRotation, duration).SetEase(data.SwitchEase));
-            _tweeners.Add(_directionLight.Light.DOColor(data.LightColor, duration).SetEase(data.SwitchEase));
+            _tweeners.Add(_directionLight.Light.DOColor(data.LightColor, lightDuration).SetEase(data.SwitchEase));
+
+            _postProcessingController.Volume.profile.TryGet(out Bloom bloom);
+            if (bloom != null)
+            {
+                _tweeners.Add(DOTween.To(() => bloom.intensity.value, x => bloom.intensity.value = x, data.BlurIntensity, duration).SetEase(data.SwitchEase));
+            }
 
             foreach (var material in _dayTimeParams.GlassMaterials)
             {
