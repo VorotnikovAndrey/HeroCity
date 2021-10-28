@@ -81,7 +81,7 @@ namespace UserSystem
             CurrentUser = new UserModel(defaultResources)
             {
                 LastPlayTime = DateTime.UtcNow,
-                Time = new TimeSpan(0, 18, 0, 0),
+                Time = new TimeSpan(0, 12, 0, 0),
                 CurrentLocationId = ContentProvider.Economies.LocationsEconomy.Data.First().Id,
                 Locations = new Dictionary<string, LocationModel>(),
                 Improvement = new List<string>(),

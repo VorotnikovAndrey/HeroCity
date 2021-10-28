@@ -89,7 +89,6 @@ namespace Gameplay.Time
             CurrentType = type;
 
             var duration = force ? 0f : data.SwitchDuratation;
-            var lightDuration = force ? 0f : data.SwitchLightDuratation;
 
             _tweeners.ForEach(x => x?.Kill());
             _tweeners.Clear();
@@ -100,7 +99,7 @@ namespace Gameplay.Time
             }
 
             _tweeners.Add(_directionLight.Transform.DORotate(data.LightRotation, duration).SetEase(data.SwitchEase));
-            _tweeners.Add(_directionLight.Light.DOColor(data.LightColor, lightDuration).SetEase(data.SwitchEase));
+            _tweeners.Add(_directionLight.Light.DOColor(data.LightColor, duration).SetEase(data.SwitchEase));
 
             _postProcessingController.Volume.profile.TryGet(out Bloom bloom);
             if (bloom != null)

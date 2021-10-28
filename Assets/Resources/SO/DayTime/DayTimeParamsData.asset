@@ -61,7 +61,7 @@ MonoBehaviour:
     Time: 22
   - Type: 3
     Time: 23
-  TimeFactor: 1
+  TimeFactor: 20
   Data:
   - Type: 0
     IntervalStart: 5
@@ -87,7 +87,7 @@ MonoBehaviour:
     IntervalStart: 18
     IntervalEnd: 23
     MaterialColor: {r: 1, g: 1, b: 1, a: 1}
-    LightColor: {r: 1, g: 1, b: 1, a: 1}
+    LightColor: {r: 1, g: 0.9490196, b: 0.7019608, a: 1}
     LightRotation: {x: 21.829, y: -214.862, z: -58.339}
     SwitchEase: 1
     SwitchDuratation: 5
