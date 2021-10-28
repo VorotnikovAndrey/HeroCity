@@ -61,7 +61,7 @@ MonoBehaviour:
     Time: 22
   - Type: 3
     Time: 23
-  TimeFactor: 20
+  TimeFactor: 1
   Data:
   - Type: 0
     IntervalStart: 5
