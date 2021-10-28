@@ -26,6 +26,7 @@ namespace UI.Popups
 
         [SerializeField] private TextMeshProUGUI _itemType;
         [SerializeField] private TextMeshProUGUI _insufficientResources;
+        [SerializeField] private TextMeshProUGUI _inProductionMessage;
         [SerializeField] private RectTransform _inventoryItemHolder = default;
         [SerializeField] private Vector2 _inventoryItemScale;
         [SerializeField] private Color _defaultItemNameColor;
@@ -85,9 +86,9 @@ namespace UI.Popups
             UpdateInventoryItem();
             UpdateItemNameColor();
             UpdateAffixes();
-            UpdateCraftButtonState();
             UpdateRequiredResources();
             UpdateItemStats();
+            UpdateCraftButtonState();
 
             EventAggregator.Add<ResourceModifiedEvent>(OnResourceModified);
         }
@@ -150,6 +151,8 @@ namespace UI.Popups
                 _resourceRequiredContainers.Add(container);
             }
 
+            _insufficientResources.transform.SetAsLastSibling();
+
             RebuildLayouts();
         }
 
@@ -162,9 +165,13 @@ namespace UI.Popups
                 hasResources = _item.Price.All(y => _gameResourceManager.HasResource(y.Type, y.Value));
             }
 
+            var isProduction = _productionManager.InProduction(_item.Id);
+
+            _inProductionMessage.gameObject.SetActive(isProduction);
             _insufficientResources.gameObject.SetActive(!hasResources);
+
             _createTimerText.text = TimeSpan.FromSeconds(_item.TimeCreationTick).ToString(@"hh\:mm\:ss");
-            _buttonCraft.gameObject.SetActive(hasResources);
+            _buttonCraft.gameObject.SetActive(hasResources && isProduction == false);
         }
 
         private void UpdateAffixes()

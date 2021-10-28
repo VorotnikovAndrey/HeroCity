@@ -29,16 +29,12 @@ namespace Gameplay.Craft
             _timeTicker = ProjectContext.Instance.Container.Resolve<TimeTicker>();
 
             _productionBuildingModels = new Dictionary<string, ProductionBuildingModel>();
+
             foreach (var model in _userManager.CurrentUser.CurrentLocation.Buildings.Values)
             {
                 if (model is ProductionBuildingModel productionBuildingModel)
                 {
                     _productionBuildingModels.Add(productionBuildingModel.Id, productionBuildingModel);
-
-                    foreach (var element in productionBuildingModel.ProductionData)
-                    {
-                        Debug.LogError(element.ProductionId.AddColorTag(Color.red));
-                    }
                 }
             }
 
@@ -154,6 +150,11 @@ namespace Gameplay.Craft
             }
 
             return item?.Price;
+        }
+
+        public bool InProduction(string itemId)
+        {
+            return _productionBuildingModels.Values.Any(model => model.ProductionData.Any(data => data.ProductionId == itemId));
         }
     }
 }
